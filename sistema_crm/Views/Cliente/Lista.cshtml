@@ -1,0 +1,265 @@
+﻿ @model X.PagedList.IPagedList<sistema_crm.Models.ClienteModel>
+
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Cadastro de Vendedores
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+        })
+    </script>
+    <style>
+
+
+        .btn-outline-primary {
+            --bs - btn - color: #cb0c9f;
+            --bs - btn - border - color: #cb0c9f;
+            --bs - btn - hover - color: #fff;
+            --bs - btn - hover - bg: #cb0c9f;
+            --bs - btn - hover - border - color: #cb0c9f;
+            --bs - btn - focus - shadow - rgb: 203, 12, 159;
+            --bs - btn - active - color: #fff;
+            --bs - btn - active - bg: #cb0c9f;
+            --bs - btn - active - border - color: #cb0c9f;
+            --bs - btn - active - shadow: none;
+            --bs - btn - disabled - color: #cb0c9f;
+            --bs - btn - disabled - bg: transparent;
+            --bs - btn - disabled - border - color: #cb0c9f;
+            --bs - gradient: none;
+        }
+
+        .input {
+            display: inline - block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin - right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z - index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background - color: #fff; /* Black */
+            overflow - x: hidden; /* Disable horizontal scroll */
+            padding - top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+    </style>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+</head>
+
+
+
+
+
+<body class="g-sidenav-show  bg-gray-100">
+
+
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+        <header>
+            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
+                <div class="container-fluid py-1 px-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                        </ol>
+                        <h6 class="font-weight-bolder mb-0">Clientes</h6>
+                    </nav>
+
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                            <div class="input-group">
+                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" placeholder="Type here...">
+                            </div>
+                        </div>
+                        <div class="navbar-nav  justify-content-end">
+                            <div class=" navbar-nav flex-grow-1 justify-content-end">
+                                <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
+
+                                    <a class="nav-link justify-content-end " style="color:#cb0c9f" right="10px" asp-area="" asp-controller="Home" asp-action="Index">Sair</a>
+
+                                </ul>
+                            </div>
+                            <div />
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </header>
+
+
+ <div class="container-fluid py-5">
+
+
+    <div class=" d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="@Url.Action("DownloadClientesCsv", "Cliente")" class="btn btn-primary">Download CSV</a>
+
+        <a class="btn btn-success" role="button" asp-controller="Cliente" asp-action="Criar" onclick="Inserir()" >Novo cadastro</a>
+
+    </div>
+
+    <script>
+        function Inserir() {
+            window.location.href = "../Cliente/Criar";
+        }
+    </script>
+
+
+     <div class="row">
+     <div class="col-12">
+
+         <div class="card mb-4">
+
+                        <div class="card-header pb-0">
+                            <h6>Clientes Cadastrados</h6>
+                        </div>
+                        <div class="card-body px-0 pt-0 pb-2">
+                            <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">NOME</th>
+                                            
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">SITUAÇÃO</th>
+
+                                            <th class="text-secondary border-0 opacity-7" scope="col"> </>
+                                        </tr>
+                                    </thead>
+
+
+        <tbody>
+            @{
+                //foreach possibilita executar um conjunto de comandos para cada elemento presente na lista
+                //List -> coloca no formato de lista
+                foreach (var item in Model)
+                {
+                                <tr>
+
+                                 
+                                 <td>
+                                    <div class="d-flex flex-column justify-content-center">
+                                      <h6 class="mb-0 text-sm"> @item.Nome </h6>
+                                      <p class= "text-xs text-secondary mb-0">@item.CNPJ</p>
+                              
+                                    </div>
+                                 </td>
+                                    
+                                 <td>
+                                         @{
+
+                                           string corTexto = item.Situacao == "INATIVO" ? "badge badge-sm bg-gradient-secondary" : "text-center";
+                                           string corTexto2 = item.Situacao == "ATIVO" ? "badge badge-sm bg-gradient-success" : "text-center";
+                                           string corTexto3 = item.Situacao == "LEAD" ? "badge badge-sm bg-gradient-primary" : "text-center";                 
+                                           }
+                                           <p class=" @corTexto @corTexto2 @corTexto3"> @item.Situacao</p>
+                                  </td>
+                             
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" onclick="Editar(@item.Id)">Editar</button>
+                                            <button type="button" class="btn btn-danger" onclick="Excluir(@item.Id)">Excluir</button>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                }
+            }
+
+         </tbody>
+        </table>
+
+    <br />
+    </div>
+    </div>
+    </div>
+                    <div class="d-flex justify-content-center">
+                        @Html.PagedListPager(
+                                 Model,
+                                 page => Url.Action("Lista", new { page }),
+                                 new PagedListRenderOptions
+                        {
+                            UlElementClasses = new[] { "pagination", "justify-content-center", "pagination-lg" }, // Aplica estilos do Bootstrap e espaçamento
+                            LiElementClasses = new[] { "page-item" },
+                            PageClasses = new[] { "page-link" },
+                            ActiveLiElementClass = "active",
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            Display = PagedListDisplayMode.Always
+                        }
+                                 )
+                    </div>
+    </div>
+    </div>
+
+    <script>
+
+        function Editar(id) {
+            window.location.href = "../../Cliente/Editar/" + id;
+        }
+
+        function Excluir(id) {
+
+            var resposta = confirm("Tem certeza que deseja excluir o cliente ? ");
+
+            if (resposta) {
+                window.location.href = "../Cliente/ExcluirCliente/" + id;
+
+                alert ("Cliente Excluido com Sucesso!")
+                window.location.href = "../Cliente/Lista/"
+            } 
+
+
+        }
+    </script>
+
+
+</div>
+</main>
+</body>

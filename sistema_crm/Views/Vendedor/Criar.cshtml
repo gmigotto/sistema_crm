@@ -1,0 +1,288 @@
+﻿@model VendedorModel
+
+@{
+    ViewData["Title"] = "Adicionar vendedor";
+    Layout = "../Shared/_Layout.cshtml";
+
+}
+
+
+<html>
+    <head>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Soft UI Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+            $('#valor').maskMoney({
+                thousands: '.', // Separador de milhares
+                decimal: ',', // Separador decimal
+                allowZero: true, // Permite valor zero
+                allowNegative: false // Não permite valores negativos
+            })
+        })
+    </script>
+  
+    <style>
+
+     
+
+        .btn-outline-primary {
+            --bs - btn - color: #cb0c9f;
+            --bs - btn - border - color: #cb0c9f;
+            --bs - btn - hover - color: #fff;
+            --bs - btn - hover - bg: #cb0c9f;
+            --bs - btn - hover - border - color: #cb0c9f;
+            --bs - btn - focus - shadow - rgb: 203, 12, 159;
+            --bs - btn - active - color: #fff;
+            --bs - btn - active - bg: #cb0c9f;
+            --bs - btn - active - border - color: #cb0c9f;
+            --bs - btn - active - shadow: none;
+            --bs - btn - disabled - color: #cb0c9f;
+            --bs - btn - disabled - bg: transparent;
+            --bs - btn - disabled - border - color: #cb0c9f;
+            --bs - gradient: none;
+        }
+
+        .input {
+            display: inline - block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin - right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z - index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background - color: #fff; /* Black */
+            overflow - x: hidden; /* Disable horizontal scroll */
+            padding - top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+    </style>
+
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+</head>
+
+
+
+
+   
+
+<body class="g-sidenav-show  bg-gray-100">
+
+    
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+        <header>
+            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
+                <div class="container-fluid py-1 px-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                            <li >  </li>
+                            <li > </li>
+                        </ol>
+                        <h6 class="font-weight-bolder mb-0">Vendedores</h6>
+                    </nav>
+
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                            <div class="input-group">
+                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" placeholder="Type here...">
+                            </div>
+                        </div>
+                        <div class="navbar-nav  justify-content-end">
+                            <div class=" navbar-nav flex-grow-1 justify-content-end">
+                                <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
+
+                                    <a class="nav-link justify-content-end " style="color:#cb0c9f" right="10px" asp-area="" asp-controller="Home" asp-action="Index">Sair</a>
+
+                                </ul>
+                            </div>
+                            <div />
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </header>
+
+
+        <div class="container-fluid py-5">
+            <div class=" d-grid gap-2 d-md-flex justify-content-md-end">
+                <a class="btn btn-success" role="button" asp-controller="Vendedor" asp-action="Criar" onclick="Inserir()">Novo cadastro</a>
+
+            </div>
+
+            <script>
+                function Inserir() {
+                    window.location.href = "../Vendedor/Criar";
+                }
+            </script>
+
+        <div class="card mb-4" style="margin-bottom:60px;">
+
+          
+
+            <div class="card-header pb-0"> 
+                <h5 class="text-muted"> Cadastro de Vendedor</h5>  
+            </div>
+
+
+            <div class="card-body px-0 pt-0 pb-2" paddin="20px">
+
+                <div class="">
+  
+    
+                   
+
+                        <form asp-controller="Vendedor" asp-action="Criar" method="post">
+
+                            <input type="hidden" asp-for="Id" value="@try {@ViewBag.Vendedor.Id} catch { }" />
+                            <div class="row">
+                            <div class="form-group col-md-5 mb-3">
+                                <label for="nome">Nome</label>
+                                <input asp-for="Nome" type="text" class="form-control" value="@try {@ViewBag.Vendedor.Nome} catch { }" />
+                                <span asp-validation-for="Nome"></span>
+
+                            </div>
+                            <div class="form-group col-md-3 mb-3">
+                                <label for="CPF">CPF</label>
+                                <input asp-for="CPF" type="text" class="form-control" id="cpf" value="@try {@ViewBag.Vendedor.CPF} catch {} " placeholder="___.___.___-__">
+                                        <span style="color:red" asp-validation-for="CPF"></span>
+
+
+                            </div>
+                            <div class="form-group col-md-3 mb-3">
+                                <label for="Nascimento">Data Nascimento</label>
+                                <input asp-for="Nascimento" type="date" class="form-control" id="nasc" value="@try {@ViewBag.Vendedor.Nascimento} catch {} ">
+                                <span  asp-validation-for="Nascimento"></span>
+
+
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class="form-group col-md-7 mb-3" >
+                                <label for="email">Endereço</label>
+                                <input asp-for="Endereco" type="text" class="form-control" value="@try {@ViewBag.Vendedor.Endereco} catch {}">
+                                <span asp-validation-for="Endereco"></span>
+                            </div>
+
+                                <div class="form-group col-md-4 mb-3">
+                                <label for="telefone">Telefone</label>
+                                <input asp-for="Telefone" type="text" class="form-control" id="telefone" value="@try {@ViewBag.Vendedor.Telefone} catch {}" placeholder="(__) _____-____">
+                                <span asp-validation-for="Telefone"></span>
+                            </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-7 mb-3">
+                                <label for="email"> Email</label>
+                                <input asp-for="Email" type="text" class="form-control" value="@try{@ViewBag.Vendedor.Email} catch {}" placeholder="fulano@email.com"> <br />
+                                <span asp-validation-for="Email"></span>
+                            </div>
+
+                                <div class="form-group col-md-4 mb-3">
+                                <label for="senha">Senha</label>
+                                <input asp-for="Senha" type="password" class="form-control" value="@try{@ViewBag.Vendedor.Senha} catch {}">
+                                <span asp-validation-for="Senha"></span>
+                            </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-5 mb-3">
+                                <label for="senha">Situação</label>
+
+                                <select asp-for="Status" type="text" class="form-control" value="@try {@ViewBag.Proposta.Status} catch {} ">
+
+                                    <option value="">Escolha...</option>
+                                    <option>Ativo</option>
+                                    <option>Inativo</option>
+                                </select>
+                            </div>
+
+                                <div class="form-group col-md-5 mb-3">
+                                    <label for="DataADM">Data Admissão</label>
+                                    <input asp-for="DataADM" type="date" class="form-control" id="adm" value="@try {
+                                    @ViewBag.Vendedor.DataADM
+} catch {} ">
+                                    <span asp-validation-for="DataADM"></span>
+
+
+                                </div>
+                            </div>
+                            
+
+
+                            <button type="submit" class="btn btn-success" onclick="Criar()">Adicionar Vendedor</button>
+                            
+
+
+                        </form>
+
+
+                </div>
+            </div>
+        </div>
+        </div>
+             
+ </main>
+
+    <script>
+
+        function Voltar() {
+            window.location.href = "../../Vendedor/Lista/";
+        }
+
+    </script>
+
+
+</body>
+
+
+
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,415 @@
+﻿@model RelatorioModel
+
+@{
+    ViewData["Title"] = "Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Cadastro de Vendedores
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+        })
+    </script>
+    <style>
+        .input {
+            display: inline-block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin-right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z-index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background-color: #fff; /* Black */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+        .cardmeta {
+            background-color: white;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .barra-progresso {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .progresso {
+            font-size: 2em;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+
+        .barra-progresso {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .barra-preenchida {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 20px;
+            text-align: right;
+            padding-right: 10px;
+            color: white;
+            line-height: 20px;
+        }
+
+    </style>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+
+
+<body class="g-sidenav-show  bg-gray-100">
+
+
+    
+
+
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+
+        <header>
+            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
+                <div class="container-fluid py-1 px-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+                            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+                        </ol>
+                        <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+                    </nav>
+               <div/>
+
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                            <div class="input-group">
+                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" placeholder="Type here...">
+                            </div>
+                        </div>
+                        <div class="navbar-collapse collapse">
+                            @*<ul class="nav navbar-nav">
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Login">Entrar no Sistema</a></li>
+                            </ul>*@
+                            @*  @using Microsoft.AspNetCore.Http
+                            @inject IHttpContextAccessor HttpContextAccessor *@
+                            <div id="NomeUsuarioLogado"></div>
+                            <div class="navbar-nav  justify-content-end">
+                                <div class=" navbar-nav flex-grow-1 justify-content-end">
+                                    <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
+
+                                        <a class="nav-link justify-content-end " style="color:#cb0c9f" right="10px" asp-area="" asp-controller="Home" asp-action="Index">Sair</a>
+
+                                    </ul>
+                                </div>
+                                <div />
+                            </div>
+                        </div>
+
+                    </div>
+            </nav>
+
+         @*    <div class="col-md-12 mb-lg-0 mb-4">
+                <div class="card mt-4">
+                    <div class="card-header pb-0 p-3">
+                        <div class="row">
+                            <div class="col-6 d-flex align-items-center">
+                                <h6 class="mb-0">Sua Atividade </h6>
+                            </div>
+                            <div class="col-6 text-end">
+                                <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Card</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row">
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+
+         
+        </header>
+
+        <div class="d-flex">
+            <div class="card mb-4 flex-grow-1" style="max-width: 30%;">
+            <h5>Meta do Vendedor</h5>
+                <span id="totalVendas">0.00</span>
+
+                <p class="progresso"> <span class="vendas-valor">R$ 0,00</span></p>
+
+                <div class="barra-progresso">
+                    <div class="barra-preenchida" style="width: 0%;">0%</div>
+                </div>
+        </div>
+        </div>
+       
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
+
+                    <div class="border-radius-lg py-3 pe-1 mb-3">
+                        <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                            <canvas id="vendasChart" class="chart-canvas" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card" style="min-width: 300px;">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"> Valor em Negociação:</p>
+                                        <h7 class="font-weight-bolder mb-0">
+                                            @try
+                                            {
+                                                @ViewBag.Relatorio.Negociacao
+                                            }
+                                            catch { },00
+                                        </h7>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                        <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
+
+                    <div class="border-radius-lg py-3 pe-1 mb-3">
+                        <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                            <canvas id="vendasClientes" class="chart-canvas" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <script>
+
+
+                var ctx = document.getElementById('vendasChart').getContext('2d');
+                var vendasChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [@Html.Raw(ViewBag.Labels)],
+                        datasets: [{
+                            label: 'Vendas por Mês',
+                            data: [@Html.Raw(ViewBag.Valores)],
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true, // Responsividade ativada
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Vendas por Mês', // Título do gráfico
+                                font: {
+                                    size: 18 // Tamanho da fonte do título
+                                },
+                                padding: {
+                                    top: 10, // Espaço acima do título
+                                    bottom: 30 // Espaço entre o título e o gráfico
+                                }
+                            },
+                            legend: {
+                                display: false,
+
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false // Remove as linhas de grade do eixo y
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false // Remove as linhas de grade do eixo x
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+
+            <script>
+
+
+                var ctx = document.getElementById('vendasClientes').getContext('2d');
+                var vendasChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [@Html.Raw(ViewBag.Labels2)],
+                        datasets: [{
+                            label: 'Vendas por Clientes',
+                            data: [@Html.Raw(ViewBag.Valores2)],
+                            borderColor: 'rgba(255, 105, 180, 1)',
+                            backgroundColor: 'rgba(255, 182, 193, 0.2)',
+                            fill: true,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true, // Responsividade ativada
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Vendas por Cliente', // Título do gráfico
+                                font: {
+                                    size: 18 // Tamanho da fonte do título
+                                },
+                                padding: {
+                                    top: 10, // Espaço acima do título
+                                    bottom: 30 // Espaço entre o título e o gráfico
+                                }
+                            },
+                            legend: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false // Remove as linhas de grade do eixo y
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false // Remove as linhas de grade do eixo x
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+       <script>
+            $(document).ready(function () {
+                // Faz uma requisição AJAX para obter o valor total de vendas
+                $.ajax({
+                    url: '@Url.Action("ObterProgressoVendas", "Vendedor")',
+                    type: 'GET',
+                    success: function (data) {
+                        if (data && data.totalVendas !== undefined) {
+                            // Formata o valor em reais
+                            let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                            // Atualiza o elemento com o valor formatado
+                            $('#totalVendas').text(totalVendasFormatado);
+                        } else {
+                            alert("Resposta inválida do servidor.");
+                        }
+                    },
+                    },
+                    error: function () {
+                        alert("Erro ao carregar o valor total de vendas.");
+                    }
+                });
+            });
+       </script>
+        
+        <script>
+            $(document).ready(function () {
+                // Função para buscar o progresso das vendas do mês
+                function atualizarProgressoVendasDoMes() {
+                    $.ajax({
+                        url: '/Vendedor/ObterProgressoVendas',
+                        type: 'GET',
+                        success: function (data) {
+                            // Atualiza o valor total das vendas e da meta no frontend
+                            $('.meta-valor').text('R$ ' + data.meta.toFixed(2));
+                            $('.vendas-valor').text('R$ ' + data.totalVendas.toFixed(2));
+
+                            // Calcula o progresso em porcentagem e atualiza a barra de progresso
+                            var progressoPercent = Math.round(data.progresso) + '%';
+                            $('.barra-preenchida').css('width', progressoPercent).text(progressoPercent);
+                        }
+                    });
+                }
+
+                // Chama a função de atualização ao carregar a página
+                atualizarProgressoVendasDoMes();
+            });
+        </script>
+
+
+    </main>
+</body>

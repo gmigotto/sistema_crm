@@ -1,0 +1,139 @@
+﻿@model LoginModel
+@{
+
+    Layout = "../Shared/_LayoutLogin.cshtml";
+
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Entre em sua conta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <style>
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .h-custom {
+            height: calc(100% - 73px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <section class="vh-100">
+        <div class="container-fluid h-custom" >
+
+            <div class="container" style="margin-bottom: 20px;"></div>
+                <h2 style="color:#cb0c9f">Parabéns!</h2>
+                <h5 style="color: #8392ab"> Sua jornada conosco começa agora!</h5>
+            
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                         class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <form asp-controller="Home" asp-action="PrimeiroAcesso" method="post">
+                        <div class="justify-content-center">
+
+                            <img src="~/css/logo_novo.png" width="350" height="200" />
+                        </div>
+
+
+                        @{
+
+                            try
+                            {
+                                var erro = TempData["ErrorLogin"];
+
+                                <h5 class="text-danger">@erro </h5>
+                            }
+                            catch
+                            {
+
+                            }
+
+                        }
+
+
+                        <div class="divider d-flex align-items-center my-4">
+                        </div>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <div class="input-group">
+
+                                <input type="text" class="form-control" asp-for="Email" placeholder="Email" />
+
+                            </div>
+
+                            <div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-3">
+                            <div class="input-group">
+
+                                <input type="password" class="form-control" asp-for="Senha" placeholder="Senha">
+
+                            </div>
+
+                            <div>
+                                <span asp-validation-for="Senha" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <a href="#!" class="text-body">Esqueceu sua senha?</a>
+                        </div>
+
+
+
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <button type="submit" class="btn bg-gradient-primary btn-lg btn-block">Login</button>
+                        </div>
+
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</body>
+</html>

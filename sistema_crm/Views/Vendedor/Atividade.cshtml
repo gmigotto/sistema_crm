@@ -1,0 +1,162 @@
+﻿@model VendedorModel
+
+@{
+    ViewData["Title"] = "Adicionar vendedor";
+    Layout = "../Shared/_Layout.cshtml";
+
+}
+
+
+<html>
+<head>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Soft UI Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+   
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+            $('#valor').maskMoney({
+                thousands: '.', // Separador de milhares
+                decimal: ',', // Separador decimal
+                allowZero: true, // Permite valor zero
+                allowNegative: false // Não permite valores negativos
+            })
+        })
+    </script>
+
+    <style>
+
+        .btn-outline-primary {
+            --bs - btn - color: #cb0c9f;
+            --bs - btn - border - color: #cb0c9f;
+            --bs - btn - hover - color: #fff;
+            --bs - btn - hover - bg: #cb0c9f;
+            --bs - btn - hover - border - color: #cb0c9f;
+            --bs - btn - focus - shadow - rgb: 203, 12, 159;
+            --bs - btn - active - color: #fff;
+            --bs - btn - active - bg: #cb0c9f;
+            --bs - btn - active - border - color: #cb0c9f;
+            --bs - btn - active - shadow: none;
+            --bs - btn - disabled - color: #cb0c9f;
+            --bs - btn - disabled - bg: transparent;
+            --bs - btn - disabled - border - color: #cb0c9f;
+            --bs - gradient: none;
+        }
+
+        .input {
+            display: inline - block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin - right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z - index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background - color: #fff; /* Black */
+            overflow - x: hidden; /* Disable horizontal scroll */
+            padding - top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+    </style>
+
+    
+</head>
+
+
+
+
+<body class="g-sidenav-show  bg-gray-100">
+
+
+ <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+
+<div class="col-md-7 mt-4">
+    <div class="card">
+        <div class="card-header pb-0 px-3">
+            <h6 class="mb-0">Billing Information</h6>
+        </div>
+        <div class="card-body pt-4 p-3">
+            <ul class="list-group">
+                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Oliver Liam</h6>
+                        <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Viking Burrito</span></span>
+                        <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">oliver@burrito.com</span></span>
+                        <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                    </div>
+                    <div class="ms-auto text-end">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                    </div>
+                </li>
+                <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Lucas Harper</h6>
+                        <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Stone Tech Zone</span></span>
+                        <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
+                        <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                    </div>
+                    <div class="ms-auto text-end">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                    </div>
+                </li>
+                <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Ethan James</h6>
+                        <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Fiber Notion</span></span>
+                        <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
+                        <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                    </div>
+                    <div class="ms-auto text-end">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+</main>
+</body>
+</html>

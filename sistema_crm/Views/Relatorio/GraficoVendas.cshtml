@@ -1,0 +1,260 @@
+﻿@model RelatorioModel
+
+@{
+    ViewData["Title"] = "";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Gráfico de Vendas
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+        })
+    </script>
+    <style>
+
+
+
+        .btn-outline-primary {
+            --bs - btn - color: #cb0c9f;
+            --bs - btn - border - color: #cb0c9f;
+            --bs - btn - hover - color: #fff;
+            --bs - btn - hover - bg: #cb0c9f;
+            --bs - btn - hover - border - color: #cb0c9f;
+            --bs - btn - focus - shadow - rgb: 203, 12, 159;
+            --bs - btn - active - color: #fff;
+            --bs - btn - active - bg: #cb0c9f;
+            --bs - btn - active - border - color: #cb0c9f;
+            --bs - btn - active - shadow: none;
+            --bs - btn - disabled - color: #cb0c9f;
+            --bs - btn - disabled - bg: transparent;
+            --bs - btn - disabled - border - color: #cb0c9f;
+            --bs - gradient: none;
+        }
+
+        .input {
+            display: inline - block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin - right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z - index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background - color: #fff; /* Black */
+            overflow - x: hidden; /* Disable horizontal scroll */
+            padding - top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+    </style>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+
+
+<body class="g-sidenav-show  bg-gray-100">
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+
+        <div class="d-flex justify-content-between align-items-start">
+
+            <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
+
+            <div class="border-radius-lg py-3 pe-1 mb-3">
+                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                        <canvas id="vendasChart" class="chart-canvas" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xl-3 col-sm-6">
+                <div class="card" style="min-width: 300px;">
+                    <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"> Valor em Negociação:</p>
+                                <h7 class="font-weight-bolder mb-0">
+                                    @try
+                                    {
+                                        @ViewBag.Relatorio.Negociacao
+                                    }
+                                    catch { },00
+                                </h7>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="d-flex">
+            <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
+
+            <div class="border-radius-lg py-3 pe-1 mb-3">
+                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                        <canvas id="vendasClientes" class="chart-canvas" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        </div>
+   
+     
+
+
+
+        <script>
+
+
+            var ctx = document.getElementById('vendasChart').getContext('2d');
+            var vendasChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [@Html.Raw(ViewBag.Labels)],
+                    datasets: [{
+                        label: 'Vendas por Mês',
+                        data: [@Html.Raw(ViewBag.Valores)],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true, // Responsividade ativada
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Vendas por Mês', // Título do gráfico
+                            font: {
+                                size: 18 // Tamanho da fonte do título
+                            },
+                            padding: {
+                                top: 10, // Espaço acima do título
+                                bottom: 30 // Espaço entre o título e o gráfico
+                            }
+                        },
+                        legend: {
+                            display: false,
+                           
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false // Remove as linhas de grade do eixo y
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false // Remove as linhas de grade do eixo x
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+
+         <script>
+
+
+            var ctx = document.getElementById('vendasClientes').getContext('2d');
+             var vendasChart = new Chart(ctx, {
+                 type: 'bar',
+                 data: {
+                     labels: [@Html.Raw(ViewBag.Labels2)],
+                     datasets: [{
+                         label: 'Vendas por Clientes',
+                         data: [@Html.Raw(ViewBag.Valores2)],
+                         borderColor: 'rgba(255, 105, 180, 1)',
+                         backgroundColor: 'rgba(255, 182, 193, 0.2)',
+                         fill: true,
+                         borderWidth: 2
+                     }]
+                 },
+                 options: {
+                     responsive: true, // Responsividade ativada
+                     maintainAspectRatio: false,
+                     plugins: {
+                         title: {
+                             display: true,
+                             text: 'Vendas por Cliente', // Título do gráfico
+                             font: {
+                                 size: 18 // Tamanho da fonte do título
+                             },
+                             padding: {
+                                 top: 10, // Espaço acima do título
+                                 bottom: 30 // Espaço entre o título e o gráfico
+                             }
+                         },
+                         legend: {
+                             display: false,
+                         }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false // Remove as linhas de grade do eixo y
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false // Remove as linhas de grade do eixo x
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    </main>
+</body>

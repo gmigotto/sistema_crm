@@ -1,0 +1,56 @@
+﻿<h3>Lista de Produtos</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>#</th>
+            <th>Id</th>
+            <th>Nome</th>            
+            <th>Descrição</th>
+            <th>Preço Unitário</th>
+            <th>Quantidade Estoque</th>
+            <th>Unidade Medida</th>
+            <th>Foto</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        
+        @{ 
+            foreach(var item in (List<ProdutoModel>)ViewBag.ListaProdutos)
+            {
+                <tr>
+                    <td><button type="button" class="btn btn-warning" onclick="Editar(@item.Id)">Editar</button></td>
+                    <td><button type="button" class="btn btn-danger" onclick="Excluir(@item.Id)">Excluir</button></td>
+                    <td>@item.Id</td>
+                    <td>@item.Nome</td>                    
+                    <td>@item.Descricao</td>
+                    <td>@item.Preco_Unitario</td>
+                    <td>@item.Quantidade_Estoque</td>
+                    <td>@item.Unidade_Medida</td>
+                    <td><img src="@item.Link_Foto" width="150" height="150"/></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<br />
+<button class="btn btn-block btn-primary" type="button" onclick="Cadastrar()">Cadastrar Produtos</button>
+
+<script>
+    function Cadastrar()
+    {
+        window.location.href = "../Produto/Cadastro";
+
+    }
+    function Editar(id)
+    {
+        window.location.href = "../Produto/Cadastro/"+id;
+    }
+
+    function Excluir(id)
+    {
+        window.location.href = "../Produto/Excluir/" + id;
+    }
+</script>

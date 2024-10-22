@@ -1,0 +1,232 @@
+﻿@model HomeModel;
+
+@{
+
+    Layout = "../Shared/_CompraLayout.cshtml";
+
+}
+
+
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>Compre sua licença</title>
+
+    <!-- Principal CSS do Bootstrap -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos customizados para esse template -->
+    <link href="form-validation.css" rel="stylesheet">
+
+ 
+
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+        <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+       
+        <!--     Fonts and icons     -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+        <!-- Nucleo Icons -->
+        <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+        <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+        <!-- Font Awesome Icons -->
+        <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+        <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+        <!-- CSS Files -->
+        <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+        <!-- Nepcha Analytics (nepcha.com) -->
+        <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script>
+
+            jQuery(function ($) {
+                $('#cpf').mask('000.000.000-00');
+                $('#cnpj').mask('00.000.000/0000-00');
+                $('#telefone').mask('(00) 00000-0000');
+            })
+        </script>
+   
+       
+        <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+   
+
+    </head>
+
+
+
+<body>
+
+    <div class="container" style="margin-bottom: 30px">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <p class="nav-link active" aria-current="page">Cadastro</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" >Pagamento</p>
+        </li>
+        </ul>
+
+    </div>
+
+      <div class="container main-container">
+        
+        
+          <form  asp-controller="Home" asp-action= "TelaCompra" class="needs-validation" novalidate method="post">
+          <div class="row">
+
+            <h5 class="text-muted">Informações Cadastrais</h5>
+
+              <div class="col-md-6 mb-3">
+
+                
+
+                <label for="emp">Empresa</label>
+                <input type="text" class="form-control" id="empresa" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  É obrigatório inserir a empresa.
+                </div>
+              </div>
+
+            <div class="col-md-6 mb-3">
+
+
+
+                <label for="cnpj">CNPJ</label>
+                <input  type="text" class="form-control" id="cnpj" placeholder="__.___.___/____-__" value="" required>
+                <div class="invalid-feedback">
+                    É obrigatório inserir um nome válido.
+                </div>
+            </div>
+
+                <div class="col-md-6 mb-3">
+
+
+
+                    <label for="nome">Responsável</label>
+                    <input asp-for="Nome" type="text" class="form-control" id="nome" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                        É obrigatório inserir um nome válido.
+                    </div>
+                </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="end">Endereço</label>
+                <input type= "text" class="form-control" id="pais" required>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="cidade">Cidade</label>
+                <select class="form-select " id="cidade" required>
+                    <option value="">Escolha...</option>
+                    <option>São Paulo</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, selecione uma opção.
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="pais">País</label>
+                <select class="form-select" id="pais" required>
+                    <option value="">Escolha...</option>
+                    <option>Brasil</option>
+                </select>
+            </div>
+
+       
+
+            
+
+           
+            <div class="col-md-4 mb-3">
+                <label for="estado">UF</label>
+                <select class="form-select" id="estado" required>
+                    <option value="">Escolha...</option>
+                    <option>AC</option>
+                    <option>AL</option>
+                    <option>AP</option>
+                    <option>AM</option>
+                    <option>BA</option>
+                    <option>CE</option>
+                    <option>DF</option>
+                    <option>ES</option>
+                    <option>GO</option>
+                    <option>MA</option>
+                    <option>MT</option>
+                    <option>MS</option>
+                    <option>MG</option>
+                    <option>PA</option>
+                    <option>PB</option>
+                    <option>PR</option>
+                    <option>PE</option>
+                    <option>PI</option>
+                    <option>RJ</option>
+                    <option>RN</option>
+                    <option>RS</option>
+                    <option>RO</option>
+                    <option>RR</option>
+                    <option>SC</option>
+                    <option>SP</option>
+                    <option>SE</option>
+                    <option>TO</option>
+
+
+
+                </select>
+              </div>
+        
+
+
+            <div class="col-md-6 mb-3">
+                <label for="email">Email </label>
+                <input asp-for="Email" type="email" class="form-control" id="email" placeholder="fulano@exemplo.com">
+                <div class="invalid-feedback">
+                    Por favor, insira um endereço de e-mail válido.
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="senha">Crie uma senha</label>
+                <input asp-for="Senha" type="password" class="form-control"  >
+                <div class="invalid-feedback">
+                    Por favor, insira um endereço de e-mail válido.
+                </div>
+            </div>
+
+          <hr class="mb-4">
+
+            <div style=" margin-bottom: 60px">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" asp-controller="Home" asp-action="CadastroAdm">Ir para pagamento</button>
+
+
+          </div>
+         </div>
+          
+
+
+        </form>
+           
+
+       </div>
+
+    
+      
+   
+    
+  </body>
+</html>

@@ -1,0 +1,39 @@
+﻿@using sistema_crm.Models
+
+@{
+
+
+    ViewData["Title"] = "Atividades do Vendedor";
+}
+@if (ViewBag.Vendedor != null)
+{
+    <h2>Atividades do Vendedor: @ViewBag.Vendedor.Nome</h2>
+@if (ViewBag.Atividades != null && ViewBag.Atividades.Any())
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var atividade in ViewBag.Atividades)
+        {
+            <tr>
+                <td>@atividade.Data</td>
+                <td>@atividade.Descricao</td>
+                <td>@atividade.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}else{
+<p>Nenhuma atividade encontrada para este vendedor.</p>
+
+    }
+} else
+{
+    <p>Vendedor não encontrado.</p>
+} 
