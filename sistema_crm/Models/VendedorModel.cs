@@ -12,7 +12,7 @@ namespace sistema_crm.Models
 {
     public class VendedorModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
 
         [Required(ErrorMessage = "Informe nome do vendedor")]
@@ -40,19 +40,20 @@ namespace sistema_crm.Models
         public virtual ICollection<AtividadeModel> Atividades { get; set; }
         public class AtividadeModel
         {
-            public string Id { get; set; }
+            public int Id { get; set; }
 
             public string Obs { get; set; }
 
             public string Idcliente { get; set; }
 
-            public string Idvendedor { get; set; }
+            public int Idvendedor { get; set; }
 
             public string Tipo_contato { get; set; }
 
             public string DT_contato { get; set; }
 
             public string Vendedor { get; set; }
+
 
         }
 
@@ -73,7 +74,7 @@ namespace sistema_crm.Models
             {
                 item = new VendedorModel
                 {
-                    Id = dt.Rows[i]["idvendedor"].ToString(),
+                    Id = Convert.ToInt32(dt.Rows[i]["idvendedor"]),
                     Nome = dt.Rows[i]["nomevendedor"].ToString(),
                     CPF = dt.Rows[i]["cpf"].ToString(),
                     Nascimento = dt.Rows[i]["nascimento"].ToString(),
@@ -99,7 +100,7 @@ namespace sistema_crm.Models
 
             item = new VendedorModel
             {
-                Id = dt.Rows[0]["idvendedor"].ToString(),
+                Id = Convert.ToInt32(dt.Rows[0]["idvendedor"]),
                 Nome = dt.Rows[0]["nomevendedor"].ToString(),
                 Nascimento = !string.IsNullOrEmpty(dt.Rows[0]["nascimento"].ToString()) ? DateTime.Parse(dt.Rows[0]["nascimento"].ToString()).ToString("dd/MM/yyyy") : null,
                 CPF = dt.Rows[0]["cpf"].ToString(),
@@ -184,12 +185,12 @@ namespace sistema_crm.Models
             {
                 item = new AtividadeModel
                 {
-                    Id = dt.Rows[i]["idatividade"].ToString(),
+                    Id = Convert.ToInt32(dt.Rows[0]["idatividade"]),
                     Tipo_contato = dt.Rows[i]["contato"].ToString(),
                     DT_contato = DateTime.Parse(dt.Rows[i]["dtcontato"].ToString()).ToString(),
                     Obs = dt.Rows[i]["observacao"].ToString(),
                     Idcliente = dt.Rows[i]["cliente"].ToString(),
-                    Idvendedor = dt.Rows[i]["vendedor"].ToString(),
+                    Idvendedor = Convert.ToInt32(dt.Rows[0]["vendedor"]),
 
                 };
                 lista.Add(item);
@@ -223,12 +224,12 @@ namespace sistema_crm.Models
 
             item = new AtividadeModel
             {
-                Id = dt.Rows[0]["idatividade"].ToString(),
+                Id = Convert.ToInt32(dt.Rows[0]["idatividade"]),
                 Tipo_contato = dt.Rows[0]["contato"].ToString(),
                 DT_contato = DateTime.Parse(dt.Rows[0]["dtcontato"].ToString()).ToString(),
                 Obs = dt.Rows[0]["observacao"].ToString(),
                 Idcliente = dt.Rows[0]["cliente"].ToString(),
-                Idvendedor = dt.Rows[0]["vendedor"].ToString(),
+                Idvendedor = Convert.ToInt32(dt.Rows[0]["vendedor"]),
 
             };
 
@@ -249,6 +250,23 @@ namespace sistema_crm.Models
             return totalVendas;
         }
 
+        public double VendasVendedor(int id)
+        {
+            DAL objDAL = new DAL();
+
+
+            string sql = "SELECT SUM(t1.qtde * t1.preco_unit) AS total_vendas " +
+                        "JOIN propostas t2 ON t1.id_proposta = t2.idpropostas " +
+                        "WHERE t2.status = 'VENDA REALIZADA' " +
+                        "AND MONTH(t2.data) = MONTH(CURDATE()) " +
+                        "AND YEAR(t2.data) = YEAR(CURDATE()) " +
+                        "AND t2.id_vendedor = @id;";
+
+            // Executar o comando SQL e obter o resultado
+            double vendedorVendas = objDAL.RetornarDado(sql);
+
+            return vendedorVendas;
+        }
 
         public List<ClienteModel> RetornarListaClientes()
         {

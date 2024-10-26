@@ -14,7 +14,7 @@ namespace sistema_crm.Uteis
     //Data Access Layer
     public class DAL
     {
-        
+
         private readonly MySqlConnection Connection;
 
         public DAL()
@@ -141,28 +141,73 @@ namespace sistema_crm.Uteis
             return resultado;
 
         }
-            public int ExecutarConsultaSQL(string sql)
+        public int ExecutarConsultaSQL(string sql)
         {
             int resultado = 0;
 
-           
-                MySqlCommand Command = new MySqlCommand(sql, Connection);
+
+            MySqlCommand Command = new MySqlCommand(sql, Connection);
             if (Connection.State != System.Data.ConnectionState.Open)
             {
                 Connection.Open();
             }
 
             object valor = Command.ExecuteScalar(); // Executa a consulta e retorna o primeiro valor da primeira linha
-                if (valor != null)
-                {
-                    resultado = Convert.ToInt32(valor); // Converte para inteiro se houver um resultado
-                }
-            
+            if (valor != null)
+            {
+                resultado = Convert.ToInt32(valor); // Converte para inteiro se houver um resultado
+            }
+
 
             return resultado;
         }
 
+        public DataTable RetornarDataTable(string sql, Dictionary<string, object> parametros)
+        {
+
+            {
+                using (MySqlCommand cmd = new MySqlCommand(sql, Connection))
+                {
+                    // Adiciona os parâmetros à consulta SQL
+                    foreach (var parametro in parametros)
+                    {
+                        cmd.Parameters.AddWithValue(parametro.Key, parametro.Value);
+                    }
+
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        return dt;
+                    }
+                }
+
+            }
+
+        }
+
+        public DataTable RetDataTableProposta(string sql, Dictionary<string, object> parameters = null)
+        {
+            using (var cmd = new MySqlCommand(sql, Connection))
+            {
+                // Adiciona os parâmetros ao comando
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+                }
+
+                
+                DataTable dt = new DataTable();
+                using (var da = new MySqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+                return dt;
+            }
+        }
+
     }
-
-
 }

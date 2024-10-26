@@ -3,11 +3,12 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using MySqlX.XDevAPI;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 
 namespace sistema_crm.Models
 {
-    public class PropostaModel
+    public class PropostaUsuarioModel
     {
 
         public string Id { get; set; }
@@ -26,9 +27,9 @@ namespace sistema_crm.Models
         public DateTime DataAte { get; set; }
         public double ValorTotal { get; set; }
 
-        public List<ItemModel> Itens { get; set; } = new List<ItemModel>();
+        public List<ItemUsuarioModel> Itens { get; set; } = new List<ItemUsuarioModel>();
 
-        public class ItemModel
+        public class ItemUsuarioModel
         {
             public string Id { get; set; }
 
@@ -45,38 +46,45 @@ namespace sistema_crm.Models
             //Para atender o filtro do relatório
 
 
-        public List<PropostaModel> ListagemPropostas(string DataDe, string DataAte)
+        public List<PropostaUsuarioModel> ListagemPropostas(string DataDe, string DataAte)
         {
             return RetornarListagemPropostas(DataDe, DataAte);
         }
 
         //Listagem Geral
-        public List<PropostaModel> ListagemPropostas()
+        public List<PropostaUsuarioModel> ListagemPropostas()
         {
             return RetornarListagemPropostas("1900/01/01", "2200/01/01");
         }
 
 
-        public List<PropostaModel> ListaPropostas()
+        public List<PropostaUsuarioModel> ListaPropostas(HttpContext httpContext)
         {
-            // A lista deve ser do tipo PropostaModel, já que estamos lidando com propostas completas
-            List<PropostaModel> lista = new List<PropostaModel>();
-
+            // A lista deve ser do tipo PropostaUsuarioModel, já que estamos lidando com propostas completas
+            List<PropostaUsuarioModel> lista = new List<PropostaUsuarioModel>();
             DAL objDAL = new DAL();
-            string sql = $"SELECT t1.idpropostas, t1.data, t1.status, t2.nomeclientes AS cliente, t3.nomevendedor AS vendedor,t4.qtde, t4.preco_unit, " +
-    "SUM(t4.preco_unit * t4.qtde) AS total_itens " +
-    "FROM propostas t1 " +
-    "INNER JOIN clientes t2 ON t1.id_clientes = t2.idclientes " +
-    "INNER JOIN vendedor t3 ON t1.id_vendedor = t3.idvendedor " +
-    "INNER JOIN item t4 ON t1.idpropostas = t4.id_proposta " +
-    "GROUP BY t1.idpropostas, t1.data, t1.status, t2.nomeclientes, t3.nomevendedor";
-            DataTable dt = objDAL.RetDataTable(sql);
+            string vendedorId = httpContext.Session.GetString("IdUsuarioLogado");
 
+            // Verifica se o ID não está vazio
+            if (string.IsNullOrEmpty(vendedorId))
+            {
+                // Caso o vendedorId esteja vazio ou nulo, retornar uma lista vazia ou outro tratamento necessário
+                return lista;
+            }
+
+            string sql = @"SELECT t1.idpropostas, t1.data, t1.status, t2.nomeclientes AS cliente, t3.nomevendedor AS vendedor,t4.qtde, t4.preco_unit, " +
+            "SUM(t4.preco_unit * t4.qtde) AS total_itens FROM propostas t1 INNER JOIN clientes t2 ON t1.id_clientes = t2.idclientes " +
+            "INNER JOIN vendedor t3 ON t1.id_vendedor = t3.idvendedor INNER JOIN item t4 ON t1.idpropostas = t4.id_proposta " +
+            "WHERE t3.idvendedor= @VendedorId GROUP BY t1.idpropostas, t1.data, t1.status, t2.nomeclientes, t3.nomevendedor ";
+            DataTable dt = objDAL.RetDataTableProposta(sql, new Dictionary<string, object>
+            {
+                { "@VendedorId", vendedorId }
+            });
             // Adiciona item por item à lista 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                // Cria um objeto PropostaModel
-                var proposta = new PropostaModel
+                // Cria um objeto PropostaUsuarioModel
+                var proposta = new PropostaUsuarioModel
                 {
                     Id = dt.Rows[i]["idpropostas"].ToString(),
                     Status = dt.Rows[i]["status"].ToString(),
@@ -87,7 +95,7 @@ namespace sistema_crm.Models
                 };
 
                 // Aqui você pode preencher os itens de proposta (se necessário)
-                proposta.Itens.Add(new PropostaModel.ItemModel
+                proposta.Itens.Add(new PropostaUsuarioModel.ItemUsuarioModel
                 {
                  
                     Qtde = int.Parse(dt.Rows[i]["qtde"].ToString()),
@@ -98,17 +106,17 @@ namespace sistema_crm.Models
 
                 });
 
-                // Adiciona a proposta à lista de PropostaModel
+                // Adiciona a proposta à lista de PropostaUsuarioModel
                 lista.Add(proposta);
             }
 
             return lista;
         }
 
-        public PropostaModel RetornarProposta(int? id)
+        public PropostaUsuarioModel RetornarProposta(int? id)
         {
 
-            PropostaModel item;
+            PropostaUsuarioModel item;
             DAL objDAL = new DAL();
             string sql = $"SELECT t1.idpropostas, t1.data, t1.status, t2.nomeclientes AS cliente, t3.nomevendedor AS vendedor,t4.qtde, t4.preco_unit, descricao, " +
             "SUM(t4.preco_unit * t4.qtde) AS total_itens " +
@@ -121,8 +129,8 @@ namespace sistema_crm.Models
 
 
 
-            // Cria um objeto PropostaModel
-            item = new PropostaModel
+            // Cria um objeto PropostaUsuarioModel
+            item = new PropostaUsuarioModel
             {
                 Id = dt.Rows[0]["idpropostas"].ToString(),
                 Status = dt.Rows[0]["status"].ToString(),
@@ -133,7 +141,7 @@ namespace sistema_crm.Models
             };
 
             // Aqui você pode preencher os itens de proposta (se necessário)
-            item.Itens.Add(new PropostaModel.ItemModel
+            item.Itens.Add(new PropostaUsuarioModel.ItemUsuarioModel
             {
 
                 Qtde = int.Parse(dt.Rows[0]["qtde"].ToString()),
@@ -148,9 +156,9 @@ namespace sistema_crm.Models
             return item;
         }
 
-        public PropostaModel ObterPropostaPorId(int? id)
+        public PropostaUsuarioModel ObterPropostaPorId(int? id)
         {
-            PropostaModel proposta = new PropostaModel();
+            PropostaUsuarioModel proposta = new PropostaUsuarioModel();
             DAL objDAL = new DAL();
 
             // Carrega a proposta do banco de dados
@@ -178,9 +186,9 @@ namespace sistema_crm.Models
             return proposta;
         }
 
-        public List<PropostaModel.ItemModel> ObterItensDaProposta(string propostaId)
+        public List<PropostaUsuarioModel.ItemUsuarioModel> ObterItensDaProposta(string propostaId)
         {
-            List<PropostaModel.ItemModel> itens = new List<PropostaModel.ItemModel>();
+            List<PropostaUsuarioModel.ItemUsuarioModel> itens = new List<PropostaUsuarioModel.ItemUsuarioModel>();
             DAL objDAL = new DAL();
 
 
@@ -189,7 +197,7 @@ namespace sistema_crm.Models
 
             foreach (DataRow row in dt.Rows)
             {
-                itens.Add(new PropostaModel.ItemModel
+                itens.Add(new PropostaUsuarioModel.ItemUsuarioModel
                 {
                     Qtde = Convert.ToInt32(row["qtde"]),
                     Descricao = row["descricao"].ToString(),
@@ -202,10 +210,10 @@ namespace sistema_crm.Models
 
 
 
-        public List<PropostaModel> RetornarListagemPropostas(string DataDe, string DataAte)
+        public List<PropostaUsuarioModel> RetornarListagemPropostas(string DataDe, string DataAte)
         {
-            List<PropostaModel> lista = new List<PropostaModel>();
-            PropostaModel item;
+            List<PropostaUsuarioModel> lista = new List<PropostaUsuarioModel>();
+            PropostaUsuarioModel item;
             DAL objDAL = new DAL();
             string sql = $"Select t1.idpropostas, t1.data, t1.status,t1.data_finalizacao, t2.nomeclientes as cliente, " +
             $"t3.nomevendedor as vendedor from propostas t1 inner join clientes t2 on t1.id_clientes = t2.idclientes inner join vendedor t3 on t1.id_vendedor = t3.idvendedor "
@@ -215,7 +223,7 @@ namespace sistema_crm.Models
             for (int i = 0; i < dt.Rows.Count; i++)
             { 
 
-                item = new PropostaModel
+                item = new PropostaUsuarioModel
                 {
                 Id = dt.Rows[0]["idpropostas"].ToString(),
                 Data = DateTime.Parse(dt.Rows[0]["data"].ToString()).ToString("dd/MM/yyyy"),

@@ -1,39 +1,145 @@
 ﻿@using sistema_crm.Models
+@using System.Linq;
 
 @{
-
-
     ViewData["Title"] = "Atividades do Vendedor";
 }
-@if (ViewBag.Vendedor != null)
-{
-    <h2>Atividades do Vendedor: @ViewBag.Vendedor.Nome</h2>
-@if (ViewBag.Atividades != null && ViewBag.Atividades.Any())
-{
-<table class="table">
-    <thead>
-        <tr>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-            @foreach (var atividade in ViewBag.Atividades)
-        {
-            <tr>
-                <td>@atividade.Data</td>
-                <td>@atividade.Descricao</td>
-                <td>@atividade.Status</td>
-            </tr>
-        }
-    </tbody>
-</table>
-}else{
-<p>Nenhuma atividade encontrada para este vendedor.</p>
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <title>
+        Cadastro de Vendedores
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        jQuery(function ($) {
+            $('#cpf').mask('000.000.000-00');
+            $('#cnpj').mask('00.000.000/0000-00');
+            $('#telefone').mask('(00) 00000-0000');
+        })
+    </script>
+    <style>
+
+
+        .btn-outline-primary {
+            --bs - btn - color: #cb0c9f;
+            --bs - btn - border - color: #cb0c9f;
+            --bs - btn - hover - color: #fff;
+            --bs - btn - hover - bg: #cb0c9f;
+            --bs - btn - hover - border - color: #cb0c9f;
+            --bs - btn - focus - shadow - rgb: 203, 12, 159;
+            --bs - btn - active - color: #fff;
+            --bs - btn - active - bg: #cb0c9f;
+            --bs - btn - active - border - color: #cb0c9f;
+            --bs - btn - active - shadow: none;
+            --bs - btn - disabled - color: #cb0c9f;
+            --bs - btn - disabled - bg: transparent;
+            --bs - btn - disabled - border - color: #cb0c9f;
+            --bs - gradient: none;
+        }
+
+        .input {
+            display: inline - block; /* Define as caixas de texto para exibição em linha */
+            width: 150px; /* Largura das caixas de texto */
+            margin - right: 10px; /* Espaçamento entre as caixas de texto */
+        }
+
+        .sidenav {
+            height: 100%; /* Full-height: remove this if you want "auto" height */
+            width: 160px; /* Set the width of the sidebar */
+            position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+            z - index: 0; /* Stay on top */
+            top: 0; /* Stay at the top */
+            left: auto;
+            background - color: #fff; /* Black */
+            overflow - x: hidden; /* Disable horizontal scroll */
+            padding - top: 50px;
+        }
+
+        .crm {
+            margin-top: 20px;
+        }
+
+
+
+    </style>
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+</head>
+
+<body class= "g-sidenav-show bg-gray-100">
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+@if (ViewBag.Vendedor != null)
+        {
+            var atividades = ViewBag.Atividades as List<VendedorModel.AtividadeModel>;
+    <div class="row">
+        <h2>@ViewBag.Vendedor.Nome</h2>
+
+        @* Converta explicitamente ViewBag.Atividades para uma lista fortemente tipada *@
+         <div class="card mb-4 flex-grow-1 justify-content-end" style="max-width: 20%; float: right; text-align: center;">
+         <p>Total de Vendas: @ViewBag.TotalVendas.ToString("C")</p>
+         </div>
+    </div>
+     <div class="card">
+        @if (atividades != null && atividades.Any()){
+                    <table class="table-custom  table-striped table-hover ">
+                        <thead >
+                            <tr>
+                                <th>Descrição</th>
+                                <th>Tipo de contato</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var atividade in atividades)
+                            {
+                                <tr>
+                                    <td>@atividade.Obs</td>
+                                    <td>@atividade.Tipo_contato</td>
+                                    <td>@atividade.DT_contato.ToString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+            
+             
+        }
+        else
+        {
+            <p>Nenhuma atividade encontrada para este vendedor.</p>
+        }
+        </div>
     }
-} else
-{
-    <p>Vendedor não encontrado.</p>
-} 
+    else
+    {
+        <p>Vendedor não encontrado.</p>
+    }
+ 
+</main>
+</body>

@@ -52,7 +52,9 @@
                          class="img-fluid" alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                    <form asp-controller="Home" asp-action="Login" method="post">
+                    <p>Acesso Vendedor</p>
+
+                    <form asp-controller="Home" asp-action="LoginVendedor" method="post">
                         <div class="justify-content-center">
                         </div>
 
@@ -100,15 +102,9 @@
                         </div>
 
                         <!-- Adicionando o botão para acesso do vendedor -->
-                        <div class="text-center text-lg-start mt-4 pt-2">
-                            <a class="btn bg-gradient-info btn-lg btn-block" role="button" asp-area="" asp-controller="Home" asp-action="LoginVendedor">
-                                Acesso Vendedor
-                            </a>
-                        </div>
+                       
 
-                        <div class="text-center text-lg-start mt-4 pt-2">
-                            <a class="btn bg-gradient-secondary btn-lg btn-block" role="button" asp-area="" asp-controller="Home" asp-action="TelaCompra">Adquirir o serviço</a>
-                        </div>
+                        
                     </form>
                 </div>
             </div>

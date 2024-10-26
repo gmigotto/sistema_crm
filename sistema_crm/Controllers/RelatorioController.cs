@@ -28,7 +28,7 @@ namespace sistema_crm.Controllers
             List<RelatorioModel> lista_ = new RelatorioModel().RetornarGraficoClientes();
             ViewBag.RetornarGraficoClientes = lista_;
 
-            ViewBag.Relatorio = new RelatorioModel().RetornarNegociacao(); 
+          
 
             string valores = "";
             string labels = "";
@@ -71,6 +71,11 @@ namespace sistema_crm.Controllers
             return View();
         }
 
+        public IActionResult ValorNegociacao()
+        {
+            ViewBag.Relatorio = new RelatorioModel().RetornarNegociacao();
+            return View("Menu", "Home");
+        }
 
 
         [HttpGet]

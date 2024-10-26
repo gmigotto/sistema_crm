@@ -13,15 +13,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace sistema_crm.Controllers
 {
-    public class PropostaController : Controller
+    public class PropostaUsuarioController : Controller
     {
 
 
         [HttpGet]
         public IActionResult DownloadPropostasCsv()
         {
-            var propostaModel = new PropostaModel();
-            var propostas = propostaModel.ListaPropostas(); // Obtenha a lista de propostas
+            var propostaModel = new PropostaUsuarioModel();
+            var propostas = propostaModel.ListaPropostas(HttpContext); // Obtenha a lista de propostas
 
             // Gera o CSV
             var csv = new StringBuilder();
@@ -42,7 +42,7 @@ namespace sistema_crm.Controllers
             return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", "propostas.csv");
         }
         [HttpPost]
-        public IActionResult Cadastrar(PropostaModel model)
+        public IActionResult Cadastrar(PropostaUsuarioModel model)
         {
             DAL objDAL = new DAL();
 
@@ -66,7 +66,7 @@ namespace sistema_crm.Controllers
           
         }
 
-        public IActionResult AtualizarProposta(PropostaModel model)
+        public IActionResult AtualizarProposta(PropostaUsuarioModel model)
         {
             DAL objDAL = new DAL();
 
@@ -97,10 +97,10 @@ namespace sistema_crm.Controllers
 
         public IActionResult CadastrarProposta()
         {
-            var model = new PropostaModel
+            var model = new PropostaUsuarioModel
             {
 
-                Itens = new List<PropostaModel.ItemModel>()
+                Itens = new List<PropostaUsuarioModel.ItemUsuarioModel>()
             };
             return View("Lista");
         }
@@ -114,17 +114,17 @@ namespace sistema_crm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Relatorio(PropostaModel proposta)
+        public IActionResult Relatorio(PropostaUsuarioModel proposta)
         {
             if (proposta.DataDe.Year == 1)
             {
-                ViewBag.ListaPropostas = new PropostaModel().ListaPropostas();
+                ViewBag.ListaPropostas = new PropostaUsuarioModel().ListaPropostas(HttpContext);
             }
             else
             {
                 string DataDe = proposta.DataDe.ToString("yyyy/MM/dd");
                 string DataAte = proposta.DataAte.ToString("yyyy/MM/dd");
-                ViewBag.ListaPropostas = new PropostaModel().ListagemPropostas(DataDe, DataAte);
+                ViewBag.ListaPropostas = new PropostaUsuarioModel().ListagemPropostas(DataDe, DataAte);
             }
             return View();
         }
@@ -132,7 +132,7 @@ namespace sistema_crm.Controllers
         [HttpGet]
         public IActionResult Lista(int? page)
         {
-           ViewBag.ListaProposta = new PropostaModel().ListaPropostas();
+           ViewBag.ListaProposta = new PropostaUsuarioModel().ListaPropostas(HttpContext);
            
             /*int pageSize = 5;
             int pageNumber = (page ?? 1);
@@ -143,23 +143,23 @@ namespace sistema_crm.Controllers
         [HttpGet]
         public ActionResult Criar()
         {
-            var model = new PropostaModel(); // Inicialize um modelo vazio
+            var model = new PropostaUsuarioModel(); // Inicialize um modelo vazio
             CarregarDados(); // Carrega os dados de clientes e vendedores
             return View(model); // Passa o modelo para a view
         }
 
         [HttpPost]
-        public IActionResult AdicionarProposta(PropostaModel proposta)
+        public IActionResult AdicionarProposta(PropostaUsuarioModel proposta)
         {
             proposta.Gravar();
             CarregarDados();
-            return RedirectToAction("Lista", "Proposta");
+            return RedirectToAction("Lista", "PropostaUsuario");
         }
 
         [HttpGet]
         public IActionResult Editar(int? id)
         {
-            var proposta = new PropostaModel().ObterPropostaPorId(id);
+            var proposta = new PropostaUsuarioModel().ObterPropostaPorId(id);
 
             if (proposta == null)
             {
@@ -168,7 +168,7 @@ namespace sistema_crm.Controllers
 
             if (proposta.Itens == null)
             {
-                proposta.Itens = new List<PropostaModel.ItemModel>();
+                proposta.Itens = new List<PropostaUsuarioModel.ItemUsuarioModel>();
             }
 
             ViewBag.Proposta = proposta;
@@ -178,10 +178,10 @@ namespace sistema_crm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(PropostaModel proposta)
+        public IActionResult Editar(PropostaUsuarioModel proposta)
         {
             CarregarDados();
-            return RedirectToAction("Lista", "Proposta");
+            return RedirectToAction("Lista", "PropostaUsuario");
         }
 
       
@@ -194,7 +194,7 @@ namespace sistema_crm.Controllers
             {
                 try
                 {
-                    var proposta = new PropostaModel();
+                    var proposta = new PropostaUsuarioModel();
 
                     using (var reader = new StreamReader(csvFile.OpenReadStream()))
                     {
@@ -226,22 +226,22 @@ namespace sistema_crm.Controllers
                 {
                     ViewBag.Message = $"Erro ao processar o arquivo CSV: {ex.Message}";
                     CarregarDados(); // Carregar os dados após erro
-                    return View("Criar", new PropostaModel());
+                    return View("Criar", new PropostaUsuarioModel());
                 }
             }
             else
             {
                 ViewBag.Message = "Por favor, selecione um arquivo CSV.";
                 CarregarDados(); // Carregar os dados após erro
-                return View("Criar", new PropostaModel());
+                return View("Criar", new PropostaUsuarioModel());
             }
         }
 
         // Método para carregar listas de clientes e vendedores
         private void CarregarDados()
         {
-            ViewBag.ListaClientes = new PropostaModel().RetornarListaClientes();
-            ViewBag.ListaVendedores = new PropostaModel().RetornarListaVendedores();
+            ViewBag.ListaClientes = new PropostaUsuarioModel().RetornarListaClientes();
+            ViewBag.ListaVendedores = new PropostaUsuarioModel().RetornarListaVendedores();
         }
         private List<ClienteModel> ObterClientesExistentes()
         {
@@ -282,7 +282,7 @@ namespace sistema_crm.Controllers
                 return Content("Não há clientes ou vendedores suficientes no banco de dados para gerar propostas.");
             }
             // Configuração do Faker para gerar itens de proposta falsos
-            var itemFaker = new Faker<PropostaModel.ItemModel>()
+            var itemFaker = new Faker<PropostaUsuarioModel.ItemUsuarioModel>()
                 .RuleFor(i => i.Id, f => Guid.NewGuid().ToString())
                 .RuleFor(i => i.Qtde, f => f.Random.Int(1, 10))
                 .RuleFor(i => i.Descricao, f => f.Commerce.ProductName())
@@ -290,7 +290,7 @@ namespace sistema_crm.Controllers
                 .RuleFor(i => i.Proposta_id, f => f.Random.Int(1, 1000));
 
             // Configuração do Faker para gerar propostas falsas
-            var propostaFaker = new Faker<PropostaModel>()
+            var propostaFaker = new Faker<PropostaUsuarioModel>()
                 .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
                 .RuleFor(p => p.Cliente_id, (f, p) => f.PickRandom(clientesExistentes)) 
                  .RuleFor(p => p.Vendedor_id, (f, p) => f.PickRandom(vendedoresExistentes))
@@ -303,7 +303,7 @@ namespace sistema_crm.Controllers
                 .RuleFor(p => p.Itens, f => itemFaker.Generate(f.Random.Int(1, 5))); // Gera de 1 a 5 itens para cada proposta
 
             // Gera 1000 propostas falsas
-            List<PropostaModel> propostasFalsas = propostaFaker.Generate(5);
+            List<PropostaUsuarioModel> propostasFalsas = propostaFaker.Generate(5);
 
             // Aqui você pode inserir as propostas geradas no banco de dados
             foreach (var proposta in propostasFalsas)

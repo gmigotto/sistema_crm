@@ -1,8 +1,8 @@
-﻿@model ClienteModel
+﻿@model ClienteUsuarioModel
 
 @{
     ViewData["Title"] = "Adicionar cliente";
-    Layout = "../Shared/_Layout.cshtml";
+    Layout = "../Shared/_LayoutUsuario.cshtml";
 
 }
 
@@ -138,30 +138,22 @@
 
 
 
-                <form asp-controller="Cliente" asp-action="Criar" method="post">
-                    <form action="/Proposta/UploadCsv" method="post" enctype="multipart/form-data">
-                        <label for="csvFile">Escolha um arquivo CSV:</label><br>
-                        <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br><br>
-                        <input type="submit" value="Upload">
-                     </form>
+                <form asp-controller="ClienteUsuario" asp-action="Criar" method="post">
+                    
                     <p>
-                        <input type="hidden" asp-for="Id" value="@try {
-        @ViewBag.Cliente.Id
-} catch { }" />
+                        <input type="hidden" asp-for="Id" value="@try {  @ViewBag.Cliente.Id } catch { }" />
 
+                        <!-- Campo para o ID do Vendedor -->
+                        <input type="hidden" asp-for="VendedorId" value="@ViewBag.VendedorId" />
                         <div class="form-group">
                             <label for="nome">Razão Social</label>
-                            <input asp-for="Nome" type="text" class="form-control" value="@try {
-            @ViewBag.Cliente.Nome
- } catch { }" />
+                            <input asp-for="Nome" type="text" class="form-control" value="@try { @ViewBag.Cliente.Nome } catch { }" /> 
                             <span asp-validation-for="Nome"></span>
 
                         </div>
                         <div class="form-group">
                             <label for="cnpj">CNPJ</label>
-                            <input asp-for="CNPJ" type="text" nome="cnpj" class="form-control" id="cnpj" value="@try {
-            @ViewBag.Cliente.CNPJ
-} catch {} " placeholder="__.___.___/____-__">
+                            <input asp-for="CNPJ" type="text" nome="cnpj" class="form-control" id="cnpj" value="@try { @ViewBag.Cliente.CNPJ } catch {} " placeholder="__.___.___/____-__">
                             <span asp-validation-for="CNPJ"></span>
 
 
@@ -169,9 +161,7 @@
 
                         <div class="form-group">
                             <label for="email">Endereço</label>
-                            <input asp-for="End" type="text" class="form-control" value="@try {
-            @ViewBag.Cliente.End
-} catch {}">
+                            <input asp-for="End" type="text" class="form-control" value="@try {@ViewBag.Cliente.End} catch {}">
                             <span asp-validation-for="End"></span>
                         </div>
 
@@ -179,9 +169,7 @@
                             <label for="uf">UF</label>
 
 
-                            <select asp-for="UF" type="text" class="custom-select d-block w-100" value="@try {
-            @ViewBag.Cliente.UF
-} catch {}">
+                            <select asp-for="UF" type="text" class="custom-select d-block w-100" value="@try { @ViewBag.Cliente.UF} catch {}">
 
                                 <option value="">Escolha...</option>
                                 <option>AC</option>
@@ -224,9 +212,7 @@
 
                         <div class="form-group">
                             <label for="telefone"> Telefone</label>
-                            <input asp-for="Telefone" type="text" class="form-control" id="telefone" value="@try{
-                            @ViewBag.Cliente.Telefone
-} catch {}"> <br />
+                            <input asp-for="Telefone" type="text" class="form-control" id="telefone" value="@try{@ViewBag.Cliente.Telefone} catch {}"> <br />
                             <span asp-validation-for="Telefone"></span>
                         </div>
 
@@ -234,9 +220,7 @@
                             <div class="form-group col-md-5 mb-3">
                                 <label for="senha">Situação</label>
 
-                                <select asp-for="Situacao" type="text" class="form-control" value="@try {
-                                @ViewBag.Cliente.Situacao
-} catch {} ">
+                                <select asp-for="Situacao" type="text" class="form-control" value="@try {@ViewBag.Cliente.Situacao} catch {} ">
 
                                     <option value="">Escolha...</option>
                                     <option>ATIVO</option>
@@ -246,7 +230,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success" asp-controller="ClienteUsuario" asp-action="Gravar">Adicionar Cliente</button>
+                        <button type="submit" class="btn btn-success" asp-controller="ClienteUsuario" asp-action="Criar">Adicionar Cliente</button>
 
 
 

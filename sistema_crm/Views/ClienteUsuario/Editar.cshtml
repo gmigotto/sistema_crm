@@ -1,7 +1,8 @@
-﻿@model ClienteModel
+﻿@model ClienteUsuarioModel
+
 @{
     ViewData["Title"] = "Adicionar cliente";
-    Layout = "../Shared/_Layout.cshtml";
+    Layout = "../Shared/_LayoutUsuario.cshtml";
 
 }
 
@@ -137,9 +138,11 @@
 
 
 
-    <form asp-controller="Cliente" asp-action="Editar" method="post">
+    <form asp-controller="ClienteUsuario" asp-action="Editar" method="post">
 
     <input type="hidden" asp-for="Id" value="@try {@ViewBag.Cliente.Id} catch { }" />
+    <input type="hidden" asp-for="VendedorId" value="@try { @ViewBag.Cliente.VendedorId} catch { }" />
+
 
     <div class="form-group">
         <label for="nome">Razão Social</label>
@@ -188,7 +191,7 @@
                         </div>
                     </div>
 
-    <button type="submit" class="btn btn-success" asp-controller="Cliente" asp-action="Editar">Alterar</button>
+    <button type="submit" class="btn btn-success" asp-controller="ClienteUsuario" asp-action="Editar">Alterar</button>
 
     <button type="button" class="btn btn-secondary" onclick="Voltar()">Voltar</button>
     <script>

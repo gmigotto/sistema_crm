@@ -35,26 +35,40 @@ namespace sistema_crm.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Login(LoginModel login)
+        [HttpGet]
+        public IActionResult LoginVendedor(int? id)
         {
 
 
+            if (id != null)
+            {
+                if (id == 0)
+                {
+                    HttpContext.Session.SetString("IdUsuarioLogado", string.Empty);
+                    HttpContext.Session.SetString("NomeUsuarioLogado", string.Empty);
+                }
+            }
+            //Fim
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult LoginVendedor(LoginModel login)
+        {
             bool loginOk = login.ValidarLogin();
             if (loginOk)
             {
                 HttpContext.Session.SetString("IdUsuarioLogado", login.Id);
                 HttpContext.Session.SetString("NomeUsuarioLogado", login.Nome);
-                return RedirectToAction("Menu", "Home");
+                return RedirectToAction("Menu", "HomeUsuario");
             }
             else
             {
                 TempData["ErrorLogin"] = "E-mail ou Senha são inválidos!";
             }
-
-            return View();
+            return View("Menu", "HomeUsuario");
         }
-
         public IActionResult Index()
         {
             return View();
@@ -139,6 +153,24 @@ namespace sistema_crm.Controllers
 
             return View();
 
+        }
+
+        public IActionResult Login(LoginModel login)
+        {
+            bool loginOk = login.ValidarLoginAdm();
+            if (loginOk)
+            {
+                HttpContext.Session.SetString("IdUsuarioLogado", login.Id);
+                HttpContext.Session.SetString("NomeUsuarioLogado", login.Nome);
+                return RedirectToAction("Menu", "Home");
+            }
+            else
+            {
+                TempData["ErrorLogin"] = "E-mail ou Senha são inválidos!";
+            }
+
+            return View();
+            
         }
     }
 }

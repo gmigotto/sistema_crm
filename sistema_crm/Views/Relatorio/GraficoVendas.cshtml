@@ -1,5 +1,4 @@
-﻿@model RelatorioModel
-
+﻿
 @{
     ViewData["Title"] = "";
     Layout = "../Shared/_Layout.cshtml";
@@ -151,52 +150,57 @@
 
 
         <script>
+            var labels = [@Html.Raw(ViewBag.Labels)];
+            var valores = [@Html.Raw(ViewBag.Valores)];
 
+            // Inverte os labels e valores para ficarem em ordem decrescente
+            labels.reverse();
+            valores.reverse();
 
             var ctx = document.getElementById('vendasChart').getContext('2d');
             var vendasChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line', // Mantém o gráfico de linha
                 data: {
-                    labels: [@Html.Raw(ViewBag.Labels)],
+                    labels: labels, // Usa os labels invertidos
                     datasets: [{
                         label: 'Vendas por Mês',
-                        data: [@Html.Raw(ViewBag.Valores)],
+                        data: valores, // Usa os valores invertidos
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         fill: true,
-                        borderWidth: 2
+                        borderWidth: 2,
+                        tension: 0.3 // Suavidade na linha
                     }]
                 },
                 options: {
-                    responsive: true, // Responsividade ativada
+                    responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Vendas por Mês', // Título do gráfico
+                            text: 'Vendas por Mês',
                             font: {
-                                size: 18 // Tamanho da fonte do título
+                                size: 18
                             },
                             padding: {
-                                top: 10, // Espaço acima do título
-                                bottom: 30 // Espaço entre o título e o gráfico
+                                top: 10,
+                                bottom: 30
                             }
                         },
                         legend: {
-                            display: false,
-                           
+                            display: false
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             grid: {
-                                display: false // Remove as linhas de grade do eixo y
+                                display: false
                             }
                         },
                         x: {
                             grid: {
-                                display: false // Remove as linhas de grade do eixo x
+                                display: false
                             }
                         }
                     }

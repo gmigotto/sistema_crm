@@ -12,6 +12,7 @@ using static sistema_crm.Models.VendedorModel;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using X.PagedList;
+using System.Data;
 
 
 namespace sistema_crm.Controllers
@@ -194,7 +195,7 @@ namespace sistema_crm.Controllers
         {
             // Configuração do Faker para gerar vendedores falsos
             var vendedorFaker = new Faker<VendedorModel>()
-                .RuleFor(v => v.Id, f => Guid.NewGuid().ToString())
+                .RuleFor(v => v.Id, f => f.Random.Int(1, 1000))
                 .RuleFor(v => v.Nome, f => f.Person.FullName)
                 .RuleFor(v => v.CPF, f => f.Random.ReplaceNumbers("###.###.###-##"))
                 .RuleFor(v => v.Nascimento, f => f.Date.Past(40, DateTime.Now.AddYears(-18)).ToString("dd/MM/yyyy"))
@@ -220,33 +221,132 @@ namespace sistema_crm.Controllers
 
 
         [HttpPost]
-        public IActionResult AtividadeVendedor(int id)
+        public IActionResult RetornoAtividade(int id)
+
         {
+            VendedorModel vendedor = null;
+            List<AtividadeModel> atividades = new List<AtividadeModel>();
+            List<AtividadeModel> vendas = new List<AtividadeModel>();
 
-            var vendedor = _context.Vendedores.FirstOrDefault(v => v.Id == id.ToString());
+            DAL objDAL = new DAL();
 
+            // Busca os dados do vendedor
+            string sqlVendedor = "SELECT * FROM Vendedor WHERE idvendedor = @id";
 
-            if (vendedor == null)
+            // Adicione o valor do parâmetro `@id`
+            var parametrosVendedor = new Dictionary<string, object>
             {
-                return NotFound();
+                { "@id", id } // 'id' deve ser a variável que armazena o ID do vendedor
+            };
+
+            // Executa a query para buscar o vendedor
+            DataTable dtVendedor = objDAL.RetornarDataTable(sqlVendedor, parametrosVendedor);
+
+            if (dtVendedor.Rows.Count > 0)
+            {
+                // Mapeia o resultado da query para o modelo `VendedorModel`
+                vendedor = new VendedorModel
+                {
+                    Id = Convert.ToInt32(dtVendedor.Rows[0]["idvendedor"]),
+                    Nome = dtVendedor.Rows[0]["nomevendedor"].ToString()
+                };
             }
 
-            // Buscar as atividades do vendedor pelo ID do vendedor
-            var atividades = _context.Atividades.Where(a => a.Idvendedor == id.ToString()).ToList();
+            // Busca as atividades do vendedor
+            string sqlAtividade = "SELECT * FROM Atividade WHERE idvendedor = @id";
 
-            // Passar o vendedor e as atividades para a view
+            // Adicione o valor do parâmetro `@id`
+            var parametrosAtividade = new Dictionary<string, object>
+            {
+                { "@id", id } // 'id' deve ser a variável que armazena o ID do vendedor
+            };
+
+            // Executa a query para buscar as atividades do vendedor
+            DataTable dtAtividades = objDAL.RetornarDataTable(sqlAtividade, parametrosAtividade);
+
+            if (dtAtividades.Rows.Count > 0)
+            {
+                // Mapeia os resultados da query para o modelo `AtividadeModel`
+                foreach (DataRow row in dtAtividades.Rows)
+                {
+                    DateTime dataContato;
+                    bool conversaoValida = DateTime.TryParse(row["dtcontato"].ToString(), out dataContato);
+
+                    var atividade = new AtividadeModel
+                    {
+                        Id = Convert.ToInt32(row["idatividade"]),
+                        Obs = row["observacao"].ToString(),
+                        Tipo_contato = row["contato"].ToString(),
+                        DT_contato = dataContato.ToString(),
+                    };
+
+                    atividades.Add(atividade);
+                }
+            }
+
+            string sqlTotalVendas = "SELECT SUM(t1.qtde * t1.preco_unit) AS total_vendas " +
+                        "FROM item t1 " +
+                        "JOIN propostas t2 ON t1.id_proposta = t2.idpropostas " +
+                        "WHERE t2.status = 'VENDA REALIZADA' " +
+                        "AND MONTH(t2.data) = MONTH(CURDATE()) " +
+                        "AND YEAR(t2.data) = YEAR(CURDATE()) " +
+                        "AND t2.id_vendedor = @id;";
+
+            // Parâmetros SQL para o total de vendas
+            var parametrosVendas = new Dictionary<string, object>
+            {
+                { "@id", id }
+            };
+
+            // Executa a query para buscar o total de vendas do vendedor
+            DataTable dtVendas = objDAL.RetornarDataTable(sqlTotalVendas, parametrosVendas);
+
+            double totalVendas = 0; // Variável para armazenar o total de vendas
+
+            // Verifica se há resultados
+            if (dtVendas.Rows.Count > 0)
+            {
+                // Log para verificar as colunas retornadas
+                foreach (DataColumn column in dtVendas.Columns)
+                {
+                    Console.WriteLine("Coluna: " + column.ColumnName); // Verifica se 'total_vendas' está presente
+                }
+
+                // Verifica se a coluna 'total_vendas' está presente e não é nula
+                if (dtVendas.Columns.Contains("total_vendas") && dtVendas.Rows[0]["total_vendas"] != DBNull.Value)
+                {
+                    totalVendas = Convert.ToDouble(dtVendas.Rows[0]["total_vendas"]);
+                }
+                else
+                {
+                    // Se a coluna não existir ou for nula, totalVendas será 0
+                    totalVendas = 0;
+                    Console.WriteLine("Nenhuma venda realizada ou coluna 'total_vendas' não encontrada.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma linha retornada.");
+            }
+
+            // Passar o total de vendas para a view
+            ViewBag.TotalVendas = totalVendas;
+
+            // Passar o vendedor, atividades e total de vendas para a view
             ViewBag.Vendedor = vendedor;
             ViewBag.Atividades = atividades ?? new List<AtividadeModel>();
-
             return View();
         }
 
-        public IActionResult AtividadeVendedor()
+
+      
+        public IActionResult AtividadeVendedor(int id, VendedorModel vendedor)
         {
-
-
+            RetornoAtividade(id);
+           // vendedor.VendasVendedor(id);
             return View();
         }
+       
 
 
 

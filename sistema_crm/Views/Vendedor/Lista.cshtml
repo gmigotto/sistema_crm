@@ -203,7 +203,7 @@
                                 </div>
                             </td>
                                                     <td>
-                                                        <a class="btn btn-primary" href="@Url.Action("AtividadeVendedor", "Vendedor", new { id = @item.Id })">
+                                                        <a asp-controller="Vendedor" asp-action="AtividadeVendedor" asp-route-id="@item.Id" class="btn btn-primary">
                                                             Ver Atividades
                                                         </a>
                                                     </td>

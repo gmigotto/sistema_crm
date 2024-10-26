@@ -1,10 +1,10 @@
-﻿ @model X.PagedList.IPagedList<sistema_crm.Models.ClienteModel>
+﻿ @model X.PagedList.IPagedList<sistema_crm.Models.ClienteUsuarioModel>
 
 @using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "";
-    Layout = "../Shared/_Layout.cshtml";
+    Layout = "../Shared/_LayoutUsuario.cshtml";
 }
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
@@ -117,7 +117,7 @@
 
 
         <div class="container-fluid py-5">
-            <form asp-controller="Cliente" asp-action="Lista" method="get">
+            <form asp-controller="ClienteUsuario" asp-action="Lista" method="get">
                 <div class="d-flex justify-content-end">
                     <div class="input-group" style="max-width: 300px;">
                         <!-- Barra de pesquisa -->
@@ -134,7 +134,7 @@
                 </div>
             </form>
 
-            <form asp-controller="Cliente" asp-action="UploadClientes" method="post" enctype="multipart/form-data">
+            <form asp-controller="ClienteUsuario" asp-action="UploadClientes" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="csvFile">Escolha um arquivo CSV:</label><br>
                     <input type="file" id="csvFile" name="file" accept=".csv" required><br><br>
@@ -143,15 +143,15 @@
             </form>
             <div class=" d-grid gap-2 d-md-flex justify-content-md-end">
                
-                <a href="@Url.Action("DownloadClientesCsv", "Cliente")" class="btn btn-primary">Download CSV</a>
+                <a href="@Url.Action("DownloadClientesCsv", "ClienteUsuario")" class="btn btn-primary">Download CSV</a>
 
-                <a class="btn btn-success" role="button" asp-controller="Cliente" asp-action="Criar" onclick="Inserir()">Novo cadastro</a>
+                <a class="btn btn-success" role="button" asp-controller="ClienteUsuario" asp-action="Criar" onclick="Inserir()">Novo cadastro</a>
 
             </div>
 
             <script>
                 function Inserir() {
-                    window.location.href = "../Cliente/Criar";
+                    window.location.href = "../ClienteUsuario/Criar";
                 }
             </script>
 
@@ -249,7 +249,7 @@
             <script>
 
                 function Editar(id) {
-                    window.location.href = "../../Cliente/Editar/" + id;
+                    window.location.href = "../../ClienteUsuario/Editar/" + id;
                 }
 
                 function Excluir(id) {
@@ -257,10 +257,10 @@
                     var resposta = confirm("Tem certeza que deseja excluir o cliente ? ");
 
                     if (resposta) {
-                        window.location.href = "../Cliente/ExcluirCliente/" + id;
+                        window.location.href = "../ClienteUsuario/ExcluirCliente/" + id;
 
                         alert("Cliente Excluido com Sucesso!")
-                        window.location.href = "../Cliente/Lista/"
+                        window.location.href = "../ClienteUsuario/Lista/"
                     }
 
 

@@ -8,14 +8,14 @@ using X.PagedList;
 
 namespace sistema_crm.Controllers
 {
-    public class ClienteController : Controller
+    public class ClienteUsuarioController : Controller
     {
 
         [HttpGet]
-        public IActionResult DownloadVendedoresCsv()
+        public IActionResult DownloadClientesCsv()
         {
-            var clienteModel = new ClienteModel();
-            var clientes = clienteModel.ListarClientes(); // Obtenha a lista de clientes
+            var clienteModel = new ClienteUsuarioModel();
+            var clientes = clienteModel.ListarClientes(HttpContext); // Obtenha a lista de clientes
 
             // Gera o CSV
             var csv = new StringBuilder();
@@ -33,7 +33,7 @@ namespace sistema_crm.Controllers
         [HttpGet]
         public IActionResult Lista(int? page, string searchString)
         {
-            var clientes = new ClienteModel().ListarClientes();
+            var clientes = new ClienteUsuarioModel().ListarClientes(HttpContext);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -56,7 +56,7 @@ namespace sistema_crm.Controllers
             {
                 // Carregar o registro de cliente em uma viewbag
 
-                ViewBag.Cliente = new ClienteModel().RetornarCliente(id);
+                ViewBag.Cliente = new ClienteUsuarioModel().RetornarCliente(id);
             }
 
             return View();
@@ -72,8 +72,10 @@ namespace sistema_crm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Criar(ClienteModel cliente)
+        public IActionResult Criar(ClienteUsuarioModel cliente)
         {
+            ViewBag.VendedorId = HttpContext.Session.GetString("IdUsuarioLogado");
+
             if (!ValidarCNPJ(cliente.CNPJ))
             {
                 ModelState.AddModelError("CNPJ", "CNPJ inválido");
@@ -81,8 +83,8 @@ namespace sistema_crm.Controllers
             }
             else
             {
-                cliente.Gravar();
-                return RedirectToAction("Lista", "Cliente");
+                cliente.Gravar(HttpContext);
+                return RedirectToAction("Lista", "ClienteUsuario");
             }
 
 
@@ -132,12 +134,12 @@ namespace sistema_crm.Controllers
 
         //Receber os dados do formulario
         [HttpPost]
-        public IActionResult Editar(ClienteModel cliente)
+        public IActionResult Editar(ClienteUsuarioModel cliente)
         {
 
-
-            cliente.Gravar();
-            return RedirectToAction("Lista", "Cliente");
+            ViewBag.VendedorId = HttpContext.Session.GetString("IdUsuarioLogado");
+            cliente.Gravar(HttpContext);
+            return RedirectToAction("Lista", "ClienteUsuario");
 
 
 
@@ -153,7 +155,7 @@ namespace sistema_crm.Controllers
         }
         public IActionResult ExcluirCliente(int id)
         {
-            new ClienteModel().Excluir(id);
+            new ClienteUsuarioModel().Excluir(id);
             return View();
         }
 
@@ -183,11 +185,11 @@ namespace sistema_crm.Controllers
         }
 
 
-        public ActionResult UploadClientes(IFormFile file, ClienteModel model)
+        public ActionResult UploadClientes(IFormFile file, ClienteUsuarioModel model)
         {
             if (file != null && file.Length > 0 && Path.GetExtension(file.FileName).Equals(".csv"))
             {
-                var clientes = new List<ClienteModel>();
+                var clientes = new List<ClienteUsuarioModel>();
                 using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
                 {
                     string line;
@@ -195,7 +197,7 @@ namespace sistema_crm.Controllers
                     {
                         var values = line.Split(',');
 
-                        var cliente = new ClienteModel
+                        var cliente = new ClienteUsuarioModel
                         {
                             Nome = values[0],
                             CNPJ = values[1],
@@ -212,7 +214,7 @@ namespace sistema_crm.Controllers
                 // Salva todos os clientes do CSV no banco de dados
                 foreach (var cliente in clientes)
                 {
-                    cliente.Insert();
+                    cliente.Insert(HttpContext);
                 }
 
                 TempData["Mensagem"] = $"{clientes.Count} clientes foram cadastrados com sucesso!";
@@ -221,7 +223,7 @@ namespace sistema_crm.Controllers
             else if (ModelState.IsValid)
             {
                 // Cadastrar cliente manualmente usando o formulário
-                model.Insert();
+                model.Insert(HttpContext);
                 TempData["Mensagem"] = "Cliente cadastrado com sucesso!";
                 return RedirectToAction("Lista");
             }
