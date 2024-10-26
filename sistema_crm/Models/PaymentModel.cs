@@ -1,12 +1,25 @@
-﻿using System.Collections.Generic;
-
-public class PaymentModel
+﻿namespace sistema_crm.Models
 {
-    public string Description { get; set; }
-    public decimal Amount { get; set; }
-    public string PaymentMethodId { get; set; } // ex: "visa", "master"
-    public string Email { get; set; }
+    public class PaymentModel
+    {
+        public int Id { get; set; }
+        public string? NumeroCartaoDeCredito { get; set; }
+        public string? MesExpiracao { get; set; }
+        public string? AnoExpiracao { get; set; }
+        public string? cvv { get; set; }
 
-    public string Token { get; set; }
+        public string? NomeTitular { get; set; }
+        public string? Cpf { get; set; }
 
+        public string? Email { get; set; }
+        public string? Cep { get; set; }
+
+        public string? NumeroCasa { get; set; }
+
+        public string? Telefone { get; set; }
+
+        public string? valor { get; set; }
+
+
+    }
 }

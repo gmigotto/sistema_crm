@@ -24,46 +24,6 @@ namespace WebApplication2.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult CriarPagamento(PaymentModel model)
-        {
-            try
-            {
-                // Configura os detalhes do pagamento
-                var paymentRequest = new PaymentCreateRequest
-                {
-                    TransactionAmount = 100.0m,
-                    Token = model.Token,
-                    Description = "FERRAMENTA CRM",
-                    PaymentMethodId = "visa",
-                    Payer = new PaymentPayerRequest
-                    {
-                        Email = model.Email
-                    }
-                };
-
-                var paymentClient = new PaymentClient();
-                Payment payment = paymentClient.Create(paymentRequest);
-
-                if (payment.Status == "approved")
-                {
-                    ViewBag.Message = "Pagamento aprovado!";
-                }
-                else
-                {
-                    ViewBag.Message = $"Erro: {payment.StatusDetail}";
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-
-                return Json(new { message = $"Erro ao processar o pagamento: {ex.Message}" });
-            }
-
-            return View("Home", "Login");
-        }
+        
     }
 }

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var mercadoPagoAccessToken = builder.Configuration["MercadoPago:AccessToken"];
 MercadoPagoConfig.AccessToken = mercadoPagoAccessToken;
 
+builder.Services.AddTransient<AsaasClient>();
 
 // Adicione o serviço de sessão
 builder.Services.AddDistributedMemoryCache(); // Usa memória para armazenar dados de sessão

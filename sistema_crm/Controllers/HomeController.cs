@@ -12,6 +12,12 @@ namespace sistema_crm.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly AsaasClient _asaasClient;
+
+        public HomeController(AsaasClient asaasClient)
+        {
+            _asaasClient = asaasClient;
+        }
         public IActionResult Menu()
         {
             ViewBag.ActivePage = "Home";
@@ -128,6 +134,71 @@ namespace sistema_crm.Controllers
         public IActionResult FinalizarCompra()
         {
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> FinalizarCompra(PaymentModel pagamento)
+        {
+            string cpfSanitizado = pagamento.Cpf.Replace("-", "").Replace(".", "");
+
+            var customerData = new Dictionary<string, object>
+            {
+                { "name", pagamento.NomeTitular },
+                { "cpf", cpfSanitizado },
+                { "phone", pagamento.Telefone }
+            };
+
+            AssasModel asaasModel = new AssasModel();
+            var verificacao = asaasModel.VerificaSeExisteAsaasCustomer(cpfSanitizado);
+            string? asaas_customer = "";
+            if (verificacao == null)
+            {
+                var response = await _asaasClient.CreateCustomerAsync(customerData);
+
+                if (response != null && response.ContainsKey("id"))
+                {
+                    asaasModel.Cpf = cpfSanitizado;
+                    asaasModel.Asaas = response["id"].ToString();
+                    asaas_customer = response["id"].ToString();
+                    asaasModel.GravarCustomerAsaas();
+                }
+                else
+                {
+                    return BadRequest("Falha ao criar cliente no Asaas.");
+                }
+            }
+            else
+            {
+                asaas_customer = verificacao.Asaas;
+            }
+
+            var paymentData = new Dictionary<string, object>
+            {
+                { "card_info", new Dictionary<string, object>
+                    {
+                        { "name", pagamento.NomeTitular },
+                        { "number", pagamento.NumeroCartaoDeCredito },
+                        { "expiry_month", pagamento.MesExpiracao },
+                        { "expiry_year", pagamento.AnoExpiracao },
+                        { "cvv", pagamento.cvv }
+                    }
+                },
+                { "card_holder_info", new Dictionary<string, object>
+                    {
+                        { "name", pagamento.NomeTitular },
+                        { "cpf", cpfSanitizado },
+                        { "email", pagamento.Email },
+                        { "cep", pagamento.Cep },
+                        { "number", pagamento.NumeroCasa },
+                        { "phone", pagamento.Telefone }
+                    }
+                },
+                { "customer", asaas_customer },
+                { "total_value", Convert.ToDecimal(pagamento.valor) }
+            };
+
+            var response2 = await _asaasClient.CreateOrderAsync(paymentData);
+
+            return RedirectToAction("PrimeiroAcesso", "Home");
         }
 
         [HttpPost]
