@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using X.PagedList;
 using System.Data;
+using MySqlX.XDevAPI;
 
 
 namespace sistema_crm.Controllers
@@ -21,7 +22,7 @@ namespace sistema_crm.Controllers
     {
         private readonly VendedorModel _context;
 
-        private const double MetaVendas = 10000;
+        private const double MetaVendas = 100000;
 
         [HttpGet]
         public IActionResult DownloadVendedoresCsv()
@@ -49,13 +50,23 @@ namespace sistema_crm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Lista(int? page)
+        public IActionResult Lista(int? page, string searchString)
         {
             var vendedor = new VendedorModel().ListarVendedores();
            // ViewBag.ListaVendedores = new VendedorModel().ListarVendedores();
+
+
             int pageSize = 5;
             int pageNumber = (page ?? 1);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                vendedor = vendedor.Where(c => c.Nome.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            ViewData["CurrentFilter"] = searchString;
             return View(vendedor.ToPagedList(pageNumber, pageSize));
+
         }
 
 
@@ -67,6 +78,17 @@ namespace sistema_crm.Controllers
             double progresso = MetaVendas > 0 ? (totalVendas / (double)MetaVendas) * 100 : 0;
             return Json(new { progresso = progresso, totalVendas = totalVendas, meta = MetaVendas });
         }
+
+
+        [HttpGet]
+        public JsonResult ObterProgressoVendedorVendas(VendedorModel vendedor, int id)
+        {
+
+            double totalVendas = vendedor.ObterVendasVendedorMes(id);
+            double progresso = MetaVendas > 0 ? (totalVendas / (double)MetaVendas) * 100 : 0;
+            return Json(new { progresso = progresso, totalVendas = totalVendas, meta = MetaVendas });
+        }
+
         [HttpGet]
         public IActionResult Editar(int? id)
         {
@@ -110,6 +132,7 @@ namespace sistema_crm.Controllers
 
 
         }
+
 
 
         public bool ValidarCPF(string CPF)
@@ -221,10 +244,9 @@ namespace sistema_crm.Controllers
 
 
         [HttpPost]
-        public IActionResult RetornoAtividade(int id)
+        public IActionResult RetornoAtividade(VendedorModel vendedor, int id)
 
         {
-            VendedorModel vendedor = null;
             List<AtividadeModel> atividades = new List<AtividadeModel>();
             List<AtividadeModel> vendas = new List<AtividadeModel>();
 
@@ -288,8 +310,8 @@ namespace sistema_crm.Controllers
                         "FROM item t1 " +
                         "JOIN propostas t2 ON t1.id_proposta = t2.idpropostas " +
                         "WHERE t2.status = 'VENDA REALIZADA' " +
-                        "AND MONTH(t2.data) = MONTH(CURDATE()) " +
-                        "AND YEAR(t2.data) = YEAR(CURDATE()) " +
+                        "AND MONTH(t2.data_finalizacao) = MONTH(CURDATE()) " +
+                        "AND YEAR(t2.data_finalizacao) = YEAR(CURDATE()) " +
                         "AND t2.id_vendedor = @id;";
 
             // Parâmetros SQL para o total de vendas
@@ -302,7 +324,27 @@ namespace sistema_crm.Controllers
             DataTable dtVendas = objDAL.RetornarDataTable(sqlTotalVendas, parametrosVendas);
 
             double totalVendas = 0; // Variável para armazenar o total de vendas
+           
 
+            if (dtAtividades.Rows.Count > 0)
+            {
+                // Mapeia os resultados da query para o modelo `AtividadeModel`
+                foreach (DataRow row in dtAtividades.Rows)
+                {
+                    DateTime dataContato;
+                    bool conversaoValida = DateTime.TryParse(row["dtcontato"].ToString(), out dataContato);
+
+                    var atividade = new AtividadeModel
+                    {
+                        Id = Convert.ToInt32(row["idatividade"]),
+                        Obs = row["observacao"].ToString(),
+                        Tipo_contato = row["contato"].ToString(),
+                        DT_contato = dataContato.ToString(),
+                    };
+
+                    atividades.Add(atividade);
+                }
+            }
             // Verifica se há resultados
             if (dtVendas.Rows.Count > 0)
             {
@@ -315,6 +357,7 @@ namespace sistema_crm.Controllers
                 // Verifica se a coluna 'total_vendas' está presente e não é nula
                 if (dtVendas.Columns.Contains("total_vendas") && dtVendas.Rows[0]["total_vendas"] != DBNull.Value)
                 {
+
                     totalVendas = Convert.ToDouble(dtVendas.Rows[0]["total_vendas"]);
                 }
                 else
@@ -335,18 +378,91 @@ namespace sistema_crm.Controllers
             // Passar o vendedor, atividades e total de vendas para a view
             ViewBag.Vendedor = vendedor;
             ViewBag.Atividades = atividades ?? new List<AtividadeModel>();
+            GraficoVendasVendedor(id);
+            ObterProgressoVendedorVendas(vendedor, id);
+
             return View();
         }
 
+        public IActionResult GraficoVendasVendedor(int id)
+        {
+             List<RelatorioModel> lista = new RelatorioModel().RetornarGraficoValoresVendedor(id);
+                ViewBag.RetornarGraficoValoresVendedor = lista;
+
+                string valores = "";
+                string labels = "";
+
+                // Percorre a lista de itens para compor o gráfico de linha
+                for (int i = 0; i < lista.Count; i++)
+                {
+                    valores += lista[i].Valor.ToString() + ",";
+                    labels += "'" + lista[i].Mes.ToString() + "',";
+                }
+
+                ViewBag.Valores2 = valores.TrimEnd(',');
+                ViewBag.Labels2 = labels.TrimEnd(',');
+
+                return View();
+
+        }
 
       
         public IActionResult AtividadeVendedor(int id, VendedorModel vendedor)
         {
-            RetornoAtividade(id);
+            RetornoAtividade(vendedor, id);
            // vendedor.VendasVendedor(id);
             return View();
         }
-       
+
+        public ActionResult UploadVendedores(IFormFile file, VendedorModel model)
+        {
+            if (file != null && file.Length > 0 && Path.GetExtension(file.FileName).Equals(".csv"))
+            {
+                var vendedores = new List<VendedorModel>();
+                using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var values = line.Split(',');
+
+                        var vendedor = new VendedorModel
+                        {
+                            Nome = values[0],
+                            CPF = values[1],
+                            Nascimento = values[2],
+                            Telefone = values[3],
+                            Endereco = values[4],
+                            Email = values[5],
+                            Senha = values[6],
+                            Status = values[7],
+                            DataADM = values[8]
+                        };
+
+                        vendedores.Add(vendedor);
+                    }
+                }
+
+                // Salva todos os vendedores do CSV no banco de dados
+                foreach (var vendedor in vendedores)
+                {
+                    vendedor.Gravar(); // Supondo que você já tenha um método Insert no modelo de Vendedor
+                }
+
+                TempData["Mensagem"] = $"{vendedores.Count} vendedores foram cadastrados com sucesso!";
+                return RedirectToAction("Lista");
+            }
+            else if (ModelState.IsValid)
+            {
+                // Cadastrar vendedor manualmente usando o formulário
+                model.Gravar();
+                TempData["Mensagem"] = "Vendedor cadastrado com sucesso!";
+                return RedirectToAction("Lista");
+            }
+
+            ModelState.AddModelError("", "Por favor, envie um arquivo CSV válido ou preencha o formulário corretamente.");
+            return View(model);
+        }
 
 
 

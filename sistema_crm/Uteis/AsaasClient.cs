@@ -12,7 +12,7 @@ public class AsaasClient {
 
         public AsaasClient()
         {
-            _token = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwOTI1ODc6OiRhYWNoXzUyOTdkOTcwLWY1ZjgtNGE3MS04YmIzLTgzZmMxYTcwNDUyZA==";
+            _token = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzY3NTE6OiRhYWNoXzQyMGE0NWVhLTU3MmYtNGI4OC1hZDFkLWZlM2YxODIyNDFjNQ==";
             _url = "https://sandbox.asaas.com";
             _env = "LOCAL";
         }
@@ -73,11 +73,21 @@ public class AsaasClient {
                 client.DefaultRequestHeaders.Add("access_token", _token);
                 client.DefaultRequestHeaders.Add("accept", "application/json");
 
-                var content = new StringContent(JsonSerializer.Serialize(customerInfo), System.Text.Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{_url}/api/v3/customers", content);
-                var jsonString = await response.Content.ReadAsStringAsync();
+            var content = new StringContent(JsonSerializer.Serialize(customerInfo), System.Text.Encoding.UTF8, "application/json");
+            Console.WriteLine("Conteúdo do JSON enviado:");
+            Console.WriteLine(await content.ReadAsStringAsync()); // Exibe o JSON que está sendo enviado para a API
 
-                return JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+            var response = await client.PostAsync($"{_url}/api/v3/customers", content);
+            Console.WriteLine("Status da resposta:");
+            Console.WriteLine(response.StatusCode); // Exibe o status da resposta HTTP
+            Console.WriteLine("Cabeçalhos da resposta:");
+            Console.WriteLine(response.Headers); // Exibe os cabeçalhos da resposta
+
+            var jsonString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Conteúdo da resposta JSON:");
+            Console.WriteLine(jsonString); //
+
+            return JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
             }
         }
 

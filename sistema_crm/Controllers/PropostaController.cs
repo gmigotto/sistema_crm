@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlX.XDevAPI;
 using X.PagedList;
 using Microsoft.EntityFrameworkCore;
+using Grpc.Core;
 
 namespace sistema_crm.Controllers
 {
@@ -66,9 +67,11 @@ namespace sistema_crm.Controllers
           
         }
 
-        public IActionResult AtualizarProposta(PropostaModel model)
+        [HttpPost]
+        public IActionResult AtualizarProposta(PropostaModel model, PropostaModel.ItemModel itemModel)
         {
             DAL objDAL = new DAL();
+
 
             // Atualiza os dados da proposta
             string sqlProposta = $"UPDATE Propostas SET status = '{model.Status}', data_finalizacao='{model.Data_fim}' WHERE idpropostas = '{model.Id}'";
@@ -81,15 +84,10 @@ namespace sistema_crm.Controllers
                 if (item.Id != null)
                 {
                     // Atualiza o item existente
-                    string sqlItem = $"UPDATE item SET qtde = '{item.Qtde}', descricao = '{item.Descricao}', preco_unit = '{item.PrecoUnit}' WHERE id_item = '{item.Id}'";
+                    string sqlItem = $"UPDATE item SET qtde = '{item.Qtde}', descricao = '{item.Descricao}', preco_unit = '{item.PrecoUnit}' WHERE id_item = '{item.Id} AND id_proposta = '{model.Id}'";
                     objDAL.ExecutarComandoSQL(sqlItem);
                 }
-                else
-                {
-                    // Se o item não existir (novo item), insere um novo
-                    string sqlItem = $"INSERT INTO item ( qtde, descricao, preco_unit) VALUES ( '{item.Qtde}', '{item.Descricao}', '{item.PrecoUnit}')";
-                    objDAL.ExecutarComandoSQL(sqlItem);
-                }
+
             }
 
             return RedirectToAction("Lista", "Proposta");
@@ -130,14 +128,42 @@ namespace sistema_crm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Lista(int? page)
+        public IActionResult Lista(int? page, string vendedorId, string clienteId, string status)
         {
-           ViewBag.ListaProposta = new PropostaModel().ListaPropostas();
-           
-            /*int pageSize = 5;
-            int pageNumber = (page ?? 1);
-            var propostas = _context.Propostas.Include(p => p.Itens).ToPagedList(pageSize, pageNumber);*/
-            return View();
+            var propostas = new PropostaModel().ListaPropostas(); // Carrega todas as propostas
+
+            // Aplicar filtros, se houver
+            if (!string.IsNullOrEmpty(vendedorId))
+            {
+                propostas = propostas.Where(p => p.Vendedor_id == vendedorId).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(clienteId))
+            {
+                propostas = propostas.Where(p => p.Cliente_id == clienteId).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                propostas = propostas.Where(p => p.Status == status).ToList();
+            }
+
+            ViewBag.ListaProposta = propostas;
+            // Passar dados para a view
+            ViewBag.ListaClientes = new ClienteModel().ListarClientes();
+            ViewBag.ListaVendedores = new VendedorModel().ListarVendedores();
+            ViewBag.FiltroClienteId = clienteId;
+            ViewBag.FiltroVendedorId = vendedorId;
+            ViewBag.FiltroStatus = status;
+
+
+
+            // Aplicar paginação
+            //int pageSize = 5;
+            //int pageNumber = (page ?? 1);
+            //var pagedPropostas = propostas.ToPagedList(pageNumber, pageSize);
+
+            return View(new PropostaModel.ItemModel());
         }
 
         [HttpGet]
@@ -178,8 +204,10 @@ namespace sistema_crm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(PropostaModel proposta)
+        public IActionResult Editar(PropostaModel proposta, int id)
         {
+            proposta.Id = id.ToString();
+            proposta.AtualizarProposta(id);
             CarregarDados();
             return RedirectToAction("Lista", "Proposta");
         }

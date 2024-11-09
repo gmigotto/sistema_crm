@@ -43,33 +43,34 @@
     </style>
 </head>
 <body>
-
-    <section class="vh-100">
-        <div class="container-fluid h-custom">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-md-9 col-lg-6 col-xl-5">
+    <section class="vh-100 d-flex align-items-center">
+        <div class="container h-custom">
+            <div class="row d-flex justify-content-center align-items-center">
+                <!-- Coluna da imagem -->
+                <div class="col-md-9 col-lg-6 col-xl-5 mb-4 mb-lg-0 text-center">
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
                          class="img-fluid" alt="Sample image">
+                    <div class="mt-4">
+                        <a class="btn bg-gradient-secondary btn-lg" role="button" asp-area="" asp-controller="Home" asp-action="FinalizarCompra">
+                            Adquirir o serviço
+                        </a>
+                    </div>
                 </div>
+
+                <!-- Coluna do formulário -->
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                     <form asp-controller="Home" asp-action="Login" method="post">
-                        <div class="justify-content-center">
-                        </div>
-
-
+                        <!-- Exibir mensagem de erro, se houver -->
                         @{
                             try
                             {
                                 var erro = TempData["ErrorLogin"];
-                                <h5 class="text-danger">@erro </h5>
+                                <h5 class="text-danger">@erro</h5>
                             }
                             catch
                             {
                             }
                         }
-
-                        <div class="divider d-flex align-items-center my-4">
-                        </div>
 
                         <!-- Email input -->
                         <div class="form-outline mb-4">
@@ -91,29 +92,27 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="#!" class="text-body">Esqueceu sua senha?</a>
+                        <!-- Botão de Login -->
+                        <div class="text-center">
+                            <button type="submit" class="btn bg-gradient-primary btn-lg btn-block mb-3">Login</button>
                         </div>
 
-                        <div class="text-center text-lg-start mt-4 pt-2">
-                            <button type="submit" class="btn bg-gradient-primary btn-lg btn-block">Login</button>
-                        </div>
-
-                        <!-- Adicionando o botão para acesso do vendedor -->
-                        <div class="text-center text-lg-start mt-4 pt-2">
+                        <!-- Botão para Acesso do Vendedor -->
+                        <div class="text-center">
                             <a class="btn bg-gradient-info btn-lg btn-block" role="button" asp-area="" asp-controller="Home" asp-action="LoginVendedor">
                                 Acesso Vendedor
                             </a>
                         </div>
 
-                        <div class="text-center text-lg-start mt-4 pt-2">
-                            <a class="btn bg-gradient-secondary btn-lg btn-block" role="button" asp-area="" asp-controller="Home" asp-action="TelaCompra">Adquirir o serviço</a>
+                        <!-- Link para esquecimento de senha -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <a href="#!" class="text-body">Esqueceu sua senha?</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
-
 </body>
+
 </html>

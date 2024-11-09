@@ -105,16 +105,14 @@
             <div class="card-body">
                 <!-- Formulário para cadastrar a proposta -->
                 <form asp-controller="Proposta" asp-action="Cadastrar" method="post">
-                    <div class="d-flex justify-content-between">
-                        <div class="col-md-6 mb-3">
+                    <!-- Linha para Data e Cliente -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
                             <label>Data</label>
                             <input asp-for="Data" type="date" class="form-control" />
                             <span asp-validation-for="Data" class="text-danger"></span>
                         </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
                             <label>Cliente</label>
                             <select asp-for="Cliente_id" class="form-select">
                                 <option value="">Escolha...</option>
@@ -125,8 +123,11 @@
                             </select>
                             <span asp-validation-for="Cliente_id" class="text-danger"></span>
                         </div>
+                    </div>
 
-                        <div class="col-md-6 mb-3">
+                    <!-- Linha para Vendedor e Status -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
                             <label>Vendedor</label>
                             <select asp-for="Vendedor_id" class="form-select">
                                 <option value="">Escolha...</option>
@@ -137,10 +138,7 @@
                             </select>
                             <span asp-validation-for="Vendedor_id" class="text-danger"></span>
                         </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-end">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
                             <label>Status</label>
                             <select asp-for="Status" class="form-control">
                                 <option value="">Escolha...</option>
@@ -151,19 +149,27 @@
                             </select>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
-                        <!-- Seção de Itens da Proposta -->
-                        <div id="items-container">
-                            <button type="button" id="add-item-btn" class="btn btn-primary">+ Adicionar Item</button>
-                        </div>
                     </div>
 
-                    <div class="row" id="item-fields">
-                        <!-- Aqui ficam os campos de itens adicionados -->
+                    <!-- Botão Adicionar Item -->
+                    <div class="mb-3">
+                        <button type="button" id="add-item-btn" class="btn btn-primary">+ Adicionar Item</button>
                     </div>
+
+                    <!-- Campos de Itens Adicionados -->
+                    <div class="row" id="item-fields">
+                        <!-- Aqui ficarão os campos de itens adicionais -->
+                    </div>
+
+                    <!-- Botão Salvar -->
                     <div>
-                        <button type="submit" class="btn btn-success" asp-controller="Proposta" asp-action="Cadastrar">Salvar</button>
+                        <button type="submit" class="btn btn-success">Salvar</button>
                     </div>
                 </form>
+            </div>
+
+            </div>
+
             </div>
         </div>
     </main>
@@ -176,24 +182,24 @@
             newItemDiv.classList.add("form-group");
 
             newItemDiv.innerHTML = `
-                        <div class="row" id="item_${itemCount}">
-                            <div class="col-md-1">
-                                <label for="Itens_${itemCount}__Qtde">Qtde:</label>
-                                <input type="text" name="Itens[${itemCount}].Qtde" class="form-control" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label for="Itens_${itemCount}__Descricao">Descrição do Item:</label>
-                                <input type="text" name="Itens[${itemCount}].Descricao" class="form-control" required />
-                            </div>
-                            <div class="col-md-3">
-                                <label for="Itens_${itemCount}__PrecoUnit">Valor do Item:</label>
-                                <input type="number" name="Itens[${itemCount}].PrecoUnit" class="form-control" step="0.01" required />
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="button" class="btn btn-danger btn-sm remove-item-btn" data-item-id="item_${itemCount}">Apagar</button>
-                            </div>
-                        </div>
-                    `;
+              <div class="row mb-3 align-items-end" id="item_${itemCount}">
+            <div class="col-md-1">
+                <label for="Itens_${itemCount}__Qtde">Qtde:</label>
+                <input type="text" name="Itens[${itemCount}].Qtde" class="form-control" required />
+            </div>
+            <div class="col-md-4">
+                <label for="Itens_${itemCount}__Descricao">Descrição do Item:</label>
+                <input type="text" name="Itens[${itemCount}].Descricao" class="form-control" required />
+            </div>
+            <div class="col-md-3">
+                <label for="Itens_${itemCount}__PrecoUnit">Valor do Item:</label>
+                <input type="number" name="Itens[${itemCount}].PrecoUnit" class="form-control" step="0.01" required />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm remove-item-btn" data-item-id="item_${itemCount}">Apagar</button>
+            </div>
+        </div>
+        `;
 
             document.getElementById("item-fields").appendChild(newItemDiv);
             itemCount++;

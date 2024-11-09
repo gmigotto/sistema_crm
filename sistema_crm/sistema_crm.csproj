@@ -8,11 +8,23 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.1" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="mercadopago-sdk" Version="2.4.1" />
     <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
+    <PackageReference Include="WkHtmlToPdf" Version="1.0.2" />
+    <PackageReference Include="Wkhtmltopdf.NetCore" Version="3.0.2" />
     <PackageReference Include="X.PagedList" Version="10.2.1" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="10.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\wkhtmltox\libwkhtmltox.dll" />
+    <None Include="wwwroot\wkhtmltox\libwkhtmltox.dylib" />
+    <None Include="wwwroot\wkhtmltox\libwkhtmltox.so" />
   </ItemGroup>
 
 </Project>

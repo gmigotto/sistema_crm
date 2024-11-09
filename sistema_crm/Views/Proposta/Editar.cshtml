@@ -93,7 +93,7 @@
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <div class="card">
             <form asp-controller="Proposta" asp-action="AtualizarProposta" method="post">
-                <input type="hidden" asp-for="Id" value="@Model?.Id" />
+                <input type="hidden" asp-for="Id" value="@ViewBag.Proposta.Id" />
 
                 <!-- Cabeçalho do card -->
                 <div class="card-header">Editar Proposta</div>
@@ -145,7 +145,7 @@
                                 <tbody>
                                     @try
                                     {
-                                        @if (ViewBag.Proposta != null && ViewBag.Proposta.Itens != null && ViewBag.Proposta.Itens.Count > 0)
+                                        @if ( ViewBag.Proposta.Itens != null && ViewBag.Proposta.Itens.Count > 0)
                                         {
                                             @for (int i = 0; i < ViewBag.Proposta.Itens.Count; i++)
                                             {
@@ -177,10 +177,11 @@
                     </div>
 
                     <!-- Status -->
+                    <div class="row">
                     <div class="form-group">
                         <label>Status</label>
                         <select asp-for="Status" class="form-control">
-                            <option value="">@ViewBag.Proposta.Status</option>
+                            <option value="@ViewBag.Proposta.Status">@ViewBag.Proposta.Status</option>
                             <option>EM NEGOCIAÇÃO</option>
                             <option>CANCELADO</option>
                             <option>PERDIDO</option>
@@ -191,12 +192,12 @@
                     <!-- Data de Encerramento -->
                     <div class="form-group">
                         <label>Data Encerramento</label>
-                        <input asp-for="Data_fim" type="date" class="form-control" />
+                            <input asp-for="Data_fim" type="date" class="form-control" value="@ViewBag.Proposta.Data_fim" />
                     </div>
-
+                    </div>
                     <!-- Botão de submissão -->
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Salvar Alterações</button>
+                        <button type="submit" class="btn btn-primary btn-block" >Salvar Alterações</button>
                     </div>
                 </div>
             </form>

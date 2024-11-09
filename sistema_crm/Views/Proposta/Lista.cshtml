@@ -7,6 +7,12 @@
     Layout = "../Shared/_Layout.cshtml";
 }
 <head>
+    <!-- Inclua o link para Bootstrap Icons ou Font Awesome no seu projeto -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <!-- ou, se preferir Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -104,24 +110,36 @@
 
 
         <header>
-            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
-                <div class="container-fluid py-1 px-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        </ol>
-                        <h6 class="font-weight-bolder mb-0">Negócios</h6>
-                    </nav>
-
-                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        </div>
-
+            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl bg-white">
+                <div class="container-fluid py-2 px-3">
+                    <div class="d-flex align-items-center">
+                        <!-- Ícone de Negócios (maleta) -->
+                        <i class="bi bi-briefcase fs-3 text-primary me-3"></i> <!-- Para Bootstrap Icons -->
+                        <!-- <i class="fas fa-briefcase fs-3 text-primary me-3"></i> --> <!-- Para Font Awesome -->
+                        <h6 class="font-weight-bold mb-0 text-dark">Negócios</h6>
                     </div>
-
+             
+                    <!-- Botões e Ícones de Ação -->
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                        <div class="ms-md-auto d-flex align-items-center">
+                            <!-- Botão de Busca -->
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar" aria-describedby="button-addon">
+                                <!-- Espaço entre a barra e o ícone -->
+                                <div class="input-group-append" style="margin-left: 5px;">
+                                    <!-- Botão de lupa, com ícone alinhado -->
+                                    <button class="btn btn-outline-secondary" type="submit" style="height: 70%; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                                        <i class="fas fa-search"></i> <!-- Ícone de lupa -->
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </nav>
         </header>
 
+       <div class="container-fluid py-3">
+  
 
         <div class="container-fluid py-5">
 
@@ -204,7 +222,7 @@
                                                    
                                                     <td>
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">@item.ValorTotal,00 </h6>
+                                                            <h6 class="mb-0 text-sm">@item.ValorTotal.ToString("C") </h6>
                                                         </div>
                                                     
                                                     </td>

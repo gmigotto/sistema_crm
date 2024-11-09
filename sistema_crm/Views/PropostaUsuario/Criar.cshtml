@@ -118,7 +118,7 @@
                             <label>Cliente</label>
                             <select asp-for="Cliente_id" class="form-select">
                                 <option value="">Escolha...</option>
-                                @foreach (var item in (List<ClienteUsuarioModel>)ViewBag.ListaClientes)
+                                @foreach (var item in (List<ClienteModel>)ViewBag.ListaClientes)
                                 {
                                     <option value="@item.Id">@item.Nome</option>
                                 }

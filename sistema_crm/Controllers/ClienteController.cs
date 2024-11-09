@@ -1,7 +1,10 @@
 ﻿using Bogus;
+using DinkToPdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using sistema_crm.Models;
+using sistema_crm.Uteis;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using X.PagedList;
@@ -79,14 +82,31 @@ namespace sistema_crm.Controllers
                 ModelState.AddModelError("CNPJ", "CNPJ inválido");
                 return View();
             }
-            else
+
+            if (cliente.CnpjExiste(cliente.CNPJ))
             {
-                cliente.Gravar();
-                return RedirectToAction("Lista", "Cliente");
+                ModelState.AddModelError("CNPJ", "Cliente existente");
+                return View();
             }
+
+            cliente.Gravar();
+            return RedirectToAction("Lista", "Cliente");
 
 
         }
+
+        public JsonResult VerificarCNPJ(string cnpj, ClienteModel cliente)
+        {
+            bool clienteExiste = cliente.CnpjExiste(cnpj);
+
+            if (clienteExiste)
+            {
+                return Json(new { existe = true, mensagem = "Cliente existente" });
+            }
+            return Json(new { existe = false, mensagem = "" });
+        }
+
+
 
         public bool ValidarCNPJ(string CNPJ)
         {
@@ -229,6 +249,8 @@ namespace sistema_crm.Controllers
             ModelState.AddModelError("", "Por favor, envie um arquivo CSV válido ou preencha o formulário corretamente.");
             return View(model);
         }
+
+       
     }
 
 }

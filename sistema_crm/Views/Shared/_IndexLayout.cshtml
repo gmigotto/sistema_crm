@@ -44,7 +44,8 @@
 
     </script>
 </head>
-<body class="g-sidenav-show  bg-gray-100">
+
+<body>
     <header>
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
             <div class="container-fluid">
@@ -63,6 +64,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -74,5 +76,17 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <footer class="text-white py-3" style="background-color: #E6E6FA; width: 100%; left: 0; right: 0;">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2024 CRM Solutions. Todos os direitos reservados.</p>
+            <small class="text-muted">Desenvolvido para empresas que querem crescer de forma inteligente.</small>
+        </div>
+    </footer>
+
 </body>
+
+
+
+
 </html>

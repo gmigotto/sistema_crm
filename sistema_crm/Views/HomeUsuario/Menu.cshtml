@@ -1,7 +1,10 @@
-﻿
+﻿@model HomeUsuarioModel
+
 @{
     ViewData["Title"] = "Menu";
     Layout = "~/Views/Shared/_LayoutUsuario.cshtml";
+    var negociacao = ViewBag.Negociacao;
+
 }
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
@@ -155,97 +158,88 @@
                     </div>
             </nav>
 
-         @*    <div class="col-md-12 mb-lg-0 mb-4">
-                <div class="card mt-4">
-                    <div class="card-header pb-0 p-3">
-                        <div class="row">
-                            <div class="col-6 d-flex align-items-center">
-                                <h6 class="mb-0">Sua Atividade </h6>
-                            </div>
-                            <div class="col-6 text-end">
-                                <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Card</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <div class="row">
-                        </div>
-                    </div>
-                </div>
-            </div> *@
+ 
+            
 
          
         </header>
-
-            <div class="d-flex justify-content-between">
-
-                <!-- Primeiro bloco: Meta do mês -->
-                <div class="card mb-4 flex-grow-1" style="max-width: 45%; margin-right: 10px;">
-                    <h5>Meta do mês</h5>
-                    <span id="totalVendas">50.000,00</span>
-
-                    <p class="progresso"> <span class="vendas-valor">R$ 0,00</span></p>
-
-                    <div class="barra-progresso">
-                        <div class="barra-preenchida" style="width: 0%;">0%</div>
-                    </div>
+        <div class="d-flex justify-content-between mb-4">
+            <!-- Primeiro bloco: Meta do mês -->
+            <div class="card flex-grow-1" style="max-width: 45%; margin-right: 10px;">
+                <h5>Meta do mês</h5>
+                <span id="metaValor">R$ 50.000,00</span>
+                <p class="progresso"><span class="vendas-valor">R$ 0,00</span></p>
+                <div class="barra-progresso">
+                    <div class="barra-preenchida" style="width: 0%;">0%</div>
                 </div>
-
-                <!-- Segundo bloco: Valor em Negociação -->
-                <div class="col-xl-3 col-sm-6">
-                    <div class="card" style="min-width: 300px;">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"> Valor em Negociação:</p>
-                                        <h7 class="font-weight-bolder mb-0">
-                                            @try
-                                            {
-                                                @ViewBag.Relatorio.Negociacao
-                                            }
-                                            catch { },00
-                                        </h7>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                        <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-       <script>
-            $(document).ready(function () {
-                // Faz uma requisição AJAX para obter o valor total de vendas
-                $.ajax({
-                    url: '@Url.Action("ObterProgressoVendas", "Vendedor")',
-                    type: 'GET',
-                    success: function (data) {
-                        if (data && data.totalVendas !== undefined) {
-                            // Formata o valor em reais
-                            let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            <!-- Segundo bloco: Valor em Negociação -->
+            <div class="card flex-grow-1" style="max-width: 40%;">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <h7 class="text-sm mb-0 text-capitalize font-weight-bold">Valor em Negociação:</h7>
+                                <p class="font-weight-bolder mb-0">
+                                    @try
+                                    {
+                                        @ViewBag.Negociacao.ToString("C");
+                                    }
+                                    catch
+                                    { }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
 
-                            // Atualiza o elemento com o valor formatado
-                            $('#totalVendas').text(totalVendasFormatado);
-                        } else {
-                            alert("Resposta inválida do servidor.");
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloco abaixo: Top 5 Vendedores por Valor de Vendas -->
+        <div class="card">
+            <h6>Top 5 Vendedores por Valor de Vendas</h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Vendedor</th>
+                        <th>Valor Total de Vendas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RankingVendas != null)
+                    {
+                        var ranking = (List<VendedorModel>)ViewBag.RankingVendas;
+                        for (int i = 0; i < ranking.Count; i++)
+                        {
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@ranking[i].Nome</td>
+                                <td>@ranking[i].ValorVendas.ToString("C")</td>
+                            </tr>
                         }
-                    },
-                    },
-                    error: function () {
-                        alert("Erro ao carregar o valor total de vendas.");
                     }
-                });
-            });
-       </script>
-        
+                    else
+                    {
+                        <tr>
+                            <td colspan="3">Nenhum dado disponível.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             $(document).ready(function () {
                 // Função para buscar o progresso das vendas do mês
@@ -254,13 +248,26 @@
                         url: '/Vendedor/ObterProgressoVendas',
                         type: 'GET',
                         success: function (data) {
-                            // Atualiza o valor total das vendas e da meta no frontend
-                            $('.meta-valor').text('R$ ' + data.meta.toFixed(2));
-                            $('.vendas-valor').text('R$ ' + data.totalVendas.toFixed(2));
+                            if (data && data.totalVendas !== undefined && data.meta !== undefined) {
+                                // Formata os valores em reais
+                                let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                let metaFormatada = parseFloat(data.meta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-                            // Calcula o progresso em porcentagem e atualiza a barra de progresso
-                            var progressoPercent = Math.round(data.progresso) + '%';
-                            $('.barra-preenchida').css('width', progressoPercent).text(progressoPercent);
+                                // Atualiza os elementos com os valores formatados
+                                $('#metaValor').text(metaFormatada);
+                                $('.vendas-valor').text(totalVendasFormatado);
+
+                                // Calcula o progresso em porcentagem baseado na meta
+                                let progressoPercent = Math.min(Math.round((data.totalVendas / data.meta) * 100), 100) + '%';
+
+                                // Atualiza a barra de progresso
+                                $('.barra-preenchida').css('width', progressoPercent).text(progressoPercent);
+                            } else {
+                                alert("Resposta inválida do servidor.");
+                            }
+                        },
+                        error: function () {
+                            alert("Erro ao carregar o valor total de vendas.");
                         }
                     });
                 }

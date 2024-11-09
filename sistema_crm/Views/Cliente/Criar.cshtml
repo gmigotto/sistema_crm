@@ -108,24 +108,6 @@
                         <h6 class="font-weight-bolder mb-0">Clientes</h6>
                     </nav>
 
-                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                            <div class="input-group">
-                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                                <input type="text" class="form-control" placeholder="Type here...">
-                            </div>
-                        </div>
-                        <div class="navbar-nav  justify-content-end">
-                            <div class=" navbar-nav flex-grow-1 justify-content-end">
-                                <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
-
-                                    <a class="nav-link justify-content-end" style="color:#cb0c9f" right="10px" asp-area="" asp-controller="Home" asp-action="Index">Sair</a>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
 
                 </div>
             </nav>
@@ -139,126 +121,137 @@
 
 
                 <form asp-controller="Cliente" asp-action="Criar" method="post">
-                    <form action="/Proposta/UploadCsv" method="post" enctype="multipart/form-data">
-                        <label for="csvFile">Escolha um arquivo CSV:</label><br>
-                        <input type="file" id="csvFile" name="csvFile" accept=".csv" required><br><br>
-                        <input type="submit" value="Upload">
-                     </form>
-                    <p>
-                        <input type="hidden" asp-for="Id" value="@try {
-        @ViewBag.Cliente.Id
-} catch { }" />
-
-                        <div class="form-group">
-                            <label for="nome">Razão Social</label>
-                            <input asp-for="Nome" type="text" class="form-control" value="@try {
-            @ViewBag.Cliente.Nome
- } catch { }" />
-                            <span asp-validation-for="Nome"></span>
-
-                        </div>
-                        <div class="form-group">
-                            <label for="cnpj">CNPJ</label>
-                            <input asp-for="CNPJ" type="text" nome="cnpj" class="form-control" id="cnpj" value="@try {
-            @ViewBag.Cliente.CNPJ
-} catch {} " placeholder="__.___.___/____-__">
-                            <span asp-validation-for="CNPJ"></span>
+                    <input type="hidden" asp-for="Id" value="@try {@ViewBag.Cliente.Id} catch { }" />
 
 
+                        <div class="d-flex justify-content-between">
+
+                            <div class="form-group col-md-6 mb-3">
+                                <label for="nome">Razão Social</label>
+                                <input asp-for="Nome" type="text" class="form-control" value="@try {@ViewBag.Cliente.Nome} catch { }" />
+                                <span asp-validation-for="Nome"></span>
+                            </div>
+
+                            <div class="form-group  col-md-6 mb-3">
+                                <label for="cnpj">CNPJ</label>
+                                <input asp-for="CNPJ" type="text" class="form-control" id="cnpj" value="@try { @ViewBag.Cliente.CNPJ } catch {}" placeholder="__.___.___/____-__">
+                                <span asp-validation-for="CNPJ"></span>
+                            </div>
+                           
                         </div>
 
-                        <div class="form-group">
-                            <label for="email">Endereço</label>
-                            <input asp-for="End" type="text" class="form-control" value="@try {
-            @ViewBag.Cliente.End
-} catch {}">
-                            <span asp-validation-for="End"></span>
-                        </div>
+                         <div class="d-flex justify-content-between">
+                                <div class="form-group  col-md-6 mb-3">
+                                    <label for="cep">CEP</label>
+                                    <input asp-for="CEP" type="text" id="cep" class="form-control" placeholder="Digite o CEP" value="@try {@ViewBag.Cliente.CEP } catch {}" />
+                                 </div>
 
-                        <div class="form-group">
-                            <label for="uf">UF</label>
+                                <div class="form-group  col-md-6 mb-3">
+                                    <label for="endereco">Endereço</label>
+                                    <input asp-for="End" type="text" id="endereco" class="form-control" value="@try { @ViewBag.Cliente.End } catch {}" />
+                                    <span asp-validation-for="End"></span>
+                                </div>
+                         </div>
 
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group col-md-3">
+                                <label for="bairro">Bairro</label>
+                                <input asp-for="Bairro" type="text" id="bairro" class="form-control" value="@try { @ViewBag.Cliente.Bairro} catch {}" />
+                                <span asp-validation-for="Bairro"></span>
+                            </div>
 
-                            <select asp-for="UF" type="text" class="custom-select d-block w-100" value="@try {
-            @ViewBag.Cliente.UF
-} catch {}">
-
-                                <option value="">Escolha...</option>
-                                <option>AC</option>
-                                <option>AL</option>
-                                <option>AP</option>
-                                <option>AM</option>
-                                <option>BA</option>
-                                <option>CE</option>
-                                <option>DF</option>
-                                <option>ES</option>
-                                <option>GO</option>
-                                <option>MA</option>
-                                <option>MT</option>
-                                <option>MS</option>
-                                <option>MG</option>
-                                <option>PA</option>
-                                <option>PB</option>
-                                <option>PR</option>
-                                <option>PE</option>
-                                <option>PI</option>
-                                <option>RJ</option>
-                                <option>RN</option>
-                                <option>RS</option>
-                                <option>RO</option>
-                                <option>RR</option>
-                                <option>SC</option>
-                                <option>SP</option>
-                                <option>SE</option>
-                                <option>TO</option>
-
-
-
-
-
+                            <div class="form-group col-md-3">
+                                <label for="cidade">Cidade</label>
+                                <input asp-for="Cidade" type="text" id="cidade" class="form-control" value="@try {@ViewBag.Cliente.Cidade } catch {}" />
+                                <span asp-validation-for="Cidade"></span>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label for="uf">UF</label>
+                                <input asp-for="UF" type="text" id="uf" class="form-control" value="@try {@ViewBag.Cliente.UF} catch {}" />
                                 <span asp-validation-for="UF"></span>
-
-                            </select>
-
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="telefone"> Telefone</label>
-                            <input asp-for="Telefone" type="text" class="form-control" id="telefone" value="@try{
-                            @ViewBag.Cliente.Telefone
-} catch {}"> <br />
-                            <span asp-validation-for="Telefone"></span>
-                        </div>
 
-                        <div class="row">
-                            <div class="form-group col-md-5 mb-3">
-                                <label for="senha">Situação</label>
+                        <div class="d-flex justify-content-between"> 
+                            <div class="form-group col-md-3">
+                                <label for="telefone">Telefone</label>
+                                <input asp-for="Telefone" type="text" class="form-control" id="telefone" value="@try {@ViewBag.Cliente.Telefone} catch {}" placeholder="(__)_____-____">
+                                <span asp-validation-for="Telefone"></span>
+                            </div>
 
-                                <select asp-for="Situacao" type="text" class="form-control" value="@try {
-                                @ViewBag.Cliente.Situacao
-} catch {} ">
-
+                            <div class="form-group col-md-3">
+                                <label for="situacao">Situação</label>
+                                <select asp-for="Situacao" class="form-control" value="@try { @ViewBag.Cliente.Situacao} catch {}">
                                     <option value="">Escolha...</option>
                                     <option>ATIVO</option>
                                     <option>INATIVO</option>
                                     <option>LEAD</option>
                                 </select>
+                                <span asp-validation-for="Situacao"></span>
+                            </div>
+
+                             <div class="form-group col-md-3">
+                                <label for="segmento">Segmento</label>
+                                <select asp-for="Segmento" class="form-control" value="@try{@ViewBag.Cliente.Segmento} catch {}">
+                                    <option value="">Escolha...</option>
+                                    <option>Tecnologia</option>
+                                    <option>Saúde</option>
+                                    <option>Educação</option>
+                                    <option>Alimentício</option>
+                                    <option>Financeiro</option>
+
+                                </select>
+                                <span asp-validation-for="Segmento"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group col-md-6 mb-3">
+                                <label for="nome">Nome Comprador</label>
+                            <input asp-for="NomeComprador" type="text" class="form-control" value="@try { @ViewBag.Cliente.Nome} catch { }" />
+                            <span asp-validation-for="NomeComprador"></span>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                <label for="nome">Email</label>
+                                <input asp-for="Email" type="text" class="form-control" value="@try {@ViewBag.Cliente.Nome} catch { }" />
+                                <span asp-validation-for="Email"></span>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success" asp-controller="ClienteUsuario" asp-action="Gravar">Adicionar Cliente</button>
-
-
-
-                    </p>
-
-
-
+                    <button type="submit" class="btn btn-success mt-3" asp-controller="Cliente" asp-action="Criar">Adicionar Cliente</button>
                 </form>
             </div>
         </div>
 
     </main>
+
+    <script>
+        $(document).ready(function () {
+            $('#cep').on('blur', function () {
+                var cep = $(this).val().replace(/\D/g, '');
+                if (cep.length === 8) {
+                    $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function (data) {
+                        if (!("erro" in data)) {
+                            // Preenchendo os campos com os dados retornados
+                            $('#endereco').val(data.logradouro);
+                            $('#bairro').val(data.bairro);
+                            $('#cidade').val(data.localidade);
+                            $('#uf').val(data.uf);
+                        } else {
+                            alert("CEP não encontrado.");
+                        }
+                    }).fail(function () {
+                        alert("Erro ao buscar o CEP. Tente novamente.");
+                    });
+                } else {
+                    alert("CEP inválido.");
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

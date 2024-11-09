@@ -62,7 +62,7 @@ namespace sistema_crm.Controllers
                 objDAL.ExecutarComandoSQL(sqlItem);
             }
 
-            return RedirectToAction("Lista", "Proposta");
+            return RedirectToAction("Lista", "PropostaUsuario");
           
         }
 
@@ -92,7 +92,7 @@ namespace sistema_crm.Controllers
                 }
             }
 
-            return RedirectToAction("Lista", "Proposta");
+            return RedirectToAction("Lista", "PropostaUsuario");
         }
 
         public IActionResult CadastrarProposta()

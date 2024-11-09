@@ -247,8 +247,31 @@ namespace sistema_crm.Models
 
 
 
-             }
+        }
 
+        public void AtualizarProposta(int id)
+        {
+            DAL objDAL = new DAL();
+
+
+            // Atualiza os dados da proposta
+            string sqlProposta = $"UPDATE Propostas SET status = '{Status}', data_finalizacao='{Data_fim}' WHERE idpropostas = '{id}'";
+            objDAL.ExecutarComandoSQL(sqlProposta);
+
+            // Atualiza os itens relacionados à proposta
+            foreach (var item in Itens)
+            {
+                // Verifica se o item já existe no banco (pelo ID do item, por exemplo)
+                if (item.Id != null)
+                {
+                    // Atualiza o item existente
+                    string sqlItem = $"UPDATE item SET qtde = '{item.Qtde}', descricao = '{item.Descricao}', preco_unit = '{item.PrecoUnit}' WHERE id_item = '{item.Id}'";
+                    objDAL.ExecutarComandoSQL(sqlItem);
+                }
+
+            }
+
+        }
 
         
 

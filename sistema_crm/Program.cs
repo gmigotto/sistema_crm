@@ -1,4 +1,6 @@
 
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using MercadoPago.Config;
 using sistema_crm.Uteis;
 
@@ -7,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var mercadoPagoAccessToken = builder.Configuration["MercadoPago:AccessToken"];
 MercadoPagoConfig.AccessToken = mercadoPagoAccessToken;
 
-builder.Services.AddTransient<AsaasClient>();
+builder.Services.AddScoped<AsaasClient>();
 
 // Adicione o serviço de sessão
 builder.Services.AddDistributedMemoryCache(); // Usa memória para armazenar dados de sessão
@@ -17,6 +19,11 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // Define o cookie como HTTP only
     options.Cookie.IsEssential = true; // Torna o cookie essencial
 });
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+var wkhtmlPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "wkhtmltox", "libwkhtmltox.dll");
+CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(wkhtmlPath);
+
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

@@ -91,174 +91,253 @@
 </head>
 
 
-<body class="g-sidenav-show  bg-gray-100">
+<!-- Link para Font Awesome para os ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<body class="g-sidenav-show bg-gray-100">
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
 
-        <div class="d-flex justify-content-between align-items-start">
-
-            <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
-
-            <div class="border-radius-lg py-3 pe-1 mb-3">
-                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
-                        <canvas id="vendasChart" class="chart-canvas" width="400" height="300"></canvas>
-                </div>
-            </div>
+        <!-- Título da Página -->
+        <div class="container-fluid py-4">
+            <h2 class="text-center text-primary mb-4"><i class="fas fa-chart-line me-2"></i>Relatório de Vendas</h2>
         </div>
 
+        <!-- Botões de Relatório -->
+        <div class="container-fluid d-flex justify-content-center gap-3 mb-5">
+            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(3)" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-calendar-alt me-2"></i>Últimos 3 Meses
+            </button>
+            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(6)" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-calendar-alt me-2"></i>Últimos 6 Meses
+            </button>
+            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(12)" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-calendar-alt me-2"></i>Últimos 12 Meses
+            </button>
+        </div>
 
-        <div class="col-xl-3 col-sm-6">
-                <div class="card" style="min-width: 300px;">
-                    <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"> Valor em Negociação:</p>
-                                <h7 class="font-weight-bolder mb-0">
-                                    @try
-                                    {
-                                        @ViewBag.Relatorio.Negociacao
-                                    }
-                                    catch { },00
-                                </h7>
-                            </div>
-                        </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
+        <!-- Área de Gráficos -->
+        <div class="container-fluid d-flex flex-wrap justify-content-between gap-4">
+            <!-- Gráfico Vendas por Mês -->
+            <div class="card shadow-sm flex-grow-1 p-4" style="max-width: 70%;">
+                <h5 class="text-center text-secondary"><i class="fas fa-chart-line me-2"></i>Vendas por Mês</h5>
+                <div class="border-radius-lg py-3 pe-1 mb-3">
+                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                        <canvas id="vendasChart" class="chart-canvas" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico Vendas por Cliente -->
+            <div class="card shadow-sm flex-grow-1 p-4" style="max-width: 70%;">
+                <h5 class="text-center text-secondary"><i class="fas fa-user-friends me-2"></i>Vendas por Cliente</h5>
+                <div class="border-radius-lg py-3 pe-1 mb-3">
+                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
+                        <canvas id="vendasClientes" class="chart-canvas" width="400" height="300"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        </div>
 
-        <div class="d-flex">
-            <div class="card mb-4 flex-grow-1" style="max-width: 70%;">
+        <!-- iframes ocultos para download -->
+        <iframe id="downloadFrame" style="display: none;"></iframe>
+        <iframe id="downloadFrame" style="display: none;"></iframe>
 
-            <div class="border-radius-lg py-3 pe-1 mb-3">
-                    <div id="canvas-holder" style="position: relative; height:auto; width:100%">
-                        <canvas id="vendasClientes" class="chart-canvas" width="400" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-        </div>
-   
-     
-
-
-
-        <script>
-            var labels = [@Html.Raw(ViewBag.Labels)];
-            var valores = [@Html.Raw(ViewBag.Valores)];
-
-            // Inverte os labels e valores para ficarem em ordem decrescente
-            labels.reverse();
-            valores.reverse();
-
-            var ctx = document.getElementById('vendasChart').getContext('2d');
-            var vendasChart = new Chart(ctx, {
-                type: 'line', // Mantém o gráfico de linha
-                data: {
-                    labels: labels, // Usa os labels invertidos
-                    datasets: [{
-                        label: 'Vendas por Mês',
-                        data: valores, // Usa os valores invertidos
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: true,
-                        borderWidth: 2,
-                        tension: 0.3 // Suavidade na linha
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Vendas por Mês',
-                            font: {
-                                size: 18
-                            },
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
-                        },
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: false
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        </script>
-
-         <script>
-
-
-            var ctx = document.getElementById('vendasClientes').getContext('2d');
-             var vendasChart = new Chart(ctx, {
-                 type: 'bar',
-                 data: {
-                     labels: [@Html.Raw(ViewBag.Labels2)],
-                     datasets: [{
-                         label: 'Vendas por Clientes',
-                         data: [@Html.Raw(ViewBag.Valores2)],
-                         borderColor: 'rgba(255, 105, 180, 1)',
-                         backgroundColor: 'rgba(255, 182, 193, 0.2)',
-                         fill: true,
-                         borderWidth: 2
-                     }]
-                 },
-                 options: {
-                     responsive: true, // Responsividade ativada
-                     maintainAspectRatio: false,
-                     plugins: {
-                         title: {
-                             display: true,
-                             text: 'Vendas por Cliente', // Título do gráfico
-                             font: {
-                                 size: 18 // Tamanho da fonte do título
-                             },
-                             padding: {
-                                 top: 10, // Espaço acima do título
-                                 bottom: 30 // Espaço entre o título e o gráfico
-                             }
-                         },
-                         legend: {
-                             display: false,
-                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: false // Remove as linhas de grade do eixo y
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false // Remove as linhas de grade do eixo x
-                            }
-                        }
-                    }
-                }
-            });
-        </script>
     </main>
+
+    <style>
+        /* Estilo para um visual mais moderno */
+        h2, h5 {
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            color: #1A73E8;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-canvas {
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .text-secondary {
+            color: #6c757d !important;
+        }
+    </style>
+
+    <!-- Scripts para os gráficos e a função de geração de relatório -->
+    <script>
+        var labels = [@Html.Raw(ViewBag.Labels)];
+        var valores = [@Html.Raw(ViewBag.Valores)];
+
+        // Define a ordem dos meses desejada
+        const monthOrder = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        // Combina os labels e valores em pares para ordenação
+        var dataPairs = labels.map((label, index) => ({ label: label, valor: valores[index] }));
+
+        // Ordena os pares pela ordem dos meses
+        dataPairs.sort((a, b) => monthOrder.indexOf(a.label) - monthOrder.indexOf(b.label));
+
+        // Extrai os labels e valores ordenados
+        labels = dataPairs.map(pair => pair.label);
+        valores = dataPairs.map(pair => pair.valor);
+
+        var ctx = document.getElementById('vendasChart').getContext('2d');
+        var vendasChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Vendas por Mês',
+                    data: valores,
+                    borderColor: 'rgba(54, 162, 235, 1)', // Azul moderno
+                    backgroundColor: 'rgba(54, 162, 235, 0.3)', // Fundo translúcido
+                    fill: true,
+                    borderWidth: 2,
+                    tension: 0.4, // Suavização da linha
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)', // Pontos em cor vibrante
+                    pointRadius: 5, // Tamanho dos pontos
+                    pointHoverRadius: 7, // Tamanho dos pontos ao passar o mouse
+                    shadowOffsetX: 4, // Sombra horizontal
+                    shadowOffsetY: 4, // Sombra vertical
+                    shadowBlur: 10, // Desfoque
+                    shadowColor: 'rgba(0, 0, 0, 0.2)' // Cor da sombra
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                       
+                        font: {
+                            size: 20,
+                            family: 'Arial, sans-serif',
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#666',
+                            font: {
+                                size: 14,
+                                family: 'Arial, sans-serif'
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: '#e5e5e5' // Cor suave para as linhas de grade
+                        },
+                        ticks: {
+                            color: '#666',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#666',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+
+    <script>
+        var ctx = document.getElementById('vendasClientes').getContext('2d');
+        var vendasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(ViewBag.Labels2)],
+                datasets: [{
+                    label: 'Vendas por Clientes',
+                    data: [@Html.Raw(ViewBag.Valores2)],
+                    borderColor: 'rgba(255, 105, 180, 1)',
+                    backgroundColor: 'rgba(255, 182, 193, 0.2)',
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, // Responsividade ativada
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                       
+                        font: {
+                            size: 18 // Tamanho da fonte do título
+                        },
+                        padding: {
+                            top: 10, // Espaço acima do título
+                            bottom: 30 // Espaço entre o título e o gráfico
+                        }
+                    },
+                    legend: {
+                        display: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false // Remove as linhas de grade do eixo y
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false // Remove as linhas de grade do eixo x
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        function gerarRelatorioPDF(filtroPeriodo) {
+            // Faz uma chamada GET para o método GerarRelatoriosPDF
+            window.location.href = `/Relatorio/GerarRelatoriosPDF?filtroPeriodo=${filtroPeriodo}`;
+        }
+    </script>
 </body>

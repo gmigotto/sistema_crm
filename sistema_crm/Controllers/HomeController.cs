@@ -18,9 +18,92 @@ namespace sistema_crm.Controllers
         {
             _asaasClient = asaasClient;
         }
-        public IActionResult Menu()
+
+        public ActionResult GraficoVendas3meses()
         {
+
+            List<RelatorioModel> lista = new RelatorioModel().RetornarGraficoVendasUltimosMeses();
+            ViewBag.RetornarGraficoVendasUltimosMeses = lista;
+
+            string valores = "";
+            string labels = "";
+            string cores = "";
+
+            var random = new Random();
+            // Percorre a lista de itens para compor o gráfico de barras
+            for (int i = 0; i < lista.Count; i++)
+            {
+                valores += lista[i].Valor.ToString() + ",";
+                labels += "'" + lista[i].Mes.ToString() + "',";
+                // escolher aleatoriamente as cores para compor as barras
+                cores += "'" + String.Format("#{0:X6}", random.Next(0x1000000)) + "',";
+            }
+
+            ViewBag.Valores = valores.TrimEnd(',');
+            ViewBag.Labels = labels.TrimEnd(',');
+            ViewBag.Cores = cores.TrimEnd(',');
+
+
+            return View();
+        }
+        public ActionResult GraficoStatus()
+        {
+            List<RelatorioModel> lista = new RelatorioModel().RetornarGraficoValoresStatus();
+            ViewBag.RetornarGraficoValoresStatus = lista;
+
+            string valores = "";
+            string labels = "";
+            string cores = "";
+
+            // Percorre a lista de itens para compor o gráfico de pizza com cores específicas
+            for (int i = 0; i < lista.Count; i++)
+            {
+                valores += lista[i].Valor.ToString() + ",";
+                labels += "'" + lista[i].Status.ToString() + "',";
+
+                // Define a cor com base no status
+                if (lista[i].Status == "VENDA REALIZADA")
+                {
+                    cores += "'green',";
+                }
+                else if (lista[i].Status == "PERDIDO")
+                {
+                    cores += "'red',";
+                }
+                else if (lista[i].Status == "CANCELADO")
+                {
+                    cores += "'gray',";
+                }
+                else
+                {
+                    // Cor padrão caso o status não esteja entre as opções definidas
+                    cores += "'#CCCCCC',";
+                }
+            }
+
+            ViewBag.Valores1 = valores.TrimEnd(',');
+            ViewBag.Labels1 = labels.TrimEnd(',');
+            ViewBag.Cores1 = cores.TrimEnd(',');
+
+
+            return View();
+        }
+
+        public IActionResult Menu(VendedorModel vendedor, HomeModel home, RelatorioModel relatorio)
+        {
+            var ranking = vendedor.ObterTop5Vendedores(); // Chama a função para obter o ranking dos vendedores.
+            ViewBag.RankingVendas = ranking;
+
+            var model = home.RetornarNegociacao(); // Chama a função que retorna os dados de negociação.
+            ViewBag.Negociacao = model.Negociacao;
+
+            var taxa = home.TaxaConversaoPropostas();
+            ViewBag.Conversao = taxa;
+
             ViewBag.ActivePage = "Home";
+
+            GraficoVendas3meses();
+            GraficoStatus();
             return View();
         }
 
@@ -136,7 +219,7 @@ namespace sistema_crm.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> FinalizarCompra(PaymentModel pagamento)
+        public async Task<IActionResult> FinalizaCompra(PaymentModel pagamento)
         {
             string cpfSanitizado = pagamento.Cpf.Replace("-", "").Replace(".", "");
 
@@ -198,7 +281,7 @@ namespace sistema_crm.Controllers
 
             var response2 = await _asaasClient.CreateOrderAsync(paymentData);
 
-            return RedirectToAction("PrimeiroAcesso", "Home");
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpPost]
@@ -207,7 +290,7 @@ namespace sistema_crm.Controllers
         {
             // home.GravarGestor();
 
-            return RedirectToAction("PrimeiroAcesso", "Home");
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpGet]
@@ -242,6 +325,14 @@ namespace sistema_crm.Controllers
 
             return View();
             
+        }
+
+        public IActionResult RankingVendas(VendedorModel vendedor)
+        {
+            var dal = new DAL();
+            var ranking = vendedor.ObterTop5Vendedores(); // Supondo que este método esteja disponível no controller.
+            ViewBag.RankingVendas = ranking;
+            return View(ranking);
         }
     }
 }

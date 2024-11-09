@@ -42,6 +42,13 @@
             --bs: - gradient: none;
         }
 
+        .nav-link-text {
+            color: #FFFFFF !important;
+        }
+
+
+
+
         .input {
             display: inline-block; /* Define as caixas de texto para exibição em linha */
             width: 150px; /* Largura das caixas de texto */
@@ -60,13 +67,17 @@
             padding-top: 50px;
         }
 
+        
+
         .crm {
             margin-top: 20px;
+            color: white;
         }
 
         .user-menu {
             position: relative;
             display: inline-block;
+           
         }
 
         .username {
@@ -115,7 +126,7 @@
 
 <body class="g-sidenav-show  bg-gray-100">
 
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl bg-gray-200" id="sidenav-main" style="position: fixed; top: 0; left: 0; height: 100vh; width: 250px; overflow-y: auto;">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs bg-gradient-primary" id="sidenav-main" style="position: fixed; top: 0; left: 0; border-top-right-radius: 15px; border-bottom-right-radius: 15px;  height: 100vh; width: 250px; overflow-y: auto; opacity: 0.6;">
         <div class="sidenav-header text-center">
 
             <h2 class="crm">CRM</h2>
@@ -250,9 +261,8 @@
                                 Olá, @nome <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="dropdown-content">
-                                <a href="/Home/Profile">Perfil</a>
-                                <a href="/Home/Settings">Configurações</a>
-                                <a href="/Home/Logout">Sair</a>
+                              
+                                <a href="/Home/Login">Sair</a>
                             </div>
                         }
                         else

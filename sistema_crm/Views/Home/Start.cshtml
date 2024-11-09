@@ -8,6 +8,9 @@
 <html lang="en">
 <head>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -55,19 +58,85 @@
 </head>
 
 <body>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-        <a class="btn bg-gradient-primary btn-lg " role="button" asp-area="" asp-controller="Home" asp-action="TelaCompra">Adquira já seu CRM!</a>
 
+    <section id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="background-color: #E6E6FA; border-radius: 15px;">
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <div class="container text-center text-dark py-5">
+                    <h1 class="display-4 fw-bold">Potencialize seu Negócio com o CRM Solutions</h1>
+                    <p class="lead mt-3">Gerencie suas vendas, clientes e crescimento de maneira eficiente e integrada.</p>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="container text-center text-dark py-5">
+                    <h1 class="display-4 fw-bold">Aumente sua Produtividade</h1>
+                    <p class="lead mt-3">Automatize processos e libere tempo para o que realmente importa.</p>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="container text-center text-dark py-5">
+                    <h1 class="display-4 fw-bold">Relatórios Detalhados</h1>
+                    <p class="lead mt-3">Obtenha insights poderosos para decisões de negócio assertivas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botão centralizado abaixo do carrossel -->
+    <div class="text-center mt-4">
+        <a class="btn bg-gradient-primary btn-lg" role="button" asp-area="" asp-controller="Home" asp-action="TelaCompra">Adquira já seu CRM!</a>
     </div>
 
-    <a class="btn btn-success" role="button" asp-controller="Vendedor" asp-action="GerarDados" onclick=" ">Gerar Dados</a>
-    <a class="btn btn-success" role="button" asp-controller="Proposta" asp-action="GerarDadosPropostas" onclick=" ">Gerar Dados Proposta</a>
-    <a class="btn btn-success" role="button" asp-controller="Cliente" asp-action="GerarDadosClientes" onclick=" ">Gerar Dados Cliente</a>
 
 
-    
+
+    <!-- Seção de Benefícios -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="mb-5 fw-bold">Benefícios do CRM Solutions</h2>
+            <div class="row gy-4">
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 shadow-sm h-100">
+                        <div class="feature-icon mb-3"><i class="bi bi-person-lines-fill display-4 text-primary"></i></div>
+                        <h4 class="fw-bold">Gestão de Clientes</h4>
+                        <p class="text-muted">Organize todas as informações dos seus clientes em um só lugar, com acesso rápido e fácil.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 shadow-sm h-100">
+                        <div class="feature-icon mb-3"><i class="bi bi-graph-up display-4 text-primary"></i></div>
+                        <h4 class="fw-bold">Análise de Vendas</h4>
+                        <p class="text-muted">Acompanhe o desempenho das vendas com gráficos e relatórios detalhados e em tempo real.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 shadow-sm h-100">
+                        <div class="feature-icon mb-3"><i class="bi bi-gear-fill display-4 text-primary"></i></div>
+                        <h4 class="fw-bold">Automação de Processos</h4>
+                        <p class="text-muted">Automatize tarefas diárias para economizar tempo e aumentar a produtividade.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
 
 </body>
+
+
+
+
 
 
 

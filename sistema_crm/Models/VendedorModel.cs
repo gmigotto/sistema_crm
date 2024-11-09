@@ -7,6 +7,12 @@ using System.Data;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using static sistema_crm.Models.VendedorModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using MySql.Data.MySqlClient;
+using Grpc.Core;
+using static iTextSharp.text.pdf.AcroFields;
+using System.Text.RegularExpressions;
 
 namespace sistema_crm.Models
 {
@@ -36,6 +42,10 @@ namespace sistema_crm.Models
         public string Status { get; set; }
 
         public string DataADM { get; set; }
+
+        public double ValorVendas { get; set; }
+
+        
 
         public virtual ICollection<AtividadeModel> Atividades { get; set; }
         public class AtividadeModel
@@ -116,6 +126,28 @@ namespace sistema_crm.Models
             return item;
         }
 
+        public List<VendedorModel> ObterTop5Vendedores()
+        {
+            DAL objDAL = new DAL();
+            string sql = $"SELECT t1.nomevendedor AS Vendedor, SUM(t2.preco_unit * t2.qtde) AS ValorTotalVendas FROM Vendedor t1 INNER JOIN Propostas p ON t1.idvendedor = p.id_vendedor INNER JOIN Item t2 ON p.idpropostas = t2.id_proposta " +
+            "WHERE p.status = 'VENDA REALIZADA' GROUP BY t1.nomevendedor ORDER BY ValorTotalVendas DESC;";
+            DataTable dt = objDAL.RetDataTable(sql);
+
+            var ranking = new List<VendedorModel>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                ranking.Add(new VendedorModel
+                {
+                    Nome = row["Vendedor"].ToString(),
+                    ValorVendas = Convert.ToDouble(row["ValorTotalVendas"])
+                });
+            }
+
+            return ranking;
+
+        }
+
         public void Gravar()
         {
             DAL objDAL = new DAL();
@@ -134,6 +166,25 @@ namespace sistema_crm.Models
 
 
         }
+
+
+        public void Insert()
+        {
+            DAL objDAL = new DAL();
+            string sql = string.Empty;
+            string data = DateTime.Now.Date.ToString("yyyy/MM/dd");
+           
+
+
+            sql = $"INSERT INTO Vendedor (nomevendedor, nascimento, cpf, telefone, endereco, email, senha, status, data_admicao) VALUES('{Nome}', '{Nascimento}', '{CPF}', '{Telefone}', '{Endereco}', '{Email}', '{Senha}', '{Status}', '{DataADM}')";
+
+
+
+            objDAL.ExecutarComandoSQL(sql);
+
+
+        }
+
 
         public void Update()
         {
@@ -236,10 +287,49 @@ namespace sistema_crm.Models
             return item;
         }
 
+        public double ObterVendasVendedorMes(int id)
+        {
+            DAL objDAL = new DAL();
+
+
+            string sql = "SELECT SUM(t1.qtde * t1.preco_unit) AS total_vendas " +
+                      "FROM item t1 " +
+                      "JOIN propostas t2 ON t1.id_proposta = t2.idpropostas " +
+                      "WHERE t2.status = 'VENDA REALIZADA' " +
+                      "AND MONTH(t2.data_finalizacao) = MONTH(CURDATE()) " +
+                      "AND YEAR(t2.data_finalizacao) = YEAR(CURDATE()) " +
+                      "AND t2.id_vendedor = @id;";
+
+            // Parâmetros SQL para o total de vendas
+            var parametrosVendas = new Dictionary<string, object>
+            {
+                { "@id", id }
+            };
+
+            // Executa a query para buscar o total de vendas do vendedor
+           DataTable dtVendas = objDAL.RetornarDataTable(sql, parametrosVendas);
+
+            double totalVendas = 0;
+
+            if (dtVendas.Columns.Contains("total_vendas") && dtVendas.Rows[0]["total_vendas"] != DBNull.Value)
+            {
+
+                totalVendas = Convert.ToDouble(dtVendas.Rows[0]["total_vendas"]);
+            }
+            else
+            {
+                // Se a coluna não existir ou for nula, totalVendas será 0
+                totalVendas = 0;
+                Console.WriteLine("Nenhuma venda realizada ou coluna 'total_vendas' não encontrada.");
+            }
+
+            return totalVendas ;
+        }
+
         public double ObterVendasDoMes()
         {
             DAL objDAL = new DAL();
-            
+
 
             string sql = $"SELECT SUM(t1.qtde * t1.preco_unit) AS total_negociacao FROM item t1 JOIN propostas t2 ON t1.id_proposta = t2.idpropostas " +
                 "WHERE t2.status = 'VENDA REALIZADA' AND MONTH(t2.data) = MONTH(CURDATE()) AND YEAR(t2.data) = YEAR(CURDATE());";
@@ -267,6 +357,8 @@ namespace sistema_crm.Models
 
             return vendedorVendas;
         }
+
+        
 
         public List<ClienteModel> RetornarListaClientes()
         {

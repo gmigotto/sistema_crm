@@ -1,13 +1,18 @@
-﻿@model RelatorioModel
+﻿@model HomeModel
 
 @{
     ViewData["Title"] = "Menu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
@@ -63,44 +68,35 @@
             margin-top: 20px;
         }
 
-        .cardmeta {
-            background-color: white;
-            padding: 18px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 300px;
+        /* Centralização dos textos no card */
+
+
+        /* Cor do valor em rosa */
+
+
+        .vendas-valor {
+            color: #CB0C9F;
         }
 
+        /* Estilos da barra de progresso */
         .barra-progresso {
             width: 100%;
-            background-color: #ddd;
-            border-radius: 20px;
-            margin: 20px 0;
-        }
-
-        .progresso {
-            font-size: 2em;
-            color: #4CAF50;
-            margin: 20px 0;
-        }
-
-        .barra-progresso {
-            width: 100%;
-            background-color: #ddd;
-            border-radius: 20px;
-            margin: 20px 0;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 10px;
         }
 
         .barra-preenchida {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 20px;
-            text-align: right;
-            padding-right: 10px;
+            height: 100%;
+            text-align: center;
             color: white;
+            font-weight: bold;
             line-height: 20px;
+            border-radius: 5px;
         }
+    </style>
 
     </style>
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
@@ -114,23 +110,28 @@
 <body class="g-sidenav-show  bg-gray-100">
 
 
-    
+
 
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
 
         <header>
-            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
-                <div class="container-fluid py-1 px-3">
-                    <nav aria-label="breadcrumb">
-                       
-                        <h6 class="font-weight-bolder mb-0">Dashboard</h6>
-                    </nav>
-               <div/>
+            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl bg-white mb-4">
+                <div class="container-fluid py-2 px-3">
+                    <div class="d-flex align-items-center">
+                        <!-- Ícone atualizado para Dashboard com margem adicional -->
+                        <i class="bi bi-grid-3x3-gap fs-3 text-primary me-4"></i> <!-- Para Bootstrap Icons -->
+                        <!-- <i class="fas fa-chart-line fs-3 text-primary me-4"></i> --> <!-- Para Font Awesome -->
+                        <h6 class="font-weight-bold mb-0 text-dark">Dashboard</h6>
+                    </div>
+                </div>
+            </nav>
+
+
+                    <div />
 
                     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                           
                         </div>
                         <div class="navbar-collapse collapse">
                             @*<ul class="nav navbar-nav">
@@ -145,8 +146,6 @@
                             <div class="navbar-nav  justify-content-end">
                                 <div class=" navbar-nav flex-grow-1 justify-content-end">
                                     <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
-
-                                       
                                     </ul>
                                 </div>
                                 <div />
@@ -156,97 +155,169 @@
                     </div>
             </nav>
 
-         @*    <div class="col-md-12 mb-lg-0 mb-4">
-                <div class="card mt-4">
-                    <div class="card-header pb-0 p-3">
-                        <div class="row">
-                            <div class="col-6 d-flex align-items-center">
-                                <h6 class="mb-0">Sua Atividade </h6>
-                            </div>
-                            <div class="col-6 text-end">
-                                <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Card</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <div class="row">
-                        </div>
-                    </div>
-                </div>
-            </div> *@
 
-         
+
+
+
         </header>
 
-            <div class="d-flex justify-content-between">
-
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between mb-4 gap-3">
                 <!-- Primeiro bloco: Meta do mês -->
-                <div class="card mb-4 flex-grow-1" style="max-width: 45%; margin-right: 10px;">
-                    <h5>Meta do mês</h5>
-                    <span id="totalVendas">50.000,00</span>
-
-                    <p class="progresso"> <span class="vendas-valor">R$ 0,00</span></p>
-
-                    <div class="barra-progresso">
-                        <div class="barra-preenchida" style="width: 0%;">0%</div>
+                <div class="card text-center shadow-sm align-self-stretch d-flex align-items-center justify-content-center" style="flex: 1; padding: 10px;">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <h5 class="font-weight-bold text-primary">
+                            <i class="fas fa-bullseye text-warning"></i> <!-- Ícone de meta em amarelo -->
+                            Meta do Mês
+                        </h5>
+                        <span id="metaValor" class="h5 text-success">
+                            <i class="fas fa-chart-line text-success"></i> <!-- Ícone de crescimento em verde -->
+                            R$ 50.000,00
+                        </span>
+                        <h3 class="progresso mt-3">
+                            <span class="vendas-valor text-muted">
+                                <i class="fas fa-dollar-sign text-muted"></i> <!-- Ícone de valor em cinza -->
+                                R$ 0,00
+                            </span>
+                        </h3>
+                        <div class="barra-progresso mt-3">
+                            <div class="barra-preenchida" style="width: 0%;">0%</div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Segundo bloco: Valor em Negociação -->
-                <div class="col-xl-3 col-sm-6">
-                    <div class="card" style="min-width: 300px;">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"> Valor em Negociação:</p>
-                                        <h7 class="font-weight-bolder mb-0">
-                                            @try
-                                            {
-                                                @ViewBag.Relatorio.Negociacao
-                                            }
-                                            catch { },00
-                                        </h7>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                        <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="card shadow-sm rounded align-self-stretch d-flex align-items-center justify-content-center" style="flex: 1;">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <!-- Título -->
+                        <div class="text-center mb-2">
+                            <h6 class="text-primary font-weight-bold">Valor em Negociação</h6>
                         </div>
+
+                        <!-- Ícone abaixo do Título -->
+                        <div class="text-center mb-3">
+                            <i class="fas fa-balance-scale fa-2x text-warning"></i> <!-- Ícone representando negociação em amarelo -->
+                        </div>
+
+                        <!-- Valor em Negociação -->
+                        <p class="h4 font-weight-bold text-dark mb-0">
+                            @try
+                            {
+                                @ViewBag.Negociacao.ToString("C")
+                            }
+                            catch { }
+                        </p>
                     </div>
                 </div>
 
+                <!-- Terceiro bloco: Total de Propostas e Vendas Realizadas -->
+                <div class="card shadow-sm rounded p-4 align-self-stretch" style="flex: 1;">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <!-- Título do Mês -->
+                        <h5 class="text-center font-weight-bold text-primary mb-4">@ViewBag.Conversao.Mes</h5>
+
+                        <!-- Informações de Total de Propostas e Vendas Realizadas com Divisor -->
+                        <div class="d-flex justify-content-around align-items-center mb-4">
+                            <!-- Total de Propostas -->
+                            <div class="text-center mx-3">
+                                <i class="fas fa-file-alt fa-2x text-info mb-2"></i> <!-- Ícone de Propostas -->
+                                <p class="font-weight-bold text-secondary mb-0">Total de Propostas</p>
+                                <p class="h5 text-dark mb-0">@ViewBag.Conversao.TotalProposta</p>
+                            </div>
+
+                            <!-- Divisor Vertical -->
+                            <div class="border-start mx-3" style="height: 60px; border-color: #ddd;"></div>
+
+                            <!-- Vendas Realizadas -->
+                            <div class="text-center mx-3">
+                                <i class="fas fa-handshake fa-2x text-success mb-2"></i> <!-- Ícone de Vendas Realizadas -->
+                                <p class="font-weight-bold text-secondary mb-0">Vendas Realizadas</p>
+                                <p class="h5 text-dark mb-0">@ViewBag.Conversao.TotalPropostaVendas</p>
+                            </div>
+                        </div>
+
+                        <!-- Índice de Aproveitamento -->
+                        <div class="text-center mt-3">
+                            <p class="font-weight-bold text-secondary mb-2">Índice de Aproveitamento</p>
+                            @if (ViewBag.Conversao.TotalProposta > 0)
+                            {
+                                var aproveitamento = (double)ViewBag.Conversao.TotalPropostaVendas / ViewBag.Conversao.TotalProposta * 100;
+                                <div class="progress" style="height: 10px; border-radius: 5px; overflow: hidden;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @aproveitamento%; transition: width 0.5s ease;">
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Nenhum dado disponível para calcular o aproveitamento.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-       <script>
-            $(document).ready(function () {
-                // Faz uma requisição AJAX para obter o valor total de vendas
-                $.ajax({
-                    url: '@Url.Action("ObterProgressoVendas", "Vendedor")',
-                    type: 'GET',
-                    success: function (data) {
-                        if (data && data.totalVendas !== undefined) {
-                            // Formata o valor em reais
-                            let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-                            // Atualiza o elemento com o valor formatado
-                            $('#totalVendas').text(totalVendasFormatado);
-                        } else {
-                            alert("Resposta inválida do servidor.");
+
+        <!-- Gráfico Vendas 3 meses -->
+        <div class="d-flex justify-content-between">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="text-center font-weight-bold text-primary mb-3">Vendas dos Últimos 3 Meses</h4>
+                <div id="canvas-holder" class="d-flex justify-content-center">
+                    <canvas id="vendas3mesesChart" class="chart-canvas" width="600" height="300"></canvas>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <h4 class="text-center font-weight-bold text-primary mb-3">Status</h4>
+            <div id="canvas-holder" class="d-flex justify-content-center">
+                <canvas id="graficoStatus" class="chart-canvas"></canvas>
+            </div>
+        </div>
+        </div>
+        <!-- Bloco abaixo: Top 5 Vendedores por Valor de Vendas -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6 class="font-weight-bold text-primary">Top 5 Vendedores por Valor de Vendas</h6>
+                <table class="table table-striped mt-3">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Posição</th>
+                            <th scope="col">Vendedor</th>
+                            <th scope="col">Valor Total de Vendas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.RankingVendas != null)
+                        {
+                            var ranking = (List<VendedorModel>)ViewBag.RankingVendas;
+                            for (int i = 0; i < Math.Min(5, ranking.Count); i++)
+                            {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@ranking[i].Nome</td>
+                                    <td>@ranking[i].ValorVendas.ToString("C")</td>
+                                </tr>
+                            }
                         }
-                    },
-                    },
-                    error: function () {
-                        alert("Erro ao carregar o valor total de vendas.");
-                    }
-                });
-            });
-       </script>
-        
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhum dado disponível.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+       
+
+        <!-- Scripts necessários -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
         <script>
             $(document).ready(function () {
                 // Função para buscar o progresso das vendas do mês
@@ -255,13 +326,33 @@
                         url: '/Vendedor/ObterProgressoVendas',
                         type: 'GET',
                         success: function (data) {
-                            // Atualiza o valor total das vendas e da meta no frontend
-                            $('.meta-valor').text('R$ ' + data.meta.toFixed(2));
-                            $('.vendas-valor').text('R$ ' + data.totalVendas.toFixed(2));
+                            if (data && data.totalVendas !== undefined && data.meta !== undefined) {
+                                let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                let metaFormatada = parseFloat(data.meta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-                            // Calcula o progresso em porcentagem e atualiza a barra de progresso
-                            var progressoPercent = Math.round(data.progresso) + '%';
-                            $('.barra-preenchida').css('width', progressoPercent).text(progressoPercent);
+                                $('#metaValor').text(metaFormatada);
+                                $('.vendas-valor').text(totalVendasFormatado);
+
+                                let progressoPercent = Math.min(Math.round((data.totalVendas / data.meta) * 100), 100);
+                                let progressoText = progressoPercent + '%';
+
+                                // Atualiza a largura da barra e define a cor com base no progresso
+                                let barra = $('.barra-preenchida');
+                                barra.css('width', progressoText).text(progressoText);
+
+                                if (progressoPercent < 60) {
+                                    barra.css('background-color', 'red');
+                                } else if (progressoPercent < 95) {
+                                    barra.css('background-color', 'yellow');
+                                } else {
+                                    barra.css('background-color', 'green');
+                                }
+                            } else {
+                                alert("Resposta inválida do servidor.");
+                            }
+                        },
+                        error: function () {
+                            alert("Erro ao carregar o valor total de vendas.");
                         }
                     });
                 }
@@ -270,6 +361,129 @@
                 atualizarProgressoVendasDoMes();
             });
         </script>
-       
+
+
+        <script>
+            // Gráfico de Vendas dos 3 Últimos Meses
+            var labels = [@Html.Raw(ViewBag.Labels)];
+            var valores = [@Html.Raw(ViewBag.Valores)];
+
+            // Filtra os últimos 3 elementos
+            labels = labels.slice(-3);
+            valores = valores.slice(-3);
+
+            var ctx = document.getElementById('vendas3mesesChart').getContext('2d');
+            var vendasChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Vendas dos Últimos 3 Meses',
+                        data: valores,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointBorderColor: 'rgba(75, 192, 192, 1)',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            align: 'top',
+                            formatter: function (value) {
+                                return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                            },
+                            color: '#333',
+                            font: { weight: 'bold' },
+                            anchor: 'end',
+                            clamp: true
+                        },
+                        title: {
+                            display: true,
+                            font: { size: 18 },
+                            padding: { top: 10, bottom: 30 }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.raw.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { display: false, beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+
+            // Gráfico de Status de Vendas
+            var labels = [@Html.Raw(ViewBag.Labels1)];
+            var valores = [@Html.Raw(ViewBag.Valores1)];
+            var cores = [@Html.Raw(ViewBag.Cores1)]; // Mantendo as cores do backend diretamente
+
+            // Configuração do gráfico de rosca com Chart.js
+            var ctx = document.getElementById('graficoStatus').getContext('2d');
+            var graficoStatus = new Chart(ctx, {
+                type: 'doughnut',  // Define o gráfico como rosca
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: cores,  // Usando as cores diretamente
+                        borderColor: '#FFFFFF',  // borda branca para sofisticação
+                        borderWidth: 2,
+                        hoverBorderColor: '#000000'  // borda preta ao passar o mouse para destaque
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',  // Define a espessura do gráfico, mantendo o centro vazio
+                    plugins: {
+                        legend: {
+                            position: 'bottom',  // Move a legenda para baixo
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#333'  // Cor do texto da legenda
+                            }
+                        },
+                        title: {
+                            display: true,                         
+                            font: { size: 20, weight: 'bold', family: 'Arial' },
+                            color: '#333',
+                            padding: { top: 10, bottom: 20 }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: { size: 16, weight: 'bold' },
+                            bodyFont: { size: 14 },
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return labels[tooltipItem.dataIndex] + ': ' + valores[tooltipItem.dataIndex].toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
     </main>
 </body>
