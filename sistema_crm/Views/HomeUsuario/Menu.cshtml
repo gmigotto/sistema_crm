@@ -205,36 +205,19 @@
 
         <!-- Bloco abaixo: Top 5 Vendedores por Valor de Vendas -->
         <div class="card">
-            <h6>Top 5 Vendedores por Valor de Vendas</h6>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Posição</th>
-                        <th>Vendedor</th>
-                        <th>Valor Total de Vendas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (ViewBag.RankingVendas != null)
-                    {
-                        var ranking = (List<VendedorModel>)ViewBag.RankingVendas;
-                        for (int i = 0; i < ranking.Count; i++)
-                        {
-                            <tr>
-                                <td>@(i + 1)</td>
-                                <td>@ranking[i].Nome</td>
-                                <td>@ranking[i].ValorVendas.ToString("C")</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3">Nenhum dado disponível.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <h6>Atividades</h6>
+
+            <form asp-controller="VendedorUsuario" asp-action="Criar" method="post">
+              
+               <div class="form-outline mb-4">
+                 <div class="input-group">
+                 <input type="text" class="form-control" asp-for="Email" placeholder="Email" />
+                 </div>
+                 <div>
+                  <span asp-validation-for="Email" class="text-danger"></span>
+                  </div>
+              </div>
+           </form>
         </div>
 
 

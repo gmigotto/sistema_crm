@@ -15,13 +15,19 @@ namespace sistema_crm.Controllers
 
             int id = int.Parse(userId);
             var model = home.RetornarNegociacao(id);
+
+            
             
             ViewBag.Negociacao = model.Negociacao;
              return View();
         }
+
+        
         public IActionResult Index()
         {
             return View();
         }
+
+
     }
 }

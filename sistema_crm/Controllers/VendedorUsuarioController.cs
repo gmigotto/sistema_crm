@@ -18,7 +18,7 @@ using MySqlX.XDevAPI;
 
 namespace sistema_crm.Controllers
 {
-    public class VendedorController : Controller
+    public class VendedorUsuarioController : Controller
     {
         private readonly VendedorModel _context;
 
@@ -44,7 +44,7 @@ namespace sistema_crm.Controllers
         }
 
 
-        public VendedorController()
+        public VendedorUsuarioController()
         {
             _context = new VendedorModel();
         }

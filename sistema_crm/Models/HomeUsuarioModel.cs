@@ -42,16 +42,16 @@ namespace sistema_crm.Models
 
         }
 
-        public HomeModel RetornarNegociacao(int? id)
+        public HomeUsuarioModel RetornarNegociacao(int? id)
         {
-            HomeModel item;
+            HomeUsuarioModel item;
             DAL objDAL = new DAL();
             string sql = $"SELECT SUM(t1.qtde * t1.preco_unit) AS total_negociacao FROM item t1 JOIN propostas t2 on t2.idpropostas = t1.id_proposta WHERE t2.status='EM NEGOCIAÇÃO' and t2.id_vendedor='{id}';";
 
             DataTable dt = objDAL.RetDataTable(sql);
 
 
-            item = new HomeModel
+            item = new HomeUsuarioModel
             {
 
                 Negociacao = double.Parse(dt.Rows[0]["total_negociacao"].ToString())
@@ -62,9 +62,9 @@ namespace sistema_crm.Models
         }
 
 
-        public HomeModel TaxaConversaoPropostas()
+        public HomeUsuarioModel TaxaConversaoPropostas()
         {
-            HomeModel item;
+            HomeUsuarioModel item;
             DAL objDAL = new DAL();
             string sql = @"SELECT MONTHNAME(data) AS mes, 
                             COUNT(*) AS total_propostas_realizadas,
@@ -97,7 +97,7 @@ namespace sistema_crm.Models
             DataTable dt = objDAL.RetDataTable(sql);
 
 
-            item = new HomeModel
+            item = new HomeUsuarioModel
             {
                 Mes = dt.Rows[0]["mes"].ToString(),
                 TotalProposta = int.Parse(dt.Rows[0]["total_propostas_realizadas"].ToString()),
