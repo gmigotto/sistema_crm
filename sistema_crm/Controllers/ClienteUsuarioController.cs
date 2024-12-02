@@ -1,7 +1,10 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using sistema_crm.Models;
+using sistema_crm.Uteis;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using X.PagedList;
@@ -31,9 +34,9 @@ namespace sistema_crm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Lista(int? page, string searchString)
+        public IActionResult Lista(int? page, string searchString, string situacao = "todos")
         {
-            var clientes = new ClienteUsuarioModel().ListarClientes(HttpContext);
+            var clientes = new ClienteUsuarioModel().ListarClientes(HttpContext, situacao);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -42,6 +45,14 @@ namespace sistema_crm.Controllers
 
             int pageSize = 5;
             int pageNumber = (page ?? 1);
+
+            ViewBag.Situacoes = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Todos", Value = "todos", Selected = (situacao == "todos") },
+                new SelectListItem { Text = "Ativo", Value = "Ativo", Selected = (situacao == "Ativo") },
+                new SelectListItem { Text = "Inativo", Value = "Inativo", Selected = (situacao == "Inativo") },
+                new SelectListItem { Text = "Lead", Value = "Lead", Selected = (situacao == "Lead") }
+            };
 
             ViewData["CurrentFilter"] = searchString;
 
@@ -57,6 +68,8 @@ namespace sistema_crm.Controllers
                 // Carregar o registro de cliente em uma viewbag
 
                 ViewBag.Cliente = new ClienteUsuarioModel().RetornarCliente(id);
+                CarregarDados();
+
             }
 
             return View();
@@ -66,10 +79,47 @@ namespace sistema_crm.Controllers
         public IActionResult Criar()
         {
             //  ViewBag.ActivePage = "Cliente";
+            CarregarDados();
             return View();
 
 
         }
+
+        private void CarregarDados()
+        {
+            var listaVendedores = new ClienteUsuarioModel().RetornarListaVendedores();
+            ViewBag.ListaVendedores = listaVendedores ?? new List<VendedorModel>();
+        }
+        public IActionResult NomeCliente(ClienteModel cliente, int id)
+        {
+            DAL objDAL = new DAL();
+
+            // Busca os dados do vendedor
+            string sqlCliente = "SELECT * FROM Clientes WHERE idclientes = @id";
+
+            // Adicione o valor do parâmetro `@id`
+            var parametrosCliente = new Dictionary<string, object>
+            {
+                { "@id", id } // 'id' deve ser a variável que armazena o ID do vendedor
+            };
+
+            // Executa a query para buscar o vendedor
+            DataTable dtCliente = objDAL.RetornarDataTable(sqlCliente, parametrosCliente);
+
+            if (dtCliente.Rows.Count > 0)
+            {
+                // Mapeia o resultado da query para o modelo `VendedorModel`
+                cliente = new ClienteModel
+                {
+                    Id = dtCliente.Rows[0]["idclientes"].ToString(),
+                    Nome = dtCliente.Rows[0]["nomeclientes"].ToString()
+                };
+            }
+
+            ViewBag.Clientes = cliente;
+            return View();
+        }
+
 
         [HttpPost]
         public IActionResult Criar(ClienteUsuarioModel cliente)
@@ -79,11 +129,13 @@ namespace sistema_crm.Controllers
             if (!ValidarCNPJ(cliente.CNPJ))
             {
                 ModelState.AddModelError("CNPJ", "CNPJ inválido");
+                CarregarDados();
                 return View();
             }
             else
             {
                 cliente.Gravar(HttpContext);
+                CarregarDados();
                 return RedirectToAction("Lista", "ClienteUsuario");
             }
 
@@ -138,6 +190,7 @@ namespace sistema_crm.Controllers
         {
 
             ViewBag.VendedorId = HttpContext.Session.GetString("IdUsuarioLogado");
+            CarregarDados();
             cliente.Gravar(HttpContext);
             return RedirectToAction("Lista", "ClienteUsuario");
 

@@ -62,7 +62,7 @@ namespace sistema_crm.Controllers
                 string sqlItem = $"INSERT INTO item (id_proposta, qtde, descricao, preco_unit) VALUES ('{idProposta}', '{item.Qtde}', '{item.Descricao}', '{item.PrecoUnit}')";
                 objDAL.ExecutarComandoSQL(sqlItem);
             }
-
+            TempData["SuccessMessage"] = "Proposta cadastrada com sucesso!";
             return RedirectToAction("Lista", "Proposta");
           
         }
@@ -128,9 +128,11 @@ namespace sistema_crm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Lista(int? page, string vendedorId, string clienteId, string status)
+        public IActionResult Lista(int? page, string vendedorId, string clienteId, string status, string searchString)
         {
             var propostas = new PropostaModel().ListaPropostas(); // Carrega todas as propostas
+
+
 
             // Aplicar filtros, se houver
             if (!string.IsNullOrEmpty(vendedorId))
@@ -322,16 +324,16 @@ namespace sistema_crm.Controllers
                 .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
                 .RuleFor(p => p.Cliente_id, (f, p) => f.PickRandom(clientesExistentes)) 
                  .RuleFor(p => p.Vendedor_id, (f, p) => f.PickRandom(vendedoresExistentes))
-                .RuleFor(p => p.Data, f => f.Date.Past(1).ToString("dd/MM/yyyy"))
+                .RuleFor(p => p.Data, f => f.Date.Between(new DateTime(2024, 1, 1), new DateTime(2024, 11, 30)).ToString("dd/MM/yyyy"))
                 .RuleFor(p => p.Status, f => f.PickRandom(new[] { "EM NEGOCIAÇÃO", "VENDA REALIZADA", "CANCELADO", "PERDIDO" }))
-               .RuleFor(p => p.Data_fim, (f, p) => p.Status == "EM NEGOCIACAO" ? "" : f.Date.Future(1).ToString("dd/MM/yyyy")) // Data_fim vazia se Status for "EM NEGOCIACAO"
+               .RuleFor(p => p.Data_fim, (f, p) => p.Status == "EM NEGOCIAÇÃO" ? "" : f.Date.Between(new DateTime(2024, 1, 1), new DateTime(2024, 11, 30)).ToString("dd/MM/yyyy")) // Data_fim vazia se Status for "EM NEGOCIACAO"
                 .RuleFor(p => p.DataDe, f => f.Date.Past(1))
                 .RuleFor(p => p.DataAte, f => f.Date.Future(1))
                 .RuleFor(p => p.ValorTotal, f => f.Random.Double(5000, 50000))
                 .RuleFor(p => p.Itens, f => itemFaker.Generate(f.Random.Int(1, 5))); // Gera de 1 a 5 itens para cada proposta
 
             // Gera 1000 propostas falsas
-            List<PropostaModel> propostasFalsas = propostaFaker.Generate(5);
+            List<PropostaModel> propostasFalsas = propostaFaker.Generate(20);
 
             // Aqui você pode inserir as propostas geradas no banco de dados
             foreach (var proposta in propostasFalsas)

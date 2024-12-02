@@ -1,4 +1,4 @@
-﻿@using sistema_crm.Models
+﻿﻿@using sistema_crm.Models
 @using System.Linq;
 
 @{
@@ -10,27 +10,21 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
     <title>
-        Cadastro de Vendedores
+        Atividade de Vendedores
     </title>
-    <!--     Fonts and icons     -->
+    <!-- Fonts and icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-dy7LUFfhPEZP9f2HgF7ZRfcDEqvl2HCZm3ZCB3LFAMG5KfHBZo7syCkZ2KAF5JlO+jaq4Kt5U+WUUZj+MeAGkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Nucleo Icons -->
-    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+ 
     <!-- CSS Files -->
     <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
-    <!-- Nepcha Analytics (nepcha.com) -->
-    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -86,101 +80,116 @@
             margin-top: 20px;
         }
 
+        .card-container-horizontal {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px; /* Espaçamento entre os cards */
+        }
 
+        .card {
+            flex: 1;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-body {
+            padding: 20px;
+        }
     </style>
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
-<body class= "g-sidenav-show bg-gray-100">
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-@if (ViewBag.Vendedor != null)
-        {
-            var atividades = ViewBag.Atividades as List<VendedorModel.AtividadeModel>;
-    <div class="row">
-        <h2>@ViewBag.Vendedor.Nome</h2>
+<body class="g-sidenav-show bg-gray-100">
+   
+        <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+            @if (ViewBag.Vendedor != null)
+            {
+                var atividades = ViewBag.Atividades as List<VendedorModel.AtividadeModel>;
+                <div class="row">
+                    <h2>@ViewBag.Vendedor.Nome</h2>
+                </div>
 
-        @* Converta explicitamente ViewBag.Atividades para uma lista fortemente tipada *@
-         <div class="card mb-4 flex-grow-1 justify-content-end" style="max-width: 20%; float: right; text-align: center;">
-         <p>Total de Vendas: @ViewBag.TotalVendas.ToString("C")</p>
-         </div>
+                <div class="card-container-horizontal">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="font-weight-bold text-primary">
+                                <i class="fas fa-bullseye text-warning"></i>
+                                Meta do Mês
+                            </h5>
+                            <span id="metaValor" class="h5 text-success">
+                                <i class="fas fa-chart-line text-success"></i>
+                                R$ 50.000,00
+                            </span>
+                        </div>
+                    </div>
 
-          
-    </div>
+                    <div class="card shadow-sm">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h5 class="font-weight-bold text-primary"> Total Vendas </h5>
+                            <p>@ViewBag.TotalVendas.ToString("C")</p>
+                        </div>
+                    </div>
 
-            <!-- Primeiro bloco: Meta do mês -->
-            <div class="card text-center shadow-sm align-self-stretch d-flex align-items-center justify-content-center" style="flex: 1; padding: 10px;">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <h5 class="font-weight-bold text-primary">
-                        <i class="fas fa-bullseye text-warning"></i> <!-- Ícone de meta em amarelo -->
-                        Meta do Mês
-                    </h5>
-                    <span id="metaValor" class="h5 text-success">
-                        <i class="fas fa-chart-line text-success"></i> <!-- Ícone de crescimento em verde -->
-                        R$ 50.000,00
-                    </span>
-                    <h3 class="progresso mt-3">
-                        <span class="vendas-valor text-muted">
-                            <i class="fas fa-dollar-sign text-muted"></i> <!-- Ícone de valor em cinza -->
-                            R$ 0,00
-                        </span>
-                    </h3>
-                    <div class="barra-progresso mt-3">
-                        <div class="barra-preenchida" style="width: 0%;">0%</div>
+                    <div class="card shadow-sm">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h5 class="font-weight-bold text-primary"> Em Negociação</h5>
+                            <p>@ViewBag.TotalNegociacao.ToString("C")</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-      <!-- Gráfico Vendas 3 meses -->
-        <div class="d-flex justify-content-between">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="text-center font-weight-bold text-primary mb-3">Vendas dos Últimos 3 Meses</h4>
-                <div id="canvas-holder" class="d-flex justify-content-center">
-                    <canvas id="vendasVendedoresChart" class="chart-canvas" width="600" height="300"></canvas>
+                <div class="card-body">
+                    <div class="card shadow-sm mb-4">
+                        <h4 class="text-center font-weight-bold text-primary mb-3">Vendas dos Últimos 3 Meses</h4>
+                        <div id="canvas-holder" class="d-flex justify-content-center">
+                            <canvas id="vendasVendedoresChart" class="chart-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-            
-        </div>
-     <div class="card">
-        @if (atividades != null && atividades.Any()){
-                    <table class="table-custom  table-striped table-hover ">
-                        <thead >
-                            <tr>
-                                <th>Descrição</th>
-                                <th>Tipo de contato</th>
-                                <th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var atividade in atividades)
-                            {
+
+                <div class="card">
+                    @if (atividades != null && atividades.Any())
+                    {
+                        <table class="table-custom table-striped table-hover">
+                            <thead>
                                 <tr>
-                                    <td>@atividade.Obs</td>
-                                    <td>@atividade.Tipo_contato</td>
-                                    <td>@atividade.DT_contato.ToString()</td>
+                                    <th>Descrição</th>
+                                    <th>Tipo de contato</th>
+                                    <th>Data</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-            
-             
-        }
-        else
-        {
-            <p>Nenhuma atividade encontrada para este vendedor.</p>
-        }
-        </div>
-    }
-    else
-    {
-        <p>Vendedor não encontrado.</p>
-    }
- 
-</main>
+                            </thead>
+                            <tbody>
+                                @foreach (var atividade in atividades)
+                                {
+                                    <tr>
+                                        <td>@atividade.Obs</td>
+                                        <td>@atividade.Tipo_contato</td>
+                                        <td>@atividade.DT_contato.ToString()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Nenhuma atividade encontrada para este vendedor.</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>Vendedor não encontrado.</p>
+            }
+
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>

@@ -113,25 +113,8 @@ namespace sistema_crm.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Criar(VendedorModel vendedor)
-        {
-            if (!ValidarCPF(vendedor.CPF))
-            {
-                ModelState.AddModelError("CPF", "CPF inválido");
-                return View();
+       
 
-
-            }
-            else
-            {
-                vendedor.Gravar();
-                return RedirectToAction("Lista", "Vendedor");
-
-            }
-
-
-        }
 
 
 
@@ -235,7 +218,7 @@ namespace sistema_crm.Controllers
 
             foreach (var vendedor in vendedoresFalsos)
             {
-                vendedor.Gravar();
+                vendedor.Insert();
             }
 
 
@@ -446,7 +429,7 @@ namespace sistema_crm.Controllers
                 // Salva todos os vendedores do CSV no banco de dados
                 foreach (var vendedor in vendedores)
                 {
-                    vendedor.Gravar(); // Supondo que você já tenha um método Insert no modelo de Vendedor
+                    vendedor.Insert(); // Supondo que você já tenha um método Insert no modelo de Vendedor
                 }
 
                 TempData["Mensagem"] = $"{vendedores.Count} vendedores foram cadastrados com sucesso!";
@@ -455,7 +438,7 @@ namespace sistema_crm.Controllers
             else if (ModelState.IsValid)
             {
                 // Cadastrar vendedor manualmente usando o formulário
-                model.Gravar();
+                model.Insert();
                 TempData["Mensagem"] = "Vendedor cadastrado com sucesso!";
                 return RedirectToAction("Lista");
             }

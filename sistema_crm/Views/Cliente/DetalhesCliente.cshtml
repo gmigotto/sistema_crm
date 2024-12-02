@@ -1,0 +1,158 @@
+﻿@using sistema_crm.Models
+@using System.Linq;
+
+@{
+    ViewData["Title"] = "Detalhes Cliente";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Detalhes Cliente</title>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+
+<body class="bg-gray-100">
+    <main class="main-content position-relative h-100 border-radius-lg">
+        @if (ViewBag.Clientes != null)
+        {
+            <div class="row mb-4">
+                <h2 class="text-center">@ViewBag.Clientes.Nome</h2>
+            </div>
+        }
+
+        <!-- Seção com Valor Médio de Compra e Propostas -->
+        <div class="container mt-4">
+            <div class="row g-4 align-items-stretch">
+                <!-- Valor Médio de Compra -->
+                <div class="col-md-6 d-flex">
+                    <div class="card text-center shadow-sm h-100 w-100 bg-white">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-wallet text-warning" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="font-weight-bold text-dark">Valor Médio de Compra</h5>
+                            <span class="h4 text-success font-weight-bold">@ViewBag.TotalMedia.ToString("C")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Propostas e Índice de Aproveitamento -->
+                <div class="col-md-6 d-flex">
+                    <div class="card text-center shadow-sm h-100 w-100 bg-white">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-chart-line text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="font-weight-bold text-dark">Propostas</h5>
+
+                            <!-- Propostas Realizadas -->
+                            <div class="my-3">
+                                <h6 class="text-secondary">Total Realizadas</h6>
+                                <span class="h5 text-success font-weight-bold">
+                                    @foreach (var proposta in ViewBag.PropostasData)
+                                    {
+                                        @proposta.TotalPropostasRealizadas
+                                    }
+                                </span>
+                            </div>
+
+                            <!-- Propostas Fechadas -->
+                            <div class="my-3">
+                                <h6 class="text-secondary">Total Fechadas</h6>
+                                <span class="h5 text-success font-weight-bold">
+                                    @foreach (var proposta in ViewBag.PropostasData)
+                                    {
+                                        @proposta.TotalPropostasVendidas
+                                    }
+                                </span>
+                            </div>
+
+                            <!-- Índice de Aproveitamento -->
+                            <div class="my-3">
+                                @foreach (var proposta in ViewBag.PropostasData)
+                                {
+                                    double aproveitamento = proposta.TotalPropostasRealizadas > 0
+                                    ? ((double)proposta.TotalPropostasVendidas / proposta.TotalPropostasRealizadas) * 100
+                                    : 0;
+
+                                    <h6 class="text-secondary">Índice de Aproveitamento</h6>
+                                    <span class="h5 text-info font-weight-bold">
+                                        @aproveitamento.ToString("F2")%
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Vendas -->
+        <div class="card shadow-sm mb-4 mt-5">
+            <div class="card-body">
+                <h4 class="text-center font-weight-bold text-primary mb-3">Vendas por Mês</h4>
+                <div id="canvas-holder" class="d-flex justify-content-center">
+                    <canvas id="vendasChart" class="chart-canvas" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Gráfico Script -->
+    <script>
+        var labels = [@Html.Raw(ViewBag.Labels)];
+        var valores = [@Html.Raw(ViewBag.Valores)];
+
+        const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        var dataPairs = labels.map((label, index) => ({ label: label, valor: valores[index] }));
+        dataPairs.sort((a, b) => monthOrder.indexOf(a.label) - monthOrder.indexOf(b.label));
+
+        labels = dataPairs.map(pair => pair.label);
+        valores = dataPairs.map(pair => pair.valor);
+
+        var ctx = document.getElementById('vendasChart').getContext('2d');
+        var vendasChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Vendas por Mês',
+                    data: valores,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.3)',
+                    fill: true,
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                },
+                scales: {
+                    y: { beginAtZero: true },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

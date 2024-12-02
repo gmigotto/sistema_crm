@@ -2,12 +2,14 @@
 using DinkToPdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using sistema_crm.Models;
 using sistema_crm.Uteis;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using X.PagedList;
+using static sistema_crm.Models.VendedorModel;
 
 namespace sistema_crm.Controllers
 {
@@ -15,7 +17,7 @@ namespace sistema_crm.Controllers
     {
 
         [HttpGet]
-        public IActionResult DownloadVendedoresCsv()
+        public IActionResult DownloadClientesCsv()
         {
             var clienteModel = new ClienteModel();
             var clientes = clienteModel.ListarClientes(); // Obtenha a lista de clientes
@@ -34,9 +36,9 @@ namespace sistema_crm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Lista(int? page, string searchString)
+        public IActionResult Lista(int? page, string searchString, string situacao = "todos")
         {
-            var clientes = new ClienteModel().ListarClientes();
+            var clientes = new ClienteModel().ListarClientes(situacao);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -46,6 +48,16 @@ namespace sistema_crm.Controllers
             int pageSize = 5;
             int pageNumber = (page ?? 1);
 
+
+            ViewBag.Situacoes = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Todos", Value = "todos", Selected = (situacao == "todos") },
+                new SelectListItem { Text = "Ativo", Value = "Ativo", Selected = (situacao == "Ativo") },
+                new SelectListItem { Text = "Inativo", Value = "Inativo", Selected = (situacao == "Inativo") },
+                new SelectListItem { Text = "Lead", Value = "Lead", Selected = (situacao == "Lead") }
+            };
+
+            // Mantém o filtro de busca atual
             ViewData["CurrentFilter"] = searchString;
 
             return View(clientes.ToPagedList(pageNumber, pageSize));
@@ -60,6 +72,8 @@ namespace sistema_crm.Controllers
                 // Carregar o registro de cliente em uma viewbag
 
                 ViewBag.Cliente = new ClienteModel().RetornarCliente(id);
+                CarregarDados();
+
             }
 
             return View();
@@ -69,31 +83,253 @@ namespace sistema_crm.Controllers
         public IActionResult Criar()
         {
             //  ViewBag.ActivePage = "Cliente";
+            CarregarDados();
             return View();
 
 
         }
 
+
+        public IActionResult NomeCliente(ClienteModel cliente, int id)
+        {
+            DAL objDAL = new DAL();
+
+            // Busca os dados do vendedor
+            string sqlCliente = "SELECT * FROM Clientes WHERE idclientes = @id";
+
+            // Adicione o valor do parâmetro `@id`
+            var parametrosCliente = new Dictionary<string, object>
+            {
+                { "@id", id } // 'id' deve ser a variável que armazena o ID do vendedor
+            };
+
+            // Executa a query para buscar o vendedor
+            DataTable dtCliente = objDAL.RetornarDataTable(sqlCliente, parametrosCliente);
+
+            if (dtCliente.Rows.Count > 0)
+            {
+                // Mapeia o resultado da query para o modelo `VendedorModel`
+                cliente = new ClienteModel
+                {
+                    Id = dtCliente.Rows[0]["idclientes"].ToString(),
+                    Nome = dtCliente.Rows[0]["nomeclientes"].ToString()
+                };
+            }
+
+            ViewBag.Clientes = cliente;
+            return View();
+        }
+
+        public IActionResult GraficoVendasClientes(int id)
+        {
+            List<ClienteModel> lista = new ClienteModel().RetornarGraficoValoresClientes(id);
+            ViewBag.RetornarGraficoValoresClientes = lista;
+
+            string valores = "";
+            string labels = "";
+
+            // Percorre a lista de itens para compor o gráfico de linha
+            for (int i = 0; i < lista.Count; i++)
+            {
+                valores += lista[i].Valor.ToString() + ",";
+                labels += "'" + lista[i].Mes.ToString() + "',";
+            }
+
+            ViewBag.Valores = valores.TrimEnd(',');
+            ViewBag.Labels = labels.TrimEnd(',');
+
+            return View();
+
+        }
+
+      
+
+        public IActionResult RetornarMediaCliente(ClienteModel cliente, int id)
+        {
+            DAL objDAL = new DAL();
+            string sqlTotalMedia = @"WITH Meses AS (
+                    SELECT 1 AS mes_num, 'January' AS mes
+                    UNION ALL SELECT 2, 'February'
+                    UNION ALL SELECT 3, 'March'
+                    UNION ALL SELECT 4, 'April'
+                    UNION ALL SELECT 5, 'May'
+                    UNION ALL SELECT 6, 'June'
+                    UNION ALL SELECT 7, 'July'
+                    UNION ALL SELECT 8, 'August'
+                    UNION ALL SELECT 9, 'September'
+                    UNION ALL SELECT 10, 'October'
+                    UNION ALL SELECT 11, 'November'
+                    UNION ALL SELECT 12, 'December'
+                )
+                SELECT 
+                    t3.nomeclientes,
+                    ROUND(COALESCE(AVG(vendas.total_vendas), 0), 2) AS valor_medio_vendas
+                FROM 
+                    (SELECT idclientes, nomeclientes FROM clientes WHERE idclientes = @id) t3
+                LEFT JOIN (
+                    SELECT 
+                        t2.id_clientes,
+                        SUM(t1.qtde * t1.preco_unit) AS total_vendas,
+                        MONTH(t2.data_finalizacao) AS mes_num
+                    FROM 
+                        item t1
+                    JOIN 
+                        propostas t2 ON t2.idpropostas = t1.id_proposta
+                    WHERE 
+                        t2.status = 'VENDA REALIZADA'
+                    GROUP BY 
+                        t2.id_clientes, MONTH(t2.data_finalizacao)
+                ) vendas ON t3.idclientes = vendas.id_clientes
+                GROUP BY 
+                    t3.nomeclientes;";
+
+
+
+            // Parâmetros SQL para o total de vendas
+            var parametrosMedia = new Dictionary<string, object>
+                {
+                    { "@id", id }
+                };
+
+            // Executa a query para buscar o total de vendas do vendedor
+            DataTable dtNegociacao = objDAL.RetornarDataTable(sqlTotalMedia, parametrosMedia);
+
+            double totalNegociacao = 0; // Variável para armazenar o total de vendas
+
+
+
+            // Verifica se há resultados
+            if (dtNegociacao.Rows.Count > 0)
+            {
+                // Log para verificar as colunas retornadas
+                foreach (DataColumn column in dtNegociacao.Columns)
+                {
+                    Console.WriteLine("Coluna: " + column.ColumnName); // Verifica se 'total_vendas' está presente
+                }
+
+                // Verifica se a coluna 'total_vendas' está presente e não é nula
+                if (dtNegociacao.Columns.Contains("valor_medio_vendas") && dtNegociacao.Rows[0]["valor_medio_vendas"] != DBNull.Value)
+                {
+
+                    totalNegociacao = Convert.ToDouble(dtNegociacao.Rows[0]["valor_medio_vendas"]);
+                }
+                else
+                {
+                    // Se a coluna não existir ou for nula, totalVendas será 0
+                    totalNegociacao = 0;
+                    Console.WriteLine("Nenhuma venda realizada ou coluna 'valor_medio_vendas' não encontrada.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma linha retornada.");
+            }
+
+            ViewBag.TotalMedia = totalNegociacao;
+
+            return View();
+        }
+
+        public IActionResult RetornarPropostasCliente(ClienteModel cliente, int id)
+        {
+
+            DAL objDAL = new DAL();
+            string sql = @"SELECT 
+                    c.nomeclientes AS cliente,
+                    COUNT(*) AS total_propostas_realizadas,
+                    SUM(CASE WHEN p.status = 'VENDA REALIZADA' THEN 1 ELSE 0 END) AS total_propostas_vendidas
+                FROM 
+                    propostas p
+                JOIN 
+                    clientes c ON p.id_clientes = c.idclientes
+                WHERE 
+                    c.idclientes = @id
+
+                GROUP BY 
+                    c.nomeclientes;";
+
+
+
+            // Parâmetros SQL para o total de vendas
+            var parametrosMedia = new Dictionary<string, object>
+                {
+                    { "@id", id }
+                };
+
+            // Executa a query para buscar o total de vendas do vendedor
+            DataTable dt = objDAL.RetornarDataTable(sql, parametrosMedia);
+
+
+
+            List<object> propostasData = new List<object>();
+
+            if (dt.Rows.Count > 0)
+            {
+                // Itera sobre as linhas retornadas para construir a lista de objetos
+                foreach (DataRow row in dt.Rows)
+                {
+                    var propostaInfo = new
+                    {
+                        Cliente = row["cliente"]?.ToString(),
+                        TotalPropostasRealizadas = Convert.ToInt32(row["total_propostas_realizadas"]),
+                        TotalPropostasVendidas = Convert.ToInt32(row["total_propostas_vendidas"])
+                    };
+
+                    propostasData.Add(propostaInfo);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma informação de propostas encontrada para o cliente.");
+            }
+
+            // Passa as informações separadas para a ViewBag
+            ViewBag.PropostasData = propostasData;
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DetalhesCliente(int id, ClienteModel cliente)
+        {
+            NomeCliente(cliente, id);
+            GraficoVendasClientes(id);
+            RetornarMediaCliente(cliente, id);
+            RetornarPropostasCliente(cliente, id);
+            return View();
+        }
+
+
+
         [HttpPost]
         public IActionResult Criar(ClienteModel cliente)
         {
+            if (ModelState.IsValid)
+            {
+                // Retorna para a view com os erros de validação
+                return View();
+            }
             if (!ValidarCNPJ(cliente.CNPJ))
             {
                 ModelState.AddModelError("CNPJ", "CNPJ inválido");
+                CarregarDados();
                 return View();
             }
 
             if (cliente.CnpjExiste(cliente.CNPJ))
             {
                 ModelState.AddModelError("CNPJ", "Cliente existente");
+                CarregarDados();
                 return View();
             }
 
             cliente.Gravar();
+            
+            TempData["SuccessMessage"] = "Cliente cadastrado com sucesso!";
             return RedirectToAction("Lista", "Cliente");
 
 
         }
+
 
         public JsonResult VerificarCNPJ(string cnpj, ClienteModel cliente)
         {
@@ -155,7 +391,7 @@ namespace sistema_crm.Controllers
         public IActionResult Editar(ClienteModel cliente)
         {
 
-
+            CarregarDados();
             cliente.Gravar();
             return RedirectToAction("Lista", "Cliente");
 
@@ -175,6 +411,12 @@ namespace sistema_crm.Controllers
         {
             new ClienteModel().Excluir(id);
             return View();
+        }
+
+        private void CarregarDados()
+        {
+            var listaVendedores = new ClienteModel().RetornarListaVendedores();
+            ViewBag.ListaVendedores = listaVendedores ?? new List<VendedorModel>();
         }
 
         public IActionResult GerarDadosClientes()

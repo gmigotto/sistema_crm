@@ -1,7 +1,8 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "";
     Layout = "../Shared/_Layout.cshtml";
+
+
 }
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
@@ -90,7 +91,6 @@
 
 </head>
 
-
 <!-- Link para Font Awesome para os ícones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -102,23 +102,68 @@
             <h2 class="text-center text-primary mb-4"><i class="fas fa-chart-line me-2"></i>Relatório de Vendas</h2>
         </div>
 
-        <!-- Botões de Relatório -->
-        <div class="container-fluid d-flex justify-content-center gap-3 mb-5">
-            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(3)" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-calendar-alt me-2"></i>Últimos 3 Meses
-            </button>
-            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(6)" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-calendar-alt me-2"></i>Últimos 6 Meses
-            </button>
-            <button id="gerarRelatorioBtn" onclick="gerarRelatorioPDF(12)" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-calendar-alt me-2"></i>Últimos 12 Meses
-            </button>
+        <div class="container-fluid d-flex flex-wrap justify-content-center gap-4 mb-4">
+            <!-- Card 1: Relatórios de Vendas -->
+            <div class="card shadow-sm p-4" style="max-width: 45%; min-width: 300px;">
+                <h5 class="text-center text-secondary"><i class="fas fa-chart-line me-2"></i>Relatórios de Vendas</h5>
+                <div class="border-radius-lg py-3 text-center">
+                    <p class="text-muted mb-4">Visualize os relatórios de vendas dos últimos meses.</p>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex flex-column gap-3">
+                            @using (Html.BeginForm("GerarRelatoriosPDF", "Relatorio", FormMethod.Get))
+                            {
+                              
+                                   <label for="dataInicio" class="form-label">Data Início:</label>
+                                  <input type="date" id="dataInicio" name="dataInicio" class="form-control"  required />
+                                
+                                <label for="dataFim" class="form-label">Data Fim:</label>
+                                <input type="date" id="dataFim" name="dataFim" class="form-control" required />
+                                
+
+                                <button type="submit" class="btn btn-outline-primary">Gerar Relatório</button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Relatórios de Clientes -->
+            <div class="card shadow-sm p-4" style="max-width: 45%; min-width: 300px;">
+                <h5 class="text-center text-secondary"><i class="fas fa-user-friends me-2"></i>Relatórios de Clientes</h5>
+                <div class="border-radius-lg py-3 text-center">
+                    <p class="text-muted mb-4">Acompanhe os relatórios detalhados de seus clientes.</p>
+                   @if (TempData["Mensagem"] != null)
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            @TempData["Mensagem"]
+                        </div>
+                    }
+                                    <div class="d-flex flex-column gap-3">
+                        @using (Html.BeginForm("GerarRelatoriosClientesPDF", "Relatorio", FormMethod.Get))
+                        {
+
+                            <label for="dataInicio" class="form-label">Data Início:</label>
+                            <input type="date" id="dataInicio" name="dataInicio" class="form-control" required  />
+
+                            <label for="dataFim" class="form-label">Data Fim:</label>
+                            <input type="date" id="dataFim" name="dataFim" class="form-control" required />
+
+                            <button type="submit" class="btn btn-outline-primary">Gerar Relatório</button>
+                        }
+                        
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Área de Gráficos -->
-        <div class="container-fluid d-flex flex-wrap justify-content-between gap-4">
+            
+
+        <script src="script.js"></script>
+        <!-- Área de Gráficos Centralizada -->
+        <div class="container-fluid d-flex flex-wrap justify-content-center gap-4" style="margin-bottom: 30px;">
             <!-- Gráfico Vendas por Mês -->
-            <div class="card shadow-sm flex-grow-1 p-4" style="max-width: 70%;">
+            <div class="card shadow-sm p-4" style="max-width: 45%;">
                 <h5 class="text-center text-secondary"><i class="fas fa-chart-line me-2"></i>Vendas por Mês</h5>
                 <div class="border-radius-lg py-3 pe-1 mb-3">
                     <div id="canvas-holder" style="position: relative; height:auto; width:100%">
@@ -126,9 +171,8 @@
                     </div>
                 </div>
             </div>
-
             <!-- Gráfico Vendas por Cliente -->
-            <div class="card shadow-sm flex-grow-1 p-4" style="max-width: 70%;">
+            <div class="card shadow-sm p-4" style="max-width: 45%;">
                 <h5 class="text-center text-secondary"><i class="fas fa-user-friends me-2"></i>Vendas por Cliente</h5>
                 <div class="border-radius-lg py-3 pe-1 mb-3">
                     <div id="canvas-holder" style="position: relative; height:auto; width:100%">
@@ -137,6 +181,30 @@
                 </div>
             </div>
         </div>
+        <div class="container-fluid d-flex flex-wrap justify-content-center gap-4" style="margin-bottom: 30px;">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h5 class="text-center text-secondary"><i class="fas fa-user-friends me-2"></i>Clientes por Segmento</h5>
+                    </div>
+                    <canvas id="graficoSegmentos" width="400" height="400"></canvas>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h5 class="text-center text-secondary"><i class="fas fa-user-friends me-2"></i>Clientes por Status</h5>
+                    </div>
+                    <canvas id="graficoStatus" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+
+
 
         <!-- iframes ocultos para download -->
         <iframe id="downloadFrame" style="display: none;"></iframe>
@@ -169,6 +237,8 @@
         .card {
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 45%;
+            width: 100%;
         }
 
         .chart-canvas {
@@ -178,6 +248,12 @@
 
         .text-secondary {
             color: #6c757d !important;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
         }
     </style>
 
@@ -218,10 +294,6 @@
                     pointBackgroundColor: 'rgba(255, 99, 132, 1)', // Pontos em cor vibrante
                     pointRadius: 5, // Tamanho dos pontos
                     pointHoverRadius: 7, // Tamanho dos pontos ao passar o mouse
-                    shadowOffsetX: 4, // Sombra horizontal
-                    shadowOffsetY: 4, // Sombra vertical
-                    shadowBlur: 10, // Desfoque
-                    shadowColor: 'rgba(0, 0, 0, 0.2)' // Cor da sombra
                 }]
             },
             options: {
@@ -230,7 +302,6 @@
                 plugins: {
                     title: {
                         display: true,
-                       
                         font: {
                             size: 20,
                             family: 'Arial, sans-serif',
@@ -299,18 +370,17 @@
                 }]
             },
             options: {
-                responsive: true, // Responsividade ativada
+                responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     title: {
                         display: true,
-                       
                         font: {
-                            size: 18 // Tamanho da fonte do título
+                            size: 18
                         },
                         padding: {
-                            top: 10, // Espaço acima do título
-                            bottom: 30 // Espaço entre o título e o gráfico
+                            top: 10,
+                            bottom: 30
                         }
                     },
                     legend: {
@@ -321,12 +391,69 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            display: false // Remove as linhas de grade do eixo y
+                            display: false
                         }
                     },
                     x: {
                         grid: {
-                            display: false // Remove as linhas de grade do eixo x
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <canvas id="graficoSegmentos" width="400" height="400"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <canvas id="graficoSegmentos" width="400" height="400"></canvas>
+
+    <script>
+        var ctx = document.getElementById('graficoSegmentos').getContext('2d');
+        var labels = @Html.Raw(ViewBag.Labels3);
+        var valores = @Html.Raw(ViewBag.Valores3);
+
+        console.log('Labels:', labels);
+        console.log('Values:', valores);
+
+        var total = valores.reduce((acc, val) => acc + val, 0); // Calcula o total dos valores
+
+        var graficoSegmentos = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: [
+                        'rgba(255, 200, 50, 0.5)',   // Laranja vibrante translúcido
+                        'rgba(255, 105, 180, 0.5)',  // Rosa vibrante translúcido
+                        'rgba(100, 149, 237, 0.5)',  // Azul claro vibrante translúcido
+                        'rgba(211, 211, 211, 0.5)',  // Cinza claro translúcido
+                        'rgba(144, 238, 144, 0.5)'   // Verde claro vibrante translúcido
+                    ],
+                    borderColor: [
+                        'rgb(255, 200, 50)',   // Laranja vibrante
+                        'rgb(255, 105, 180)',  // Rosa vibrante
+                        'rgb(100, 149, 237)',  // Azul claro vibrante
+                        'rgb(211, 211, 211)',  // Cinza claro
+                        'rgb(144, 238, 144)'   // Verde claro vibrante
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let value = context.raw; // Valor do segmento
+                                let percentage = ((value / total) * 100).toFixed(2); // Calcula a porcentagem
+                                return `${context.label}: ${percentage}%`; // Exibe o rótulo e a porcentagem
+                            }
                         }
                     }
                 }
@@ -334,9 +461,99 @@
         });
     </script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Obtém o contexto do canvas
+        var ctx = document.getElementById('graficoStatus').getContext('2d');
+
+        // Obtém os dados passados pela ViewBag
+        var labels = @Html.Raw(ViewBag.Labels4);
+        var valores = @Html.Raw(ViewBag.Valores4);
+
+        console.log('Labels:', labels); // Verifica os rótulos
+        console.log('Values:', valores); // Verifica os valores
+
+        // Calcula o total para as porcentagens
+        var total = valores.reduce((acc, val) => acc + val, 0);
+
+        // Criação do gráfico
+        var graficoStatus = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: [
+                        'rgba(255, 200, 50, 0.5)',   // Laranja translúcido
+                        'rgba(255, 105, 180, 0.5)',  // Rosa translúcido
+                        'rgba(100, 149, 237, 0.5)',  // Azul translúcido
+                        'rgba(211, 211, 211, 0.5)',  // Cinza translúcido
+                        'rgba(144, 238, 144, 0.5)'   // Verde translúcido
+                    ],
+                    borderColor: [
+                        'rgb(255, 200, 50)',   // Laranja
+                        'rgb(255, 105, 180)',  // Rosa
+                        'rgb(100, 149, 237)',  // Azul
+                        'rgb(211, 211, 211)',  // Cinza
+                        'rgb(144, 238, 144)'   // Verde
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom', // Legenda na parte inferior
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let value = context.raw; // Obtém o valor do segmento
+                                let percentage = ((value / total) * 100).toFixed(2); // Calcula a porcentagem
+                                return `${context.label}: ${percentage}%`; // Retorna o rótulo e a porcentagem
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+
+
+
+
+@* 
     <script>
         function gerarRelatorioPDF(filtroPeriodo) {
             // Faz uma chamada GET para o método GerarRelatoriosPDF
+            window.location.href = /Relatorio/GerarRelatoriosPDF ? filtroPeriodo = ${ filtroPeriodo };
+        }
+    </script>
+    <script>
+        function gerarRelatorioClientesPDF(filtroPeriodo) {
+            // Faz uma chamada GET para o método GerarRelatoriosPDF
+            window.location.href = /Relatorio/GerarRelatoriosClientesPDF ? filtroPeriodo = ${ filtroPeriodo };
+        }
+    </script> *@
+
+    <script>
+        function gerarRelatorioClientesPDF(filtroPeriodo) {
+            // Lógica para gerar o relatório de clientes
+            console.log(`Gerar relatório de clientes para os últimos ${filtroPeriodo} meses`);
+            // Exemplo de redirecionamento ou requisição:
+            window.location.href = `/Relatorio/GerarRelatoriosClientesPDF?filtroPeriodo=${filtroPeriodo}`;
+        }
+
+        function gerarRelatorioPDF(filtroPeriodo) {
+            // Lógica para gerar o relatório de vendas
+            console.log(`Gerar relatório de vendas para os últimos ${filtroPeriodo} meses`);
+            // Exemplo de redirecionamento ou requisição:
             window.location.href = `/Relatorio/GerarRelatoriosPDF?filtroPeriodo=${filtroPeriodo}`;
         }
     </script>

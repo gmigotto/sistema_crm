@@ -50,15 +50,15 @@ namespace sistema_crm.Models
 
         public bool ValidarLoginAdm()
         {
-            string sql = $"SELECT idGestores, nome FROM Gestores WHERE Email='{Email}' AND Senha='{Senha}'";
+            string sql = $"SELECT idAdmin, Nome FROM Gestores WHERE Email='{Email}' AND Senha='{Senha}'";
 
             DAL objDAL = new DAL();
 
             DataTable dt = objDAL.RetDataTable(sql);
             if (dt.Rows.Count == 1)
             {
-                Id = dt.Rows[0]["idGestores"].ToString();
-                Nome = dt.Rows[0]["nome"].ToString();
+                Id = dt.Rows[0]["idAdmin"].ToString();
+                Nome = dt.Rows[0]["Nome"].ToString();
 
 
 

@@ -119,21 +119,7 @@
                         <h6 class="font-weight-bold mb-0 text-dark">Negócios</h6>
                     </div>
              
-                    <!-- Botões e Ícones de Ação -->
-                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                        <div class="ms-md-auto d-flex align-items-center">
-                            <!-- Botão de Busca -->
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar" aria-describedby="button-addon">
-                                <!-- Espaço entre a barra e o ícone -->
-                                <div class="input-group-append" style="margin-left: 5px;">
-                                    <!-- Botão de lupa, com ícone alinhado -->
-                                    <button class="btn btn-outline-secondary" type="submit" style="height: 70%; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
-                                        <i class="fas fa-search"></i> <!-- Ícone de lupa -->
-                                    </button>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </nav>
         </header>
@@ -158,96 +144,108 @@
 
 
 
-            <div class="row">
-                <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                   
 
-
-
-                    <div class="card mb-4">
-
-                        <div class="card-header pb-0">
-                            <h6>Propostas Cadastradas</h6>
-                        </div>
-
-                        <div class="card-body px-0 pt-0 pb-2">
-                            <div class="table-responsive p-0">
-
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class=" text-center text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Nº Proposta</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Cliente</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Vendedor</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Valor</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col"> </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @{
-                                            //foreach possibilita executar um conjunto de comandos para cada elemento presente na lista
-                                            //List -> coloca no formato de lista
-
-                                            
-                                                foreach (var item in (List<PropostaModel>)ViewBag.ListaProposta){
-                                                <tr>
-                                                    <td scope="row">
-                                                    <h6 class="text-center mb-0 text-sm ">@item.Id</h6>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm"> @item.Cliente_id </h6>
-                                                        </div>
-
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <p class="mb-0 text-sm"> @item.Vendedor_id </p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                       
-
-                                                        @{
-
-                                                            string corTexto = item.Status == "EM NEGOCIAÇÃO" ? "badge badge-sm bg-gradient-primary" : "text-center";
-                                                            string corTexto2 = item.Status == "PERDIDO" ? "badge badge-sm bg-gradient-danger" : "text-center";
-                                                            string corTexto3 = item.Status == "VENDA REALIZADA" ? "badge badge-sm bg-gradient-success" : "text-center";
-                                                            string corTexto4 = item.Status == "CANCELADO" ? "badge badge-sm bg-gradient-secondary" : "text-center";
-
-                                                        }
-                                                        <p class=" @corTexto @corTexto2 @corTexto3 @corTexto4"> @item.Status</p>
-                                                    </td>
-                                                   
-                                                    <td>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">@item.ValorTotal.ToString("C") </h6>
-                                                        </div>
-                                                    
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <button type="button" class="btn btn-primary" onclick="Editar(@item.Id)">Detalhes</button>
-
-
-                                                        </div>
-                                                    </td>
-
-                                                </tr>
-
-                                            }
-                                           
-                                           
-                                            
-                                        }
-                                    </tbody>
-                                </table>
+                        <div class="card mb-4">
+                            <div class="card-header pb-0">
+                                <!-- Filtro de Status -->
+                                <div class="mb-3 d-flex justify-content-end">
+                                    <label for="statusFilter" class="me-2 align-self-center">Filtrar por Status:</label>
+                                    <select id="statusFilter" class="form-select w-auto" onchange="filtrarStatus()">
+                                        <option value="todos">Todos</option>
+                                        <option value="EM NEGOCIAÇÃO">Em Negociação</option>
+                                        <option value="PERDIDO">Perdido</option>
+                                        <option value="VENDA REALIZADA">Venda Realizada</option>
+                                        <option value="CANCELADO">Cancelado</option>
+                                    </select>
+                                </div>
+                                <h6>Propostas Cadastradas</h6>
                             </div>
 
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Nº Proposta</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Cliente</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Vendedor</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Status</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">Valor</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col"> </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="propostasTableBody">
+                                            @{
+                                                foreach (var item in (List<PropostaModel>)ViewBag.ListaProposta)
+                                                {
+                                                    <tr data-status="@item.Status">
+                                                        <td scope="row">
+                                                            <h6 class="text-center mb-0 text-sm">@item.Id</h6>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column justify-content-center">
+                                                                <h6 class="mb-0 text-sm"> @item.Cliente_id </h6>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column justify-content-center">
+                                                                <p class="mb-0 text-sm"> @item.Vendedor_id </p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @{
+                                                                string corTexto = item.Status == "EM NEGOCIAÇÃO" ? "badge badge-sm bg-gradient-primary" :
+                                                                item.Status == "PERDIDO" ? "badge badge-sm bg-gradient-danger" :
+                                                                item.Status == "VENDA REALIZADA" ? "badge badge-sm bg-gradient-success" :
+                                                                item.Status == "CANCELADO" ? "badge badge-sm bg-gradient-secondary" :
+                                                                "text-center";
+                                                            }
+                                                            <p class="@corTexto"> @item.Status</p>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column justify-content-center">
+                                                                <h6 class="mb-0 text-sm">@item.ValorTotal.ToString("C")</h6>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                                <button type="button" class="btn btn-primary" onclick="Editar(@item.Id)">Detalhes</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <script>
+                    function filtrarStatus() {
+                        var selectedStatus = document.getElementById("statusFilter").value;
+                        var rows = document.querySelectorAll("#propostasTableBody tr");
+
+                        rows.forEach(row => {
+                            var status = row.getAttribute("data-status");
+                            if (selectedStatus === "todos" || status === selectedStatus) {
+                                row.style.display = "";
+                            } else {
+                                row.style.display = "none";
+                            }
+                        });
+                    }
+
+                    function Editar(id) {
+                        window.location.href = "../../Cliente/Editar/" + id;
+                    }
+                </script>
+
                 <div class="d-flex justify-content-center">
                    @*  @Html.PagedListPager(
                              Model,
@@ -262,7 +260,7 @@
                         DisplayLinkToLastPage = PagedListDisplayMode.Always,
                         DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
                         DisplayLinkToNextPage = PagedListDisplayMode.Always,
-                        Display = PagedListDisplayMode.Always
+                        Display = PagedListDisplayMode.Always       
                     }
                              ) *@
                 </div>
@@ -283,8 +281,17 @@
             }
         </script>
 
+        <script>
+            $(document).ready(function () {
+                const successMessage = '@TempData["SuccessMessage"]';
+                if (successMessage && successMessage !== "undefined" && successMessage.trim() !== "") {
+                    alert(successMessage.trim());
+                }
+            });
+        </script>
 
-        </div>
+
+       
     </main>
 </body>
 

@@ -1,0 +1,100 @@
+﻿@model sistema_crm.Models.VendedorModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cadastro de Metas</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- jQuery MaskMoney -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-maskmoney@3.0.2/dist/jquery.maskMoney.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-4">
+                <h2 class="text-center text-primary mb-4"><i class="fas fa-bullseye me-2"></i>Cadastrar Meta por Vendedor</h2>
+                <form asp-controller="Vendedor" asp-action="Meta" method="post">
+                    <div class="mb-3">
+                        <label for="ValorMeta" class="form-label"><i class="fas fa-dollar-sign me-2 text-success"></i>Valor da Meta Geral</label>
+                        <input asp-for="ValorMeta" type="text" class="form-control" id="valorMetaGeral" placeholder="Digite o valor da meta" required>
+                    </div>
+                    <div class="mb-3">
+                            <label for="dataInicio">Data de Início</label>
+                            <!-- Preenchendo automaticamente com a data do dia -->
+                            <input type="date" id="dataInicio" name="dataInicio" class="form-control"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Data_fim" class="form-label"><i class="fas fa-calendar-check me-2 text-info"></i>Data de Fim</label>
+                        <input asp-for="Data_fim" type="date" class="form-control" class="form-control" id="dataFim" required>
+                    </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        <button asp-controller="Vendedor" asp-action="Meta" type="submit" class="btn btn-primary btn-lg shadow">Salvar Meta</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+
+       
+            <div class="card mt-4 shadow-lg border-0">
+                <div class="card-body px-4 pt-4 pb-3 bg-light rounded">
+                    <h5 class="card-title text-center text-primary">Última Meta</h5>
+                    <hr class="my-3">
+                    @if (ViewBag.UltimaMeta is VendedorModel ultimaMeta)
+
+                    {
+                        <p><strong>Valor Meta:</strong> @ultimaMeta.ValorMeta.ToString("C")</p>
+                        <p><strong>Data de Início:</strong> @ultimaMeta.Data_inicio.Substring(0, 10)</p>
+                        <p><strong>Data de Fim:</strong> @ultimaMeta.Data_fim.Substring(0, 10)</p>
+                    }
+
+                    else
+
+                    {
+                        <p class="text-muted">@ViewBag.UltimaMeta</p>
+                    }
+                </div>
+            </div>
+        
+
+      
+    </div>
+
+  
+
+    <script>
+        $(document).ready(function () {
+            // Aplicar máscara de moeda no campo de valor
+            $('#valorMetaGeral').maskMoney({
+                prefix: 'R$ ',
+                allowNegative: false,
+                thousands: '.',
+                decimal: ',',
+                affixesStay: false
+            });
+        });
+    </script>
+</body>
+</html>

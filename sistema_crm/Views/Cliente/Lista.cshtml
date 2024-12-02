@@ -103,36 +103,32 @@
 
 
 <body class="g-sidenav-show  bg-gray-100">
-
-
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-
         <header>
-            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl bg-white">
-                <div class="container-fluid py-2 px-3">
+            <div class="container-fluid px-4 mt-4">
+                <nav class="navbar navbar-main navbar-expand-lg shadow-sm border-radius-xl bg-white mb-4">
                     <div class="d-flex align-items-center">
-                        <!-- Ícone de Clientes (pessoas) -->
-                        <i class="bi bi-people fs-3 text-primary me-3"></i> <!-- Para Bootstrap Icons -->
-                        <!-- <i class="fas fa-users fs-3 text-primary me-3"></i> --> <!-- Para Font Awesome -->
+                        <i class="bi bi-people fs-3 text-primary me-3"></i> <!-- Ícone de Clientes -->
                         <h6 class="font-weight-bold mb-0 text-dark">Clientes</h6>
                     </div>
 
-                    <!-- Barra de Pesquisa -->
+                    <!-- Formulário de Pesquisa -->
                     <form asp-controller="Cliente" asp-action="Lista" method="get" class="ms-auto">
                         <div class="input-group" style="max-width: 300px;">
                             <input type="text" name="searchString" class="form-control" placeholder="Buscar por cliente" value="@ViewData["CurrentFilter"]" style="border-radius: 5px;">
-                            <div class="input-group-append" style="margin-left: 5px;">
-                                <button class="btn btn-outline-secondary" type="submit" style="height: 70%; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
-                                    <i class="fas fa-search"></i> <!-- Ícone de lupa -->
+                            <div class="input-group-append ms-2">
+                                <button class="btn btn-outline-secondary" type="submit" style="display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                                    <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </div>
                     </form>
-                </div>
-            </nav>
+                </nav>
+            </div>
         </header>
 
-        <!-- Formulário de Upload com espaçamento e alinhamento -->
+
+         @* <!-- Formulário de Upload com espaçamento e alinhamento -->
         <div class="container-fluid mt-5">
             <form asp-controller="Cliente" asp-action="UploadClientes" method="post" enctype="multipart/form-data">
                 <div class="form-group">
@@ -141,7 +137,23 @@
                     <input type="submit" value="Upload" class="btn btn-primary">
                 </div>
             </form>
+        </div> *@
+
+        <!-- Formulário de Upload com espaçamento e alinhamento -->
+        <div class="container-fluid px-4 mt-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <form asp-controller="Cliente" asp-action="UploadClientes" method="post" enctype="multipart/form-data" class="d-flex flex-column">
+                        <label for="csvFile" class="form-label">Escolha um arquivo CSV:</label>
+                        <input type="file" id="csvFile" name="file" accept=".csv" class="form-control form-control-sm mb-2 w-auto" required>
+                        <input type="submit" value="Upload" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
         </div>
+
+
+     
 
 
 
@@ -161,120 +173,157 @@
             </script>
 
 
-            <div class="row">
-                <div class="col-12">
+        <div class="row">
+            <div class="col-12">
+             
 
-                    <div class="card mb-4">
+                <div class="card mb-4">
+                    <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                        <!-- Título "Clientes Cadastrados" -->
+                        <h6 class="mb-0">Clientes Cadastrados</h6>
 
-                        <div class="card-header pb-0">
-                            <h6>Clientes Cadastrados</h6>
-                        </div>
-                        <div class="card-body px-0 pt-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">NOME</th>
+                        <!-- Filtro de Situação -->
+                        <form method="get" class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center">
+                                @{
+                                    var optionsHtml = new System.Text.StringBuilder();
+                                    foreach (var situacao in (List<SelectListItem>)ViewBag.Situacoes)
+                                    {
+                                        var selected = situacao.Selected ? "selected=\"selected\"" : "";
+                                        optionsHtml.AppendLine($"<option value=\"{situacao.Value}\" {selected}>{situacao.Text}</option>");
+                                    }
+                                }
+                                <select name="situacao" class="form-select" style="width: auto; min-width: 120px;">
+                                    @Html.Raw(optionsHtml.ToString())
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </form>
+                    </div>
 
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">SITUAÇÃO</th>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">NOME</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder border-0 opacity-7 ps-2" scope="col">SITUAÇÃO</th>
+                                        <th class="text-secondary border-0 opacity-7" scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientesTableBody">
+                                    @{
+                                        foreach (var item in Model)
+                                        {
+                                            <tr data-situacao="@item.Situacao">
+                                                <td>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@item.Nome</h6>
+                                                        <p class="text-xs text-secondary mb-0">@item.CNPJ</p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        string corTexto = item.Situacao == "INATIVO" ? "badge badge-sm bg-gradient-secondary" :
+                                                        item.Situacao == "ATIVO" ? "badge badge-sm bg-gradient-success" :
+                                                        item.Situacao == "LEAD" ? "badge badge-sm bg-gradient-primary" :
+                                                        "text-center";
+                                                    }
+                                                    <p class="@corTexto"> @item.Situacao</p>
+                                                </td>
 
-                                            <th class="text-secondary border-0 opacity-7" scope="col"> </>
-                                        </tr>
-                                    </thead>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="btn-group" role="group" aria-label="Basic example">
 
-
-                                    <tbody>
-                                        @{
-                                            //foreach possibilita executar um conjunto de comandos para cada elemento presente na lista
-                                            //List -> coloca no formato de lista
-                                            foreach (var item in Model)
-                                            {
-                                                <tr>
-
-
-                                                    <td>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm"> @item.Nome </h6>
-                                                            <p class="text-xs text-secondary mb-0">@item.CNPJ</p>
-
+                                                            <a asp-controller="Cliente" asp-action="DetalhesCliente" asp-route-id="@item.Id" class="btn btn-primary">Detalhes</a>
                                                         </div>
-                                                    </td>
-
-                                                    <td>
-                                                        @{
-
-                                                            string corTexto = item.Situacao == "INATIVO" ? "badge badge-sm bg-gradient-secondary" : "text-center";
-                                                            string corTexto2 = item.Situacao == "ATIVO" ? "badge badge-sm bg-gradient-success" : "text-center";
-                                                            string corTexto3 = item.Situacao == "LEAD" ? "badge badge-sm bg-gradient-primary" : "text-center";
-                                                        }
-                                                        <p class=" @corTexto @corTexto2 @corTexto3"> @item.Situacao</p>
-                                                    </td>
-
-                                                    <td>
-                                                        <div class="d-flex justify-content-end">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-end">
                                                         <div class="btn-group" role="group" aria-label="Basic example">
                                                             <button type="button" class="btn btn-secondary" onclick="Editar(@item.Id)">Editar</button>
                                                             <button type="button" class="btn btn-danger" onclick="Excluir(@item.Id)">Excluir</button>
-
                                                         </div>
-                                                        </div>
-                                                    </td>
-
-                                                </tr>
-
-                                            }
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         }
-
-                                    </tbody>
-                                </table>
-
-                                <br />
-                            </div>
+                                    }
+                                </tbody>
+                            </table>
+                            <br />
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center">
-                        @Html.PagedListPager(
-                                 Model,
-                                 page => Url.Action("Lista", new { page }),
-                                 new PagedListRenderOptions
-                        {
-                            UlElementClasses = new[] { "pagination", "justify-content-center", "pagination-lg" }, // Aplica estilos do Bootstrap e espaçamento
-                            LiElementClasses = new[] { "page-item" },
-                            PageClasses = new[] { "page-link" },
-                            ActiveLiElementClass = "active",
-                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
-                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
-                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
-                            Display = PagedListDisplayMode.Always
-                        }
-                                 )
-                    </div>
+                </div>
+
+                <!-- Paginação -->
+                <div class="d-flex justify-content-center">
+                    @Html.PagedListPager(
+                             Model,
+                             page => Url.Action("Lista", new { page }),
+                             new PagedListRenderOptions
+                    {
+                        UlElementClasses = new[] { "pagination", "justify-content-center", "pagination-lg" },
+                        LiElementClasses = new[] { "page-item" },
+                        PageClasses = new[] { "page-link" },
+                        ActiveLiElementClass = "active",
+                        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                        Display = PagedListDisplayMode.Always
+                    }
+                             )
                 </div>
             </div>
-
-            <script>
-
-                function Editar(id) {
-                    window.location.href = "../../Cliente/Editar/" + id;
-                }
-
-                function Excluir(id) {
-
-                    var resposta = confirm("Tem certeza que deseja excluir o cliente ? ");
-
-                    if (resposta) {
-                        window.location.href = "../Cliente/ExcluirCliente/" + id;
-
-                        alert("Cliente Excluido com Sucesso!")
-                        window.location.href = "../Cliente/Lista/"
-                    }
-
-
-                }
-            </script>
-
-
         </div>
+
+        <script>
+            function filtrarSituacao() {
+                var selectedSituacao = document.getElementById("situacaoFilter").value;
+                var rows = document.querySelectorAll("#clientesTableBody tr");
+
+                rows.forEach(row => {
+                    var situacao = row.getAttribute("data-situacao");
+                    if (selectedSituacao === "todos" || situacao === selectedSituacao) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+
+            function Editar(id) {
+                window.location.href = "../../Cliente/Editar/" + id;
+            }
+
+            function Excluir(id) {
+                var resposta = confirm("Tem certeza que deseja excluir o cliente?");
+                if (resposta) {
+                    window.location.href = "../Cliente/ExcluirCliente/" + id;
+                    alert("Cliente Excluído com Sucesso!");
+                    window.location.href = "../Cliente/Lista/";
+                }
+            }
+
+            function Cliente(id) {
+             
+                    window.location.href = "../Cliente/ExcluirCliente/" + id;
+                    
+                
+            }
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                const successMessage = '@TempData["SuccessMessage"]';
+                if (successMessage && successMessage !== "undefined" && successMessage.trim() !== "") {
+                    alert(successMessage.trim());
+                }
+            });
+        </script>
+
     </main>
 </body>

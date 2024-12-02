@@ -36,20 +36,20 @@ namespace sistema_crm.Models
         {
             DAL objDAL = new DAL();
             string sql = @"
-           SELECT 
-                MONTHNAME(t1.data_finalizacao) AS mes, 
-                SUM(t2.qtde * t2.preco_unit) AS total_vendas 
-            FROM 
-                propostas t1 
-            INNER JOIN 
-                item t2 ON t1.idpropostas = t2.id_proposta
-            WHERE 
-                t1.status = 'VENDA REALIZADA' 
-                AND EXTRACT(YEAR FROM t1.data_finalizacao) = 2024 
-            GROUP BY 
-                MONTH(t1.data_finalizacao), MONTHNAME(t1.data_finalizacao)
-            ORDER BY 
-                MONTH(t1.data_finalizacao);";
+               SELECT 
+                    MONTHNAME(t1.data_finalizacao) AS mes, 
+                    SUM(t2.qtde * t2.preco_unit) AS total_vendas 
+                FROM 
+                    propostas t1 
+                INNER JOIN 
+                    item t2 ON t1.idpropostas = t2.id_proposta
+                WHERE 
+                    t1.status = 'VENDA REALIZADA' 
+                    AND EXTRACT(YEAR FROM t1.data_finalizacao) = 2024 
+                GROUP BY 
+                    MONTH(t1.data_finalizacao), MONTHNAME(t1.data_finalizacao)
+                ORDER BY 
+                    MONTH(t1.data_finalizacao);";
             DataTable dt = objDAL.RetDataTable(sql);
 
             List<RelatorioModel> lista = new List<RelatorioModel>();
@@ -113,6 +113,27 @@ namespace sistema_crm.Models
             WHERE MONTH(t1.data_finalizacao) = MONTH(CURDATE()) AND YEAR(t1.data_finalizacao) = YEAR(CURDATE())
             GROUP BY  t1.status, MONTH(t1.data_finalizacao), MONTHNAME(t1.data_finalizacao)
             ORDER BY MONTH(t1.data_finalizacao), t1.status;";
+            DataTable dt = objDAL.RetDataTable(sql);
+
+            List<RelatorioModel> lista = new List<RelatorioModel>();
+            RelatorioModel item;
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                item = new RelatorioModel();
+                item.Status = (dt.Rows[i]["status"].ToString());
+                item.Valor = double.Parse(dt.Rows[i]["total_vendas"].ToString());
+                lista.Add(item);
+            }
+            return lista;
+        }
+
+
+        public List<RelatorioModel> GraficoSegmento()
+        {
+            DAL objDAL = new DAL();
+            string sql = $" SELECT  c.segmento AS Segmento,  COUNT(*) AS QuantidadeClientes FROM clientes c GROUP BY c.segmentoORDER BY QuantidadeClientes DESC;";
+
             DataTable dt = objDAL.RetDataTable(sql);
 
             List<RelatorioModel> lista = new List<RelatorioModel>();

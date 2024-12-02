@@ -13,6 +13,8 @@ using MySql.Data.MySqlClient;
 using Grpc.Core;
 using static iTextSharp.text.pdf.AcroFields;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace sistema_crm.Models
 {
@@ -21,31 +23,49 @@ namespace sistema_crm.Models
         public int Id { get; set; }
 
 
-        [Required(ErrorMessage = "Informe nome do vendedor")]
+        [Required(ErrorMessage = "O campo Nome é obrigatório.")]
         public string Nome { get; set; }
 
+        [Required(ErrorMessage = "O campo CPF é obrigatório.")]
 
         public string CPF { get; set; }
 
+        [Required(ErrorMessage = "O campo Data de Nascimento é obrigatório.")]
+        [DataType(DataType.Date)]
         public string Nascimento { get; set; }
 
+        [Required(ErrorMessage = "O campo Telefone é obrigatório.")]
 
         public string Telefone { get; set; }
+
+        [Required(ErrorMessage = "O campo Endereço é obrigatório.")]
 
         public string Endereco { get; set; }
 
         [Required(ErrorMessage = "Informe o e-mail do vendedor")]
 
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "O campo Senha é obrigatório.")]
+        [DataType(DataType.Password)]
         public string Senha { get; set; }
+        [Required(ErrorMessage = "O campo Status é obrigatório.")]
 
         public string Status { get; set; }
-
+        [Required(ErrorMessage = "O campo Data de Admissão é obrigatório.")]
+        [DataType(DataType.Date)]
         public string DataADM { get; set; }
 
         public double ValorVendas { get; set; }
 
-        
+        public string Meta { get; set; }
+        public double ValorMeta { get; set; }
+
+        public string Data_inicio { get; set; }
+        public string Data_fim { get; set; }
+        public string Admin { get; set; }
+
+
 
         public virtual ICollection<AtividadeModel> Atividades { get; set; }
         public class AtividadeModel
@@ -64,19 +84,31 @@ namespace sistema_crm.Models
 
             public string Vendedor { get; set; }
 
+           
+
 
         }
 
         public List<VendedorModel> Vendedores { get; set; } = new List<VendedorModel>();
 
-
-        public List<VendedorModel> ListarVendedores()
+        public List<VendedorModel> ListarVendedores(string status="todos")
         {
             List<VendedorModel> lista = new List<VendedorModel>();
 
             VendedorModel item;
             DAL objDAL = new DAL();
-            string sql = $"SELECT * FROM Vendedor order by nomevendedor desc";
+            string sql = "SELECT idvendedor, nomevendedor, cpf, nascimento, email, senha, status, data_admicao FROM Vendedor";
+
+            // Adiciona o filtro de status, se necessário
+            if (status != "todos")
+            {
+                sql += $" WHERE status = '{status}'";
+            }
+
+            // Adiciona a cláusula de ordenação
+            sql += " ORDER BY nomevendedor ASC";
+
+            // Executa a consulta no banco de dados
             DataTable dt = objDAL.RetDataTable(sql);
 
             //Adiciona item por item a lista 
@@ -148,7 +180,7 @@ namespace sistema_crm.Models
 
         }
 
-        public void Gravar()
+        public void Gravar(HttpContext httpContext)
         {
             DAL objDAL = new DAL();
             string sql = string.Empty;
@@ -156,9 +188,11 @@ namespace sistema_crm.Models
             string nomeVendedor = Nome.Replace("'", "''");
             string enderecoVendedor = Endereco.Replace("'", "''");
             string emailVendedor = Email.Replace("'", "''");
-            
+            string AdminId = httpContext.Session.GetString("IdAdminLogado");
 
-            sql = $"INSERT INTO Vendedor (nomevendedor, nascimento, cpf, telefone, endereco, email, senha, status, data_admicao) VALUES('{nomeVendedor}', '{Nascimento}', '{CPF}', '{Telefone}', '{enderecoVendedor}', '{emailVendedor}', '{Senha}', '{Status}', '{DataADM}')";
+
+
+            sql = $"INSERT INTO Vendedor (nomevendedor, nascimento, cpf, telefone, endereco, email, senha, status, data_admicao, idadmin) VALUES('{nomeVendedor}', '{Nascimento}', '{CPF}', '{Telefone}', '{enderecoVendedor}', '{emailVendedor}', '{Senha}', '{Status}', '{DataADM}', '{AdminId}')";
 
 
 
@@ -200,14 +234,10 @@ namespace sistema_crm.Models
             }
 
 
-            try
-            {
+           
+            
                 objDAL.ExecutarComandoSQL(sql);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+          
 
 
         }
@@ -263,6 +293,82 @@ namespace sistema_crm.Models
 
         }
 
+
+        public void CriarMeta(HttpContext httpContext)
+        {
+            DAL objDAL = new DAL();
+            string sql = string.Empty;
+            string data = DateTime.Now.Date.ToString("yyyy/MM/dd");
+            string idAdmin = httpContext.Session.GetString("IdAdminLogado");
+
+
+            sql = $"INSERT INTO Meta (valor_meta, data_inicio, data_fim, idadmin ) VALUES('{ValorMeta}', '{data}', '{Data_fim}', '{idAdmin}')";
+
+
+
+            objDAL.ExecutarComandoSQL(sql);
+
+        }
+
+        public VendedorModel UltimaMeta()
+        {
+
+            DAL objDAL = new DAL();
+            string sql = $"SELECT * FROM meta ORDER BY id DESC LIMIT 1; ";
+            DataTable dt = objDAL.RetDataTable(sql);
+
+            if (dt.Rows.Count > 0)
+            {
+                var row = dt.Rows[0];
+
+                return new VendedorModel
+                {
+                    Id = Convert.ToInt32(dt.Rows[0]["id"]),
+                    ValorMeta = double.Parse(dt.Rows[0]["valor_meta"].ToString()),
+                    Data_inicio = DateTime.Parse(dt.Rows[0]["data_inicio"].ToString()).ToString(),
+                    Data_fim = DateTime.Parse(dt.Rows[0]["data_fim"].ToString()).ToString(),
+
+                };
+               
+
+            }
+
+
+            return null;
+        }
+
+        public double UltimoValorMeta()
+        {
+
+            DAL objDAL = new DAL();
+            string sql = $"SELECT * FROM meta ORDER BY id DESC LIMIT 1; ";
+            DataTable dt = objDAL.RetDataTable(sql);
+
+            if (dt.Rows.Count > 0)
+            {
+
+
+                return double.Parse(dt.Rows[0]["valor_meta"].ToString());
+ 
+
+            }
+
+
+            return 0;
+        }
+
+        public int ObterQuantidadeVendedoresAtivos()
+        {
+            DAL objDAL = new DAL();
+            string sql = "SELECT COUNT(*) AS qtd_vendedores_ativos FROM vendedor WHERE status = 'ativo'";
+            DataTable dt = objDAL.RetDataTable(sql);
+
+            if (dt.Rows.Count > 0)
+            {
+                return Convert.ToInt32(dt.Rows[0]["qtd_vendedores_ativos"]);
+            }
+            return 0;
+        }
         public AtividadeModel RetornarAtividades(int? id)
         {
 

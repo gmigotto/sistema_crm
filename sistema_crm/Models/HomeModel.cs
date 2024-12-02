@@ -21,6 +21,8 @@ namespace sistema_crm.Models
         public string Email { get; set; }
 
         public string Senha { get; set; }
+        public string Empresa { get; set; }
+        public string CNPJ { get; set; }
 
         public double Negociacao { get; set; }
 
@@ -36,7 +38,7 @@ namespace sistema_crm.Models
             DAL objDAL = new DAL();
             string sql = string.Empty;
 
-            sql = $"INSERT INTO Gestores(Nome, Email, Senha) VALUES('{Nome}', '{Email}', '{Senha}')";
+            sql = $"INSERT INTO Gestores(Nome, Email, Senha, Empresa, CNPJ) VALUES('{Nome}', '{Email}', '{Senha}', '{Empresa}', '{CNPJ}')";
 
             objDAL.ExecutarComandoSQL(sql);
 

@@ -80,22 +80,27 @@
 
         /* Estilos da barra de progresso */
         .barra-progresso {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            height: 20px;
-            margin-top: 10px;
+            width: 100%; /* Largura da barra */
+            background-color: #e0e0e0; /* Cor de fundo */
+            border-radius: 5px; /* Bordas arredondadas */
+            overflow: hidden; /* Ocultar o conteúdo que ultrapassa os limites */
+            height: 20px; /* Altura da barra */
+            margin-top: 10px; /* Espaço superior */
         }
 
         .barra-preenchida {
-            height: 100%;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            line-height: 20px;
-            border-radius: 5px;
+            height: 100%; /* Preenche a altura do contêiner pai */
+            width: 0%; /* Largura inicial da barra */
+            text-align: center; /* Centraliza o texto horizontalmente */
+            color: white; /* Cor do texto */
+            font-weight: bold; /* Texto em negrito */
+            line-height: 20px; /* Centraliza o texto verticalmente */
+            font-size: 14px; /* Ajuste do tamanho da fonte */
+            background-color: green; /* Cor padrão da barra */
+            border-radius: 5px 0 0 5px; /* Borda arredondada apenas no lado esquerdo */
+            transition: width 0.3s ease; /* Animação suave ao aumentar a largura */
         }
+
     </style>
 
     </style>
@@ -107,99 +112,49 @@
 
 
 
-<body class="g-sidenav-show  bg-gray-100">
-
-
-
-
-
+<body class="g-sidenav-show bg-gray-100">
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-
         <header>
             <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl bg-white mb-4">
                 <div class="container-fluid py-2 px-3">
                     <div class="d-flex align-items-center">
-                        <!-- Ícone atualizado para Dashboard com margem adicional -->
-                        <i class="bi bi-grid-3x3-gap fs-3 text-primary me-4"></i> <!-- Para Bootstrap Icons -->
-                        <!-- <i class="fas fa-chart-line fs-3 text-primary me-4"></i> --> <!-- Para Font Awesome -->
+                        <i class="bi bi-grid-3x3-gap fs-3 text-primary me-4"></i>
                         <h6 class="font-weight-bold mb-0 text-dark">Dashboard</h6>
                     </div>
                 </div>
             </nav>
-
-
-                    <div />
-
-                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        </div>
-                        <div class="navbar-collapse collapse">
-                            @*<ul class="nav navbar-nav">
-                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                            <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                            <li><a asp-area="" asp-controller="Home" asp-action="Login">Entrar no Sistema</a></li>
-                            </ul>*@
-                            @*  @using Microsoft.AspNetCore.Http
-                            @inject IHttpContextAccessor HttpContextAccessor *@
-                            <div id="NomeUsuarioLogado"></div>
-                            <div class="navbar-nav  justify-content-end">
-                                <div class=" navbar-nav flex-grow-1 justify-content-end">
-                                    <ul class="navbar-nav flex-grow-1 justify-content-end" style="margin-right:auto;">
-                                    </ul>
-                                </div>
-                                <div />
-                            </div>
-                        </div>
-
-                    </div>
-            </nav>
-
-
-
-
-
         </header>
 
         <div class="container-fluid">
             <div class="d-flex justify-content-between mb-4 gap-3">
-                <!-- Primeiro bloco: Meta do mês -->
-                <div class="card text-center shadow-sm align-self-stretch d-flex align-items-center justify-content-center" style="flex: 1; padding: 10px;">
+                <div class="card text-center shadow-sm align-self-stretch" style="flex: 1; padding: 10px;">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <h5 class="font-weight-bold text-primary">
-                            <i class="fas fa-bullseye text-warning"></i> <!-- Ícone de meta em amarelo -->
-                            Meta do Mês
+                            <i class="fas fa-bullseye text-warning"></i> Meta do Mês
                         </h5>
                         <span id="metaValor" class="h5 text-success">
-                            <i class="fas fa-chart-line text-success"></i> <!-- Ícone de crescimento em verde -->
-                            R$ 50.000,00
+                            <i class="fas fa-chart-line text-success"></i> R$ 50.000,00
                         </span>
                         <h3 class="progresso mt-3">
                             <span class="vendas-valor text-muted">
-                                <i class="fas fa-dollar-sign text-muted"></i> <!-- Ícone de valor em cinza -->
-                                R$ 0,00
+                                <i class="fas fa-dollar-sign text-muted"></i> R$ 0,00
                             </span>
                         </h3>
                         <div class="barra-progresso mt-3">
+                            <!-- A porcentagem será atualizada dinamicamente no texto dentro da barra -->
                             <div class="barra-preenchida" style="width: 0%;">0%</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Segundo bloco: Valor em Negociação -->
-                <div class="card shadow-sm rounded align-self-stretch d-flex align-items-center justify-content-center" style="flex: 1;">
+                <div class="card shadow-sm rounded align-self-stretch" style="flex: 1;">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                        <!-- Título -->
                         <div class="text-center mb-2">
                             <h6 class="text-primary font-weight-bold">Valor em Negociação</h6>
                         </div>
-
-                        <!-- Ícone abaixo do Título -->
                         <div class="text-center mb-3">
-                            <i class="fas fa-balance-scale fa-2x text-warning"></i> <!-- Ícone representando negociação em amarelo -->
+                            <i class="fas fa-balance-scale fa-2x text-warning"></i>
                         </div>
-
-                        <!-- Valor em Negociação -->
                         <p class="h4 font-weight-bold text-dark mb-0">
                             @try
                             {
@@ -210,117 +165,122 @@
                     </div>
                 </div>
 
-                <!-- Terceiro bloco: Total de Propostas e Vendas Realizadas -->
                 <div class="card shadow-sm rounded p-4 align-self-stretch" style="flex: 1;">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                        <!-- Título do Mês -->
                         <h5 class="text-center font-weight-bold text-primary mb-4">@ViewBag.Conversao.Mes</h5>
-
-                        <!-- Informações de Total de Propostas e Vendas Realizadas com Divisor -->
                         <div class="d-flex justify-content-around align-items-center mb-4">
-                            <!-- Total de Propostas -->
                             <div class="text-center mx-3">
-                                <i class="fas fa-file-alt fa-2x text-info mb-2"></i> <!-- Ícone de Propostas -->
+                                <i class="fas fa-file-alt fa-2x text-info mb-2"></i>
                                 <p class="font-weight-bold text-secondary mb-0">Total de Propostas</p>
                                 <p class="h5 text-dark mb-0">@ViewBag.Conversao.TotalProposta</p>
                             </div>
-
-                            <!-- Divisor Vertical -->
                             <div class="border-start mx-3" style="height: 60px; border-color: #ddd;"></div>
-
-                            <!-- Vendas Realizadas -->
                             <div class="text-center mx-3">
-                                <i class="fas fa-handshake fa-2x text-success mb-2"></i> <!-- Ícone de Vendas Realizadas -->
+                                <i class="fas fa-handshake fa-2x text-success mb-2"></i>
                                 <p class="font-weight-bold text-secondary mb-0">Vendas Realizadas</p>
                                 <p class="h5 text-dark mb-0">@ViewBag.Conversao.TotalPropostaVendas</p>
                             </div>
                         </div>
-
-                        <!-- Índice de Aproveitamento -->
                         <div class="text-center mt-3">
                             <p class="font-weight-bold text-secondary mb-2">Índice de Aproveitamento</p>
                             @if (ViewBag.Conversao.TotalProposta > 0)
                             {
                                 var aproveitamento = (double)ViewBag.Conversao.TotalPropostaVendas / ViewBag.Conversao.TotalProposta * 100;
-                                <div class="progress" style="height: 10px; border-radius: 5px; overflow: hidden;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: @aproveitamento%; transition: width 0.5s ease;">
-                                    </div>
-                                </div>
+                                <span class="h5 text-info font-weight-bold">
+                                    @aproveitamento.ToString("F2")%
+                                </span>
                             }
                             else
                             {
                                 <p class="text-muted">Nenhum dado disponível para calcular o aproveitamento.</p>
                             }
+
+                           
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+            <!-- Alinhamento dos gráficos com os outros cards -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h4 class="text-center font-weight-bold text-primary mb-3">Vendas dos Últimos 3 Meses</h4>
+                            <div id="canvas-holder" class="d-flex justify-content-center">
+                                <canvas id="vendas3mesesChart" class="chart-canvas" width="600" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-
-        <!-- Gráfico Vendas 3 meses -->
-        <div class="d-flex justify-content-between">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="text-center font-weight-bold text-primary mb-3">Vendas dos Últimos 3 Meses</h4>
-                <div id="canvas-holder" class="d-flex justify-content-center">
-                    <canvas id="vendas3mesesChart" class="chart-canvas" width="600" height="300"></canvas>
+                <div class="col-md-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h4 class="text-center font-weight-bold text-primary mb-3">Status</h4>
+                            <div id="canvas-holder" class="d-flex justify-content-center">
+                                <canvas id="graficoStatus" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-        </div>
 
-        <div class="card shadow-sm mb-4">
-            <h4 class="text-center font-weight-bold text-primary mb-3">Status</h4>
-            <div id="canvas-holder" class="d-flex justify-content-center">
-                <canvas id="graficoStatus" class="chart-canvas"></canvas>
-            </div>
-        </div>
-        </div>
-        <!-- Bloco abaixo: Top 5 Vendedores por Valor de Vendas -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h6 class="font-weight-bold text-primary">Top 5 Vendedores por Valor de Vendas</h6>
-                <table class="table table-striped mt-3">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Posição</th>
-                            <th scope="col">Vendedor</th>
-                            <th scope="col">Valor Total de Vendas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (ViewBag.RankingVendas != null)
-                        {
-                            var ranking = (List<VendedorModel>)ViewBag.RankingVendas;
-                            for (int i = 0; i < Math.Min(5, ranking.Count); i++)
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white text-center py-2">
+                    <!-- Reduzindo o padding -->
+                    <!-- Título centralizado e compacto -->
+                    <h6 class="mb-0 font-weight-bold">
+                        <!-- Diminuído para h6 -->
+                        <i class="fas fa-star me-2"></i>Top 5 Vendedores por Valor de Vendas
+                    </h6>
+                </div>
+                <div class="card-body p-3">
+                    <!-- Reduzido o padding do corpo -->
+                    <!-- Tabela estilizada e compacta -->
+                    <table class="table table-borderless align-middle">
+                        <thead class="bg-light text-secondary">
+                            <tr class="text-center" style="font-size: 0.9rem;">
+                                <!-- Fonte menor -->
+                                <th scope="col" class="py-2">Posição</th> <!-- Reduzido o padding -->
+                                <th scope="col" class="py-2">Vendedor</th>
+                                <th scope="col" class="py-2">Valor Total de Vendas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.RankingVendas != null)
+                            {
+                                var ranking = (List<VendedorModel>)ViewBag.RankingVendas;
+                                for (int i = 0; i < Math.Min(5, ranking.Count); i++)
+                                {
+                                    <tr class="text-center" style="font-size: 0.9rem;">
+                                        <!-- Fonte menor -->
+                                        <td class="py-2" style="font-size: 1rem; font-weight: bold;">@(i + 1)</td>
+                                        <td>@ranking[i].Nome</td>
+                                        <td class="text-success fw-bold py-2">@ranking[i].ValorVendas.ToString("C")</td>
+                                    </tr>
+                                }
+                            }
+                            else
                             {
                                 <tr>
-                                    <td>@(i + 1)</td>
-                                    <td>@ranking[i].Nome</td>
-                                    <td>@ranking[i].ValorVendas.ToString("C")</td>
+                                    <td colspan="3" class="text-center text-muted py-2" style="font-size: 0.9rem;">Nenhum dado disponível.</td>
                                 </tr>
                             }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="3" class="text-center">Nenhum dado disponível.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+
+
         </div>
-       
 
         <!-- Scripts necessários -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
         <script>
             $(document).ready(function () {
-                // Função para buscar o progresso das vendas do mês
                 function atualizarProgressoVendasDoMes() {
                     $.ajax({
                         url: '/Vendedor/ObterProgressoVendas',
@@ -330,16 +290,26 @@
                                 let totalVendasFormatado = parseFloat(data.totalVendas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                                 let metaFormatada = parseFloat(data.meta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+                                // Atualiza os valores no DOM
                                 $('#metaValor').text(metaFormatada);
                                 $('.vendas-valor').text(totalVendasFormatado);
 
+                                // Calcula a porcentagem de progresso
                                 let progressoPercent = Math.min(Math.round((data.totalVendas / data.meta) * 100), 100);
                                 let progressoText = progressoPercent + '%';
 
-                                // Atualiza a largura da barra e define a cor com base no progresso
+                                // Atualiza a barra de progresso
                                 let barra = $('.barra-preenchida');
-                                barra.css('width', progressoText).text(progressoText);
+                                barra.css({
+                                    'width': progressoText,
+                                    'display': 'flex',
+                                    'align-items': 'center',
+                                    'justify-content': 'center',
+                                    'color': 'white',
+                                    'font-weight': 'bold'
+                                }).text(progressoText);
 
+                                // Altera a cor da barra com base no progresso
                                 if (progressoPercent < 60) {
                                     barra.css('background-color', 'red');
                                 } else if (progressoPercent < 95) {
@@ -356,19 +326,13 @@
                         }
                     });
                 }
-
-                // Chama a função de atualização ao carregar a página
                 atualizarProgressoVendasDoMes();
             });
         </script>
 
-
         <script>
-            // Gráfico de Vendas dos 3 Últimos Meses
             var labels = [@Html.Raw(ViewBag.Labels)];
             var valores = [@Html.Raw(ViewBag.Valores)];
-
-            // Filtra os últimos 3 elementos
             labels = labels.slice(-3);
             valores = valores.slice(-3);
 
@@ -394,6 +358,16 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        legend: {
+                            position: 'bottom', // Coloca a legenda abaixo do gráfico
+                            labels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#333'
+                            }
+                        },
                         datalabels: {
                             display: true,
                             align: 'top',
@@ -427,45 +401,50 @@
                 plugins: [ChartDataLabels]
             });
         </script>
+
+
+        
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-
-            // Gráfico de Status de Vendas
             var labels = [@Html.Raw(ViewBag.Labels1)];
             var valores = [@Html.Raw(ViewBag.Valores1)];
-            var cores = [@Html.Raw(ViewBag.Cores1)]; // Mantendo as cores do backend diretamente
+            var cores = [@Html.Raw(ViewBag.Cores1)];
 
-            // Configuração do gráfico de rosca com Chart.js
             var ctx = document.getElementById('graficoStatus').getContext('2d');
             var graficoStatus = new Chart(ctx, {
-                type: 'doughnut',  // Define o gráfico como rosca
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{
                         data: valores,
-                        backgroundColor: cores,  // Usando as cores diretamente
-                        borderColor: '#FFFFFF',  // borda branca para sofisticação
+                        backgroundColor: cores,
+                        borderColor: '#FFFFFF',
                         borderWidth: 2,
-                        hoverBorderColor: '#000000'  // borda preta ao passar o mouse para destaque
+                        hoverBorderColor: '#000000'
                     }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: false, // Desativa o redimensionamento automático
                     maintainAspectRatio: false,
-                    cutout: '70%',  // Define a espessura do gráfico, mantendo o centro vazio
+                    cutout: '50%',
                     plugins: {
                         legend: {
-                            position: 'bottom',  // Move a legenda para baixo
+                            position: 'bottom',
                             labels: {
+                                boxWidth: 9,
+                                padding: 6,
+                                usePointStyle: true,
                                 font: {
-                                    size: 14,
-                                    weight: 'bold'
+                                    size: 10,
+                                    weight: 'normal'
                                 },
-                                color: '#333'  // Cor do texto da legenda
+                                color: '#333'
                             }
                         },
                         title: {
-                            display: true,                         
+                            display: true,
+                            text: 'Status das Vendas',
                             font: { size: 20, weight: 'bold', family: 'Arial' },
                             color: '#333',
                             padding: { top: 10, bottom: 20 }
@@ -476,7 +455,7 @@
                             titleFont: { size: 16, weight: 'bold' },
                             bodyFont: { size: 14 },
                             callbacks: {
-                                label: function(tooltipItem) {
+                                label: function (tooltipItem) {
                                     return labels[tooltipItem.dataIndex] + ': ' + valores[tooltipItem.dataIndex].toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
                                 }
                             }
@@ -485,5 +464,6 @@
                 }
             });
         </script>
+
     </main>
 </body>

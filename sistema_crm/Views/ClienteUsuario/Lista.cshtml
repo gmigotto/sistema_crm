@@ -7,13 +7,15 @@
     Layout = "../Shared/_LayoutUsuario.cshtml";
 }
 <head>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="~/lib/bootstrap/assets/img/favicon.png" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+
     <title>
         Cadastro de Vendedores
     </title>
@@ -99,48 +101,44 @@
 
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        <div class="container-fluid px-4 mt-4">
+            <nav class="navbar navbar-main navbar-expand-lg shadow-sm border-radius-xl bg-white mb-4">
+                <div class="container-fluid">
+                    <!-- Ícone e Título -->
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-people fs-3 text-primary me-3"></i> <!-- Ícone de Clientes -->
+                        <h6 class="font-weight-bold mb-0 text-dark">Clientes</h6>
+                    </div>
 
-        <header>
-            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
-                <div class="container-fluid py-1 px-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        </ol>
-                        <h6 class="font-weight-bolder mb-0">Clientes</h6>
-                    </nav>
-
-                    
-
-                </div>
-            </nav>
-        </header>
-
-
-        <div class="container-fluid py-5">
-            <form asp-controller="ClienteUsuario" asp-action="Lista" method="get">
-                <div class="d-flex justify-content-end">
-                    <div class="input-group" style="max-width: 300px;">
-                        <!-- Barra de pesquisa -->
-                        <input type="text" name="searchString" class="form-control" placeholder="Buscar por nome do cliente" value="@ViewData["CurrentFilter"]" style="border-radius: 5px;">
-
-                        <!-- Espaço entre a barra e o ícone -->
-                        <div class="input-group-append" style="margin-left: 5px;">
-                            <!-- Botão de lupa, com ícone alinhado -->
-                            <button class="btn btn-outline-secondary" type="submit" style="height: 70%; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                    <!-- Barra de pesquisa -->
+                    <form asp-controller="ClienteUsuario" asp-action="Lista" method="get" class="d-flex ms-auto">
+                        <div class="input-group" style="max-width: 300px;">
+                            <input type="text" name="searchString" class="form-control" placeholder="Buscar" value="@ViewData["CurrentFilter"]" style="border-radius: 5px;">
+                            <button class="btn btn-outline-secondary" type="submit" style="border-radius: 5px;">
                                 <i class="fas fa-search"></i> <!-- Ícone de lupa -->
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
+            </nav>
+        </div>
 
-            <form asp-controller="ClienteUsuario" asp-action="UploadClientes" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="csvFile">Escolha um arquivo CSV:</label><br>
-                    <input type="file" id="csvFile" name="file" accept=".csv" required><br><br>
-                    <input type="submit" value="Upload" class="btn btn-primary">
+        <div class="container-fluid px-4 mt-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <form asp-controller="ClienteUsuario" asp-action="UploadClientes" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="csvFile">Escolha um arquivo CSV:</label><br>
+                            <input type="file" id="csvFile" name="file" accept=".csv" required><br><br>
+                            <input type="submit" value="Upload" class="btn btn-primary">
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+        </div>
+        
+
+           
             <div class=" d-grid gap-2 d-md-flex justify-content-md-end">
                
                 <a href="@Url.Action("DownloadClientesCsv", "ClienteUsuario")" class="btn btn-primary">Download CSV</a>
@@ -161,9 +159,29 @@
 
                     <div class="card mb-4">
 
-                        <div class="card-header pb-0">
-                            <h6>Clientes Cadastrados</h6>
-                        </div>
+                    <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                        <!-- Título "Clientes Cadastrados" -->
+                        <h6 class="mb-0">Clientes Cadastrados</h6>
+
+                        <!-- Filtro de Situação -->
+                        <form method="get" class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center">
+                                @{
+                                    var optionsHtml = new System.Text.StringBuilder();
+                                    foreach (var situacao in (List<SelectListItem>)ViewBag.Situacoes)
+                                    {
+                                        var selected = situacao.Selected ? "selected=\"selected\"" : "";
+                                        optionsHtml.AppendLine($"<option value=\"{situacao.Value}\" {selected}>{situacao.Text}</option>");
+                                    }
+                                }
+                                <select name="situacao" class="form-select" style="width: auto; min-width: 120px;">
+                                    @Html.Raw(optionsHtml.ToString())
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </form>
+                    </div>
+
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -195,6 +213,8 @@
                                                         </div>
                                                     </td>
 
+
+
                                                     <td>
                                                         @{
 
@@ -205,11 +225,22 @@
                                                         <p class=" @corTexto @corTexto2 @corTexto3"> @item.Situacao</p>
                                                     </td>
 
+                                                        <td>
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="btn-group" role="group" aria-label="Basic example">
+
+                                                                    <a asp-controller="Cliente" asp-action="DetalhesCliente" asp-route-id="@item.Id" class="btn btn-primary">Detalhes</a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+
                                                     <td>
+                                                    <div class="d-flex justify-content-end">
                                                         <div class="btn-group" role="group" aria-label="Basic example">
                                                             <button type="button" class="btn btn-secondary" onclick="Editar(@item.Id)">Editar</button>
                                                             <button type="button" class="btn btn-danger" onclick="Excluir(@item.Id)">Excluir</button>
 
+                                                        </div>
                                                         </div>
                                                     </td>
 

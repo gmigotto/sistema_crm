@@ -64,7 +64,7 @@ namespace sistema_crm.Controllers
                 // Define a cor com base no status
                 if (lista[i].Status == "VENDA REALIZADA")
                 {
-                    cores += "'green',";
+                    cores += "'#66bb6a',";
                 }
                 else if (lista[i].Status == "PERDIDO")
                 {
@@ -156,7 +156,7 @@ namespace sistema_crm.Controllers
             {
                 TempData["ErrorLogin"] = "E-mail ou Senha são inválidos!";
             }
-            return View("Menu", "HomeUsuario");
+            return View();
         }
         public IActionResult Index()
         {
@@ -223,12 +223,19 @@ namespace sistema_crm.Controllers
         {
             string cpfSanitizado = pagamento.Cpf.Replace("-", "").Replace(".", "");
 
-            var customerData = new Dictionary<string, object>
+            // Validação simples de cartão
+            if (!ValidarCartao(pagamento.NumeroCartaoDeCredito, pagamento.MesExpiracao, pagamento.AnoExpiracao, pagamento.cvv))
             {
-                { "name", pagamento.NomeTitular },
-                { "cpf", cpfSanitizado },
-                { "phone", pagamento.Telefone }
-            };
+                TempData["ErroPagamento"] = "Houve um problema com o pagamento. Verifique os dados do cartao.";
+                return RedirectToAction("Erro");
+            }
+
+            var customerData = new Dictionary<string, object>
+                {
+                    { "name", pagamento.NomeTitular },
+                    { "cpf", cpfSanitizado },
+                    { "phone", pagamento.Telefone }
+                };
 
             AssasModel asaasModel = new AssasModel();
             var verificacao = asaasModel.VerificaSeExisteAsaasCustomer(cpfSanitizado);
@@ -278,20 +285,45 @@ namespace sistema_crm.Controllers
                 { "customer", asaas_customer },
                 { "total_value", Convert.ToDecimal(pagamento.valor) }
             };
-
             var response2 = await _asaasClient.CreateOrderAsync(paymentData);
+            TempData["SuccessMessage"] = "Pagamento aprovado!";
 
-            return RedirectToAction("Login", "Home");
+
+            return RedirectToAction("SuccessPage", "Home");
+        }
+
+        // Função para validar o cartão de crédito
+        private bool ValidarCartao(string numeroCartao, string mesExpiracao, string anoExpiracao, string cvv)
+        {
+            // Validação do número do cartão
+            if (string.IsNullOrWhiteSpace(numeroCartao) || numeroCartao.Length < 13 || numeroCartao.Length > 19)
+                return false;
+
+            // Validação do mês de expiração
+            if (!int.TryParse(mesExpiracao, out int mes) || mes < 1 || mes > 12)
+                return false;
+
+            // Validação do ano de expiração
+            if (!int.TryParse(anoExpiracao, out int ano) || ano < DateTime.Now.Year ||
+                (ano == DateTime.Now.Year && mes < DateTime.Now.Month))
+                return false;
+
+            // Validação do CVV
+            if (string.IsNullOrWhiteSpace(cvv) || cvv.Length < 3 || cvv.Length > 4)
+                return false;
+
+            return true;
         }
 
         [HttpPost]
 
         public IActionResult FinalizarCompra(HomeModel home)
         {
-            // home.GravarGestor();
-
-            return RedirectToAction("Login", "Home");
+            TempData["SuccessMessage"] = "Pagamento aprovado!";
+            return RedirectToAction("SucessPage", "Home");
         }
+
+
 
         [HttpGet]
         public IActionResult TelaCompra()
@@ -301,6 +333,42 @@ namespace sistema_crm.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult SuccessPage()
+        {
+
+
+            return View();
+
+        }
+
+        [HttpPost]
+        public IActionResult SuccessPage(LoginModel login)
+        {
+            bool loginOk = login.ValidarLoginAdm();
+            if (loginOk)
+            {
+                HttpContext.Session.SetString("IdUsuarioLogado", login.Id);
+                HttpContext.Session.SetString("NomeUsuarioLogado", login.Nome);
+                return RedirectToAction("Menu", "Home");
+            }
+            else
+            {
+                TempData["ErrorLogin"] = "E-mail ou Senha são inválidos!";
+            }
+
+            return View();
+
+        }
+
+        [HttpGet]
+        public IActionResult Erro()
+        {
+
+
+            return View();
+
+        }
         [HttpGet]
         public IActionResult PrimeiroAcesso()
         {
@@ -314,8 +382,8 @@ namespace sistema_crm.Controllers
             bool loginOk = login.ValidarLoginAdm();
             if (loginOk)
             {
-                HttpContext.Session.SetString("IdUsuarioLogado", login.Id);
-                HttpContext.Session.SetString("NomeUsuarioLogado", login.Nome);
+                HttpContext.Session.SetString("IdAdminLogado", login.Id);
+                HttpContext.Session.SetString("NomeAdminLogado", login.Nome);
                 return RedirectToAction("Menu", "Home");
             }
             else

@@ -116,6 +116,18 @@
             display: block;
         }
 
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #f8f9fa;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 14px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
     </style>
 
     
@@ -126,7 +138,7 @@
 
 <body class="g-sidenav-show  bg-gray-100">
 
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs bg-gradient-primary" id="sidenav-main" style="position: fixed; top: 0; left: 0; border-top-right-radius: 15px; border-bottom-right-radius: 15px;  height: 100vh; width: 250px; overflow-y: auto; opacity: 0.6;">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs bg-gradient-primary" id="sidenav-main" style="position: fixed; top: 0; left: 0; border-top-right-radius: 15px; border-bottom-right-radius: 15px;  height: 100vh; width: 250px; overflow-y: auto; opacity: 1.0;">
         <div class="sidenav-header text-center">
 
             <h2 class="crm">CRM</h2>
@@ -250,7 +262,7 @@
                 <div class="user-menu" style="position: fixed; top: 10px; right: 20px; z-index: 1000; background-color: #f9f9f9; padding: 10px 15px; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
                     
                     @{
-                        var nome = Context.Session.GetString("NomeUsuarioLogado");
+                        var nome = Context.Session.GetString("NomeAdminLogado");
                     }
 
                     @RenderSection("Scripts", required: false)
@@ -267,7 +279,7 @@
                         }
                         else
                         {
-                            <div id="NomeUsuarioLogado">
+                            <div id="NomeAdminLogado">
                                 <a href="/Home/Login">Login</a>
                             </div>
                         }
@@ -279,7 +291,7 @@
         </nav>
 
     <div class="container body-content">
-        <main role="main" class="pb-3 ">
+         <main class="content container mt-4">
             @RenderBody()
         </main>
     
@@ -290,8 +302,8 @@
 
   </main>
 
-    
 
+   
  
 
     <script>
@@ -311,7 +323,7 @@
         });
     </script>
 
- 
+
 </body>
 
 </html>

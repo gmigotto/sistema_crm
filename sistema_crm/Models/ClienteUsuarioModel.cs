@@ -14,23 +14,40 @@ namespace sistema_crm.Models
 {
     public class ClienteUsuarioModel
     {
-            public string Id { get; set; }
+        public string Id { get; set; }
 
-            [Required(ErrorMessage ="Informe o Nome do cliente")]
-            public string Nome { get; set; }
+        [Required(ErrorMessage = "Informe o Nome do cliente")]
+        public string Nome { get; set; }
 
-            [Required(ErrorMessage = "Informe o CPF do cliente")]
-            public string CNPJ { get; set; }
+        [Required(ErrorMessage = "Informe o CNPJ do cliente")]
+        public string CNPJ { get; set; }
 
-            public string End {  get; set; }
+        public string Bairro { get; set; }
+        public string Cidade { get; set; }
 
-            public string UF { get; set; }
+        public string CEP { get; set; }
 
-            public string Telefone { get; set; }
-            public string Situacao { get; set; }
+        public string End { get; set; }
 
-            public int VendedorId { get; set; }
-        public List<ClienteUsuarioModel> ListarClientes(HttpContext httpContext) { 
+        public string UF { get; set; }
+
+        public string Telefone { get; set; }
+        public string Situacao { get; set; }
+
+        [Required(ErrorMessage = "Informe o Nome Comprador")]
+
+        public string NomeComprador { get; set; }
+        [Required(ErrorMessage = "Informe o Nome Comprador")]
+
+        public string Email { get; set; }
+
+        public string Segmento { get; set; }
+
+        public string Vendedor_id { get; set; }
+
+        public string Mes { get; set; }
+        public double Valor { get; set; }
+        public List<ClienteUsuarioModel> ListarClientes(HttpContext httpContext, string situacao = "todos") { 
             List<ClienteUsuarioModel> lista = new List<ClienteUsuarioModel>();
             ClienteUsuarioModel item;
             DAL objDAL = new DAL();
@@ -45,7 +62,17 @@ namespace sistema_crm.Models
             }
 
             // Modificar a consulta para filtrar pelos clientes do vendedor logado
-            string sql = $"SELECT idclientes, nomeclientes, cnpjclientes, telcliente, situacaocliente FROM Clientes WHERE fkvendedor= '{vendedorId}' ORDER BY nomeclientes ASC";
+            string sql = $"SELECT idclientes, nomeclientes, cnpjclientes, telcliente, situacaocliente " +
+                $"FROM Clientes WHERE fkvendedor = '{vendedorId}'";
+
+            // Adiciona o filtro de situação, se necessário
+            if (situacao != "todos")
+            {
+                sql += $" AND situacaocliente = '{situacao}'";
+            }
+
+            // Adiciona ordenação
+            sql += " ORDER BY nomeclientes ASC";
 
             DataTable dt = objDAL.RetDataTable(sql);
 
@@ -96,18 +123,89 @@ namespace sistema_crm.Models
             string sql = string.Empty;
             string vendedorId = httpContext.Session.GetString("IdUsuarioLogado");
 
-            // Verifica se o ID não está vazio
-          
-            if (Id != null)
+            if (!string.IsNullOrEmpty(vendedorId))
             {
-                sql = $"UPDATE CLIENTES SET nomeclientes = '{Nome}', cnpjclientes = '{CNPJ}' , endclientes = '{End}', ufcliente = '{UF}', telcliente = '{Telefone}', situacaocliente='{Situacao}' WHERE idclientes = '{Id}'";
+                // Recupera o idadmin associado ao idvendedor
+                string queryGetAdminId = $@"
+                    SELECT idadmin 
+                    FROM vendedor 
+                    WHERE idvendedor = '{vendedorId}'";
+                DataTable adminResult = objDAL.RetDataTable(queryGetAdminId);
+
+                if (adminResult.Rows.Count > 0)
+                {
+                    // Obtém o idadmin do resultado da consulta
+                    string adminId = adminResult.Rows[0]["idadmin"].ToString();
+
+                    if (Id != null) // Atualização de cliente existente
+                    {
+                        sql = $@"
+                    UPDATE CLIENTES 
+                    SET nomeclientes = '{Nome}', 
+                        cnpjclientes = '{CNPJ}', 
+                        endclientes = '{End}', 
+                        cep = '{CEP}', 
+                        bairro = '{Bairro}', 
+                        cidade = '{Cidade}', 
+                        ufcliente = '{UF}', 
+                        telcliente = '{Telefone}', 
+                        situacaocliente = '{Situacao}', 
+                        nomecomprador = '{NomeComprador}', 
+                        email = '{Email}', 
+                        segmento = '{Segmento}', 
+                        fkvendedor = '{vendedorId}', 
+                        fkadmin = '{adminId}' 
+                    WHERE idclientes = '{Id}'";
+                    }
+                    else // Inserção de novo cliente
+                    {
+                        sql = $@"
+                    INSERT INTO clientes(
+                        nomeclientes, 
+                        cnpjclientes, 
+                        endclientes, 
+                        cep, 
+                        bairro, 
+                        cidade, 
+                        ufcliente, 
+                        telcliente, 
+                        situacaocliente, 
+                        fkvendedor, 
+                        fkadmin, 
+                        nomecomprador, 
+                        email, 
+                        segmento
+                    ) 
+                    VALUES(
+                        '{Nome}', 
+                        '{CNPJ}', 
+                        '{End}', 
+                        '{CEP}', 
+                        '{Bairro}', 
+                        '{Cidade}', 
+                        '{UF}', 
+                        '{Telefone}', 
+                        '{Situacao}', 
+                        '{vendedorId}', 
+                        '{adminId}', 
+                        '{NomeComprador}', 
+                        '{Email}', 
+                        '{Segmento}'
+                    )";
+                    }
+
+                    // Executa o comando SQL
+                    objDAL.ExecutarComandoSQL(sql);
+                }
+                else
+                {
+                    throw new Exception("Erro: Não foi possível encontrar o administrador associado ao vendedor logado.");
+                }
             }
             else
             {
-                sql = $"INSERT INTO clientes(nomeclientes, cnpjclientes, endclientes, ufcliente, telcliente, situacaocliente, fkvendedor) VALUES('{Nome}', '{CNPJ}', '{End}', '{UF}', '{Telefone}', '{Situacao}', '{vendedorId}')";
+                throw new Exception("Erro: O ID do vendedor logado não está disponível na sessão.");
             }
-
-            objDAL.ExecutarComandoSQL(sql);
         }
 
         public void Insert(HttpContext httpContext)
@@ -130,5 +228,11 @@ namespace sistema_crm.Models
             string sql = $"DELETE FROM CLIENTES WHERE idclientes='{id}'";
             objDAL.ExecutarComandoSQL(sql);
         }
+        public List<VendedorModel> RetornarListaVendedores()
+        {
+            return new VendedorModel().ListarVendedores();
+        }
+      
+
     }
 }

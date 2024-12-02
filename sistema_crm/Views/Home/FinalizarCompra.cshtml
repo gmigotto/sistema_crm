@@ -17,6 +17,7 @@
 
     <!-- CSS do Bootstrap -->
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMMj6h5FRDj/swn3gOKjWVSKEHcYV5K2XmcDIIg" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link id="pagestyle" href="~/lib/bootstrap/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
@@ -39,15 +40,16 @@
 
     <div class="container main-container">
         <div class="row">
+            <!-- Resumo do Pedido -->
             <div class="col-md-4 order-md-2 mb-4">
                 <h4 class="d-flex justify-content-between align-items-center mb-4">
                     <span class="text-muted">Produto</span>
                 </h4>
-                <ul class="list-group mb-3">
+                <ul class="list-group mb-3 shadow-sm">
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
                             <h6 class="my-0">CRM Business</h6>
-                            <small class="text-muted">Software de gestão de relacionamento com o cliente.</small>
+                            <small class="text-muted">Software de gestão de relacionamento com o cliente. Acesso por 12 meses.</small>
                         </div>
                         <span class="text-muted">R$300</span>
                     </li>
@@ -57,97 +59,166 @@
                     </li>
                 </ul>
             </div>
-        </div>
 
-        <div class="row">
+            <!-- Formulário de Pagamento -->
             <div class="col-md-8">
-                <h4>Realizar Pagamento com Cartão de Crédito</h4>
+                
                 <form id="paymentForm" asp-controller="Home" asp-action="FinalizaCompra" method="post">
-                    <h>Informações do Cartão</h>
-                    <div class="mb-3">
-                        <label for="card_name" class="form-label">Nome no Cartão:</label>
-                        <input type="text" class="form-control" id="card_name" name="NomeTitular" required>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="card_number" class="form-label">Número do Cartão:</label>
-                        <input type="text" class="form-control" id="card_number" name="NumeroCartaoDeCredito" required>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <div class="col">
-                            <label for="expiry_month" class="form-label">Mês de Expiração:</label>
-                            <input type="text" class="form-control" id="expiry_month" name="MesExpiracao" required>
+                    <!-- Informações do Cartão -->
+                    <h5 class="text-muted mb-3">Informações do Cartão</h5>
+                    <div class="card p-3 mb-4 shadow-sm border-0">
+                        <div class="mb-3">
+                            <label for="card_name" class="form-label">Nome no Cartão</label>
+                            <input type="text" class="form-control" id="card_name" name="NomeTitular" required>
                         </div>
-                        <div class="col">
-                            <label for="expiry_year" class="form-label">Ano de Expiração:</label>
-                            <input type="text" class="form-control" id="expiry_year" name="AnoExpiracao" required>
+
+                        <div class="mb-3">
+                            <label for="card_number" class="form-label">Número do Cartão</label>
+                            <input type="text" class="form-control" id="card_number" name="NumeroCartaoDeCredito" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiry_month" class="form-label">Mês de Expiração</label>
+                                <input type="text" class="form-control" id="expiry_month" name="MesExpiracao" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="expiry_year" class="form-label">Ano de Expiração</label>
+                                <input type="text" class="form-control" id="expiry_year" name="AnoExpiracao" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" required>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="cvv" class="form-label">CVV:</label>
-                        <input type="text" class="form-control" id="cvv" name="cvv" required>
+                    <!-- Informações do Titular -->
+                    <h5 class="text-muted mb-3">Informações do Titular</h5>
+                    <div class="card p-3 mb-4 shadow-sm border-0">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="holder_name" class="form-label">Nome do Titular</label>
+                                <input type="text" class="form-control" id="holder_name" name="NomeTitular" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="cpf" class="form-label">CNPJ</label>
+                                <input type="text" class="form-control" id="cpf" name="Cpf" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="cep" class="form-label">CEP</label>
+                                <input type="text" id="cep" class="form-control" name="Cep" required onblur="buscarEndereco()">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="logradouro" class="form-label">Logradouro</label>
+                                <input type="text" class="form-control" id="logradouro" name="Logradouro" readonly>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="Bairro" readonly>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="Cidade" readonly>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado" name="Estado" readonly>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="address_number" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="address_number" name="NumeroCasa" required>
+                        </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="telefone" name="telefone" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="Email" required>
+                            </div>
+                        </div>
                     </div>
 
-                    <h4>Informações do Titular</h4>
-                    <div class="form-group">
-                        <label for="holder_name">Nome do Titular:</label>
-                        <input type="text" class="form-control" id="holder_name" name="NomeTitular" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cpf">CPF/CNPJ:</label>
-                        <input type="text" class="form-control" id="cpf" name="Cpf" required>
-                    </div>
-                    <div class="form-group mb-1">
-                    </div>
-                    <div class="form-group">
-                        <label for="cep">CEP:</label>
-                        <input type="text" id="cep" class="form-control" name="Cep" required>
-                    </div>
-                   
-                    <div class="form-group">
-                        <label for="address_number">Endereço:</label>
-                        <input type="text" class="form-control" id="address_number" name="NumeroCasa" required>
+
+                    <!-- Informações do Pedido -->
+                    <h5 class="text-muted mb-3">Informações do Pedido</h5>
+                    <div class="card p-3 mb-4 shadow-sm border-0">
+                        <div class="mb-3">
+                            <label for="customer" class="form-label">Cliente</label>
+                            <input type="text" class="form-control" id="customer" name="customer" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="total_value" class="form-label">Valor Total</label>
+                            <input type="number" class="form-control" id="total_value" name="valor" value="300.00" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Método de Pagamento</label>
+                            <select id="payment_method" class="form-control" name="payment_method" required>
+                                <option value="card">Cartão de Crédito</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="telefone">Telefone:</label>
-                        <input type="text" class="form-control" id="telefone" name="telefone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email"> Email:</label>
-                        <input type="email" class="form-control" id="email" name="Email" required>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Finalizar Compra</button>
 
-
-                    <h4>Informações do Pedido</h4>
-                    <div class="form-group">
-                        <label for="customer">Cliente:</label>
-                        <input type="text" class="form-control" id="customer" name="customer" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="total_value">Valor Total:</label>
-                        <input type="number" class="form-control" id="total_value" name="valor" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="payment_method">Método de Pagamento:</label>
-                        <select id="payment_method" class="form-control" name="payment_method" required>
-                            <option value="card">Cartão de Crédito</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+                  
                 </form>
             </div>
+
         </div>
     </div>
 
-    <!-- Script JavaScript para manipular o formulário -->
+
     <script>
-       
+        async function buscarEndereco() {
+            const cep = document.getElementById("cep").value.trim();
+
+            // Valida o CEP (apenas números e comprimento de 8 caracteres)
+            if (!/^\d{8}$/.test(cep)) {
+                alert("Por favor, insira um CEP válido.");
+                return;
+            }
+
+            try {
+                // Consulta à API ViaCEP
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    alert("CEP não encontrado.");
+                    return;
+                }
+
+                // Preenche os campos com os dados do endereço
+                document.getElementById("logradouro").value = data.logradouro || "";
+                document.getElementById("bairro").value = data.bairro || "";
+                document.getElementById("cidade").value = data.localidade || "";
+                document.getElementById("estado").value = data.uf || "";
+            } catch (error) {
+                console.error("Erro ao buscar o CEP:", error);
+                alert("Erro ao buscar o CEP. Por favor, tente novamente.");
+            }
+        }
     </script>
-   
 </body>
+
 </html>

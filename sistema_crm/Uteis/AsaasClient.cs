@@ -12,7 +12,7 @@ public class AsaasClient {
 
         public AsaasClient()
         {
-            _token = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzY3NTE6OiRhYWNoXzQyMGE0NWVhLTU3MmYtNGI4OC1hZDFkLWZlM2YxODIyNDFjNQ==";
+            _token = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzY3NTE6OiRhYWNoXzY2NGU4MzRhLTQ1M2QtNDViZi05YjJkLTFiZmY3ZDBhNTdlNg==";
             _url = "https://sandbox.asaas.com";
             _env = "LOCAL";
         }
@@ -83,13 +83,27 @@ public class AsaasClient {
             Console.WriteLine("Cabeçalhos da resposta:");
             Console.WriteLine(response.Headers); // Exibe os cabeçalhos da resposta
 
+          
             var jsonString = await response.Content.ReadAsStringAsync();
             Console.WriteLine("Conteúdo da resposta JSON:");
             Console.WriteLine(jsonString); //
+            var responseDict = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
 
-            return JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+            // Adicionar mensagem ao dicionário se o status for 200
+            if (response.IsSuccessStatusCode)
+            {
+                responseDict["message"] = "Pagamento aprovado";
             }
+            else
+            {
+                responseDict["message"] = "Falha no pagamento";
+            }
+
+            return responseDict;
         }
+        }
+
+
 
         private async Task<Dictionary<string, object>> CreateOrderPayCardAsync(Dictionary<string, object> orderData)
         {

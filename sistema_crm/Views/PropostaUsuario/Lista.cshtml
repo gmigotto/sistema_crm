@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Inclua o link para Bootstrap Icons ou Font Awesome no seu projeto -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <!-- ou, se preferir Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
@@ -104,19 +108,15 @@
 
 
         <header>
-            <nav class=" navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl">
-                <div class="container-fluid py-1 px-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        </ol>
-                        <h6 class="font-weight-bolder mb-0">Negócios</h6>
-                    </nav>
-
-                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        </div>
-
+            <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl bg-white">
+                <div class="container-fluid py-2 px-3">
+                    <div class="d-flex align-items-center">
+                        <!-- Ícone de Negócios (maleta) -->
+                        <i class="bi bi-briefcase fs-3 text-primary me-3"></i> <!-- Para Bootstrap Icons -->
+                        <!-- <i class="fas fa-briefcase fs-3 text-primary me-3"></i> --> <!-- Para Font Awesome -->
+                        <h6 class="font-weight-bold mb-0 text-dark">Negócios</h6>
                     </div>
+
 
                 </div>
             </nav>
@@ -148,6 +148,16 @@
                     <div class="card mb-4">
 
                         <div class="card-header pb-0">
+                            <div class="mb-3 d-flex justify-content-end">
+                                <label for="statusFilter" class="me-2 align-self-center">Filtrar por Status:</label>
+                                <select id="statusFilter" class="form-select w-auto" onchange="filtrarStatus()">
+                                    <option value="todos">Todos</option>
+                                    <option value="EM NEGOCIAÇÃO">Em Negociação</option>
+                                    <option value="PERDIDO">Perdido</option>
+                                    <option value="VENDA REALIZADA">Venda Realizada</option>
+                                    <option value="CANCELADO">Cancelado</option>
+                                </select>
+                            </div>
                             <h6>Propostas Cadastradas</h6>
                         </div>
 

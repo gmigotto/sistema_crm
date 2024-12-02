@@ -7,8 +7,8 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="~/lib/bootstrap/assets/img/apple-icon.png">
@@ -17,6 +17,8 @@
         Cadastro de Vendedores
     </title>
     <!--     Fonts and icons     -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
@@ -96,46 +98,48 @@
                 <input type="hidden" asp-for="Id" value="@ViewBag.Proposta.Id" />
 
                 <!-- Cabeçalho do card -->
-                <div class="card-header">Editar Proposta</div>
+                <div class="card-header text-white text-center py-3">
+                    <h5><i class="fas fa-edit me-2"></i>Editar Proposta</h5>
+                </div>
 
                 <!-- Corpo do card -->
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-3">
                         <!-- Informação da proposta -->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Nº Proposta</label>
-                                <div class="panel-body">
-                                    @ViewBag.Proposta.Id <!-- Exibe o ID da proposta -->
+                                <label><i class="fas fa-file-alt me-2 text-primary"></i>Nº Proposta</label>
+                                <div class="panel-body bg-light p-2 rounded">
+                                    <strong>@ViewBag.Proposta.Id</strong>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Cliente</label>
-                                <div class="panel-body">
-                                    @ViewBag.Proposta.Cliente_id <!-- Exibe o ID do cliente -->
+                                <label><i class="fas fa-user me-2 text-primary"></i>Cliente</label>
+                                <div class="panel-body bg-light p-2 rounded">
+                                    <strong>@ViewBag.Proposta.Cliente_id</strong>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Vendedor</label>
-                                <div class="panel-body">
-                                    @ViewBag.Proposta.Vendedor_id <!-- Exibe o ID do vendedor -->
+                                <label><i class="fas fa-user-tie me-2 text-primary"></i>Vendedor</label>
+                                <div class="panel-body bg-light p-2 rounded">
+                                    <strong>@ViewBag.Proposta.Vendedor_id</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Tabela de itens -->
-                    <div class="form-group">
-                        <label>Itens da Proposta</label>
+                    <div class="form-group mb-4">
+                        <label><i class="fas fa-box-open me-2 text-primary"></i>Itens da Proposta</label>
                         <div class="table-responsive">
-                            <table class="table">
-                                <thead>
+                            <table class="table table-hover">
+                                <thead class="table-primary">
                                     <tr>
                                         <th>Quantidade</th>
                                         <th>Descrição</th>
@@ -145,7 +149,7 @@
                                 <tbody>
                                     @try
                                     {
-                                        @if ( ViewBag.Proposta.Itens != null && ViewBag.Proposta.Itens.Count > 0)
+                                        @if (ViewBag.Proposta.Itens != null && ViewBag.Proposta.Itens.Count > 0)
                                         {
                                             @for (int i = 0; i < ViewBag.Proposta.Itens.Count; i++)
                                             {
@@ -167,39 +171,50 @@
                                         else
                                         {
                                             <tr>
-                                                <td colspan="3">Nenhum item encontrado.</td>
+                                                <td colspan="3" class="text-center text-muted">Nenhum item encontrado.</td>
                                             </tr>
                                         }
-                                    } catch {}
+                                    }
+                                    catch { }
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Status -->
-                    <div class="row">
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select asp-for="Status" class="form-control">
-                            <option value="@ViewBag.Proposta.Status">@ViewBag.Proposta.Status</option>
-                            <option>EM NEGOCIAÇÃO</option>
-                            <option>CANCELADO</option>
-                            <option>PERDIDO</option>
-                            <option>VENDA REALIZADA</option>
-                        </select>
+                    <!-- Status e Data de Encerramento -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><i class="fas fa-info-circle me-2 text-primary"></i>Status</label>
+                                <select asp-for="Status" class="form-control">
+                                    <option value="@ViewBag.Proposta.Status">@ViewBag.Proposta.Status</option>
+                                    <option>EM NEGOCIAÇÃO</option>
+                                    <option>CANCELADO</option>
+                                    <option>PERDIDO</option>
+                                    <option>VENDA REALIZADA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><i class="fas fa-calendar-alt me-2 text-primary"></i>Data Encerramento</label>
+                                <input asp-for="Data_fim" type="date" class="form-control" value="@ViewBag.Proposta.Data_fim" />
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Data de Encerramento -->
-                    <div class="form-group">
-                        <label>Data Encerramento</label>
-                            <input asp-for="Data_fim" type="date" class="form-control" value="@ViewBag.Proposta.Data_fim" />
-                    </div>
-                    </div>
                     <!-- Botão de submissão -->
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block" >Salvar Alterações</button>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-save me-2"></i>Salvar Alterações
+                        </button>
                     </div>
                 </div>
+
+                <!-- Adicione a biblioteca Font Awesome para os ícones -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMo+ukN8L+CmLlZoz9eo1Lgj4R4I2vypgN+5xE5" crossorigin="anonymous">
+
             </form>
         </div>
     </main>
